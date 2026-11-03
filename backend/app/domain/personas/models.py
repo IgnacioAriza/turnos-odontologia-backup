@@ -1,11 +1,16 @@
 """Modelos del dominio personas: User, Paciente."""
 
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
-from sqlalchemy import String, ForeignKey, Integer, Text
+
+from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.infrastructure.db.base import Base
 from app.core.mixins import AuditMixin
+from app.infrastructure.db.base import Base
+
+if TYPE_CHECKING:
+    from app.domain.clinica.models import Bloqueo, Clinic
 
 
 class User(Base, AuditMixin):
@@ -32,11 +37,11 @@ class User(Base, AuditMixin):
         index=True,
     )
 
-    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="users")  # noqa: F821
-    odontologo: Mapped["User | None"] = relationship(  # noqa: F821
+    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="users")
+    odontologo: Mapped["User | None"] = relationship(
         "User", remote_side=[id], back_populates="pacientes_asignados"
     )
-    pacientes_asignados: Mapped[list["User"]] = relationship(  # noqa: F821
+    pacientes_asignados: Mapped[list["User"]] = relationship(
         "User", remote_side=[odontologo_id], back_populates="odontologo"
     )
 
@@ -59,7 +64,7 @@ class Paciente(Base, AuditMixin):
     telefono: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     dni: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
 
-    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="pacientes")  # noqa: F821
-    bloqueos: Mapped[list["Bloqueo"]] = relationship(  # noqa: F821
+    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="pacientes")
+    bloqueos: Mapped[list["Bloqueo"]] = relationship(
         "Bloqueo", back_populates="paciente", cascade="all, delete-orphan"
     )

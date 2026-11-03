@@ -10,20 +10,21 @@ Contraseñas hasheadas con bcrypt (no texto plano).
 """
 
 import asyncio
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from uuid import uuid4
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from app.core.config import settings
 from app.core.security import hash_password
-from app.infrastructure.db.base import Base
 from app.domain.clinica.models import Clinic, Sillon
-from app.domain.personas.models import User, Paciente
+from app.domain.personas.models import User
+from app.infrastructure.db.base import Base
 
 
 async def seed() -> None:

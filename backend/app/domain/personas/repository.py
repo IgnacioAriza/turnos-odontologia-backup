@@ -1,23 +1,22 @@
 """Repositorios del dominio personas."""
 
-from typing import Optional, List
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.repository import BaseRepository, UnitOfWork
-from app.domain.personas.models import User, Paciente
+from app.domain.personas.models import Paciente, User
 
 
 class UserRepository(BaseRepository[User]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, User)
 
-    async def get_by_email(self, clinic_id: UUID, email: str) -> Optional[User]:
+    async def get_by_email(self, clinic_id: UUID, email: str) -> User | None:
         result = await self.session.execute(
             select(User).where(
-                User.clinic_id == clinic_id,  # type: ignore[attr-defined]
+                User.clinic_id == clinic_id,
                 User.email == email,
             )
         )
@@ -26,38 +25,35 @@ class UserRepository(BaseRepository[User]):
     async def get_by_clinic(
         self,
         clinic_id: UUID,
-        rol: Optional[str] = None,
-        is_active: Optional[bool] = None,
-    ) -> List[User]:
-        from sqlalchemy import select as sa_select
-        query = sa_select(User).where(User.clinic_id == clinic_id)  # type: ignore[attr-defined]
+        rol: str | None = None,
+        is_active: bool | None = None,
+    ) -> list[User]:
+        query = select(User).where(User.clinic_id == clinic_id)
         if rol is not None:
             query = query.where(User.rol == rol)
         if is_active is not None:
             query = query.where(User.is_active == is_active)
         result = await self.session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
 
 class PacienteRepository(BaseRepository[Paciente]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Paciente)
 
-    async def get_by_dni(self, clinic_id: UUID, dni: str) -> Optional[Paciente]:
+    async def get_by_dni(self, clinic_id: UUID, dni: str) -> Paciente | None:
         result = await self.session.execute(
             select(Paciente).where(
-                Paciente.clinic_id == clinic_id,  # type: ignore[attr-defined]
+                Paciente.clinic_id == clinic_id,
                 Paciente.dni == dni,
             )
         )
         return result.scalar_one_or_none()
 
-    async def get_by_telefono(
-        self, clinic_id: UUID, telefono: str
-    ) -> Optional[Paciente]:
+    async def get_by_telefono(self, clinic_id: UUID, telefono: str) -> Paciente | None:
         result = await self.session.execute(
             select(Paciente).where(
-                Paciente.clinic_id == clinic_id,  # type: ignore[attr-defined]
+                Paciente.clinic_id == clinic_id,
                 Paciente.telefono == telefono,
             )
         )

@@ -5,8 +5,8 @@ Incluye constraint UNIQUE (clinic_id, email) en users e índices compuestos
 (clinic_id, telefono) y (clinic_id, dni) en pacientes.
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -94,9 +94,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_users_clinic_id"), "users", ["clinic_id"], unique=False)
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=False)
-    op.create_index(
-        op.f("ix_users_odontologo_id"), "users", ["odontologo_id"], unique=False
-    )
+    op.create_index(op.f("ix_users_odontologo_id"), "users", ["odontologo_id"], unique=False)
 
     # Tabla pacientes
     op.create_table(
@@ -127,15 +125,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_pacientes")),
     )
-    op.create_index(
-        op.f("ix_pacientes_clinic_id"), "pacientes", ["clinic_id"], unique=False
-    )
-    op.create_index(
-        op.f("ix_pacientes_telefono"), "pacientes", ["telefono"], unique=False
-    )
-    op.create_index(
-        op.f("ix_pacientes_dni"), "pacientes", ["dni"], unique=False
-    )
+    op.create_index(op.f("ix_pacientes_clinic_id"), "pacientes", ["clinic_id"], unique=False)
+    op.create_index(op.f("ix_pacientes_telefono"), "pacientes", ["telefono"], unique=False)
+    op.create_index(op.f("ix_pacientes_dni"), "pacientes", ["dni"], unique=False)
     op.create_index(
         "ix_pacientes_clinic_id_telefono",
         "pacientes",
@@ -177,9 +169,7 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_sillones")),
     )
-    op.create_index(
-        op.f("ix_sillones_clinic_id"), "sillones", ["clinic_id"], unique=False
-    )
+    op.create_index(op.f("ix_sillones_clinic_id"), "sillones", ["clinic_id"], unique=False)
 
     # Tabla bloqueos
     op.create_table(
@@ -218,12 +208,8 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_bloqueos")),
     )
-    op.create_index(
-        op.f("ix_bloqueos_clinic_id"), "bloqueos", ["clinic_id"], unique=False
-    )
-    op.create_index(
-        op.f("ix_bloqueos_paciente_id"), "bloqueos", ["paciente_id"], unique=False
-    )
+    op.create_index(op.f("ix_bloqueos_clinic_id"), "bloqueos", ["clinic_id"], unique=False)
+    op.create_index(op.f("ix_bloqueos_paciente_id"), "bloqueos", ["paciente_id"], unique=False)
 
 
 def downgrade() -> None:

@@ -1,12 +1,11 @@
 """Tests para AuditMixin (is_active, created_at, updated_at)."""
 
-import pytest
 from datetime import datetime
-from sqlalchemy import select
+
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.clinica.models import Clinic, Sillon
-from app.domain.personas.models import User, Paciente
 
 
 @pytest.mark.asyncio

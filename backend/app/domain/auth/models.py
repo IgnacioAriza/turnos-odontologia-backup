@@ -1,12 +1,13 @@
 """Modelos del dominio auth: RefreshTokenBlacklist."""
 
-from uuid import UUID, uuid4
 from datetime import datetime
-from sqlalchemy import String, DateTime, ForeignKey, Boolean
+from uuid import UUID, uuid4
+
+from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.infrastructure.db.base import Base
 from app.core.mixins import AuditMixin
+from app.infrastructure.db.base import Base
 
 
 class RefreshTokenBlacklist(Base, AuditMixin):

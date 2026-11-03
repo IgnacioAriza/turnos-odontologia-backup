@@ -1,16 +1,16 @@
 """Pydantic schemas para el dominio clínica."""
 
-from pydantic import BaseModel, Field
-from typing import Optional
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, Field
 
 
 class ClinicBase(BaseModel):
     nombre: str = Field(..., min_length=1, max_length=200)
     timezone: str = Field(default="America/Argentina/Buenos_Aires", max_length=64)
-    wa_sender: Optional[str] = Field(default=None, max_length=50)
-    mp_account: Optional[str] = Field(default=None, max_length=200)
+    wa_sender: str | None = Field(default=None, max_length=50)
+    mp_account: str | None = Field(default=None, max_length=200)
 
 
 class ClinicCreate(ClinicBase):
@@ -18,11 +18,11 @@ class ClinicCreate(ClinicBase):
 
 
 class ClinicUpdate(BaseModel):
-    nombre: Optional[str] = Field(default=None, min_length=1, max_length=200)
-    timezone: Optional[str] = Field(default=None, max_length=64)
-    wa_sender: Optional[str] = Field(default=None, max_length=50)
-    mp_account: Optional[str] = Field(default=None, max_length=200)
-    is_active: Optional[bool] = None
+    nombre: str | None = Field(default=None, min_length=1, max_length=200)
+    timezone: str | None = Field(default=None, max_length=64)
+    wa_sender: str | None = Field(default=None, max_length=50)
+    mp_account: str | None = Field(default=None, max_length=200)
+    is_active: bool | None = None
 
 
 class ClinicOut(ClinicBase):
@@ -44,8 +44,8 @@ class SillonCreate(SillonBase):
 
 
 class SillonUpdate(BaseModel):
-    nombre: Optional[str] = Field(default=None, min_length=1, max_length=100)
-    activo: Optional[bool] = None
+    nombre: str | None = Field(default=None, min_length=1, max_length=100)
+    activo: bool | None = None
 
 
 class SillonOut(SillonBase):
@@ -72,7 +72,7 @@ class BloqueoCreate(BloqueoBase):
 class BloqueoOut(BloqueoBase):
     id: UUID
     clinic_id: UUID
-    created_by: Optional[str] = None
+    created_by: str | None = None
     created_at: datetime
     updated_at: datetime
 

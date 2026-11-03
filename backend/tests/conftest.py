@@ -1,15 +1,15 @@
 """Configuración de tests para el backend de turnos-odontologia."""
 
 import os
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # Configurar variable de entorno ANTES de importar cualquier cosa de la app
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./test.db"
 
-from app.infrastructure.db.base import Base, get_engine, get_async_session_factory
+from app.infrastructure.db.base import Base, get_async_session_factory, get_engine
 
 # Usar el MISMO engine que la app usa (get_engine está cacheado)
 test_engine = get_engine()

@@ -38,5 +38,13 @@ class Settings(BaseSettings):
         default="INFO", description="Logging level (DEBUG, INFO, WARNING, ERROR)"
     )
 
+    @property
+    def JWT_SECRET(self) -> str:  # noqa: N802
+        return self.jwt_secret
+
+    @property
+    def JWT_EXPIRES_MIN(self) -> int:  # noqa: N802
+        return self.jwt_expires_min
+
 
 settings = Settings()

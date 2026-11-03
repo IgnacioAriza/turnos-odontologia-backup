@@ -1,12 +1,17 @@
 """Modelos del dominio clínica: Clinic, Sillon, Bloqueo."""
 
-from uuid import UUID, uuid4
 from datetime import datetime
-from sqlalchemy import String, ForeignKey, DateTime, Text
+from typing import TYPE_CHECKING
+from uuid import UUID, uuid4
+
+from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.infrastructure.db.base import Base
 from app.core.mixins import AuditMixin
+from app.infrastructure.db.base import Base
+
+if TYPE_CHECKING:
+    from app.domain.personas.models import Paciente, User
 
 
 class Clinic(Base, AuditMixin):
@@ -28,16 +33,16 @@ class Clinic(Base, AuditMixin):
     mp_account: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
     # Relaciones
-    users: Mapped[list["User"]] = relationship(  # noqa: F821
+    users: Mapped[list["User"]] = relationship(
         "User", back_populates="clinic", cascade="all, delete-orphan"
     )
-    pacientes: Mapped[list["Paciente"]] = relationship(  # noqa: F821
+    pacientes: Mapped[list["Paciente"]] = relationship(
         "Paciente", back_populates="clinic", cascade="all, delete-orphan"
     )
-    sillones: Mapped[list["Sillon"]] = relationship(  # noqa: F821
+    sillones: Mapped[list["Sillon"]] = relationship(
         "Sillon", back_populates="clinic", cascade="all, delete-orphan"
     )
-    bloqueos: Mapped[list["Bloqueo"]] = relationship(  # noqa: F821
+    bloqueos: Mapped[list["Bloqueo"]] = relationship(
         "Bloqueo", back_populates="clinic", cascade="all, delete-orphan"
     )
 
@@ -59,7 +64,7 @@ class Sillon(Base, AuditMixin):
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     activo: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="sillones")  # noqa: F821
+    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="sillones")
 
 
 class Bloqueo(Base, AuditMixin):
@@ -86,5 +91,5 @@ class Bloqueo(Base, AuditMixin):
     motivo: Mapped[str] = mapped_column(Text, nullable=False)
     created_by: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
-    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="bloqueos")  # noqa: F821
-    paciente: Mapped["Paciente"] = relationship("Paciente", back_populates="bloqueos")  # noqa: F821
+    clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="bloqueos")
+    paciente: Mapped["Paciente"] = relationship("Paciente", back_populates="bloqueos")

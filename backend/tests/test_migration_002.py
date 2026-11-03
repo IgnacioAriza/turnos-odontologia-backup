@@ -13,10 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 async def test_tables_exist(db_session: AsyncSession):
     """Todas las tablas de la migración 002 deben existir."""
     result = await db_session.execute(
-        text(
-            "SELECT table_name FROM information_schema.tables "
-            "WHERE table_schema = 'public'"
-        )
+        text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
     )
     tables = {row[0] for row in result.fetchall()}
 
@@ -63,8 +60,7 @@ async def test_unique_constraint_email_per_clinic(db_session: AsyncSession):
     """Debe existir constraint UNIQUE (clinic_id, email) en users."""
     result = await db_session.execute(
         text(
-            "SELECT conname FROM pg_constraint "
-            "WHERE conrelid = 'users'::regclass AND contype = 'u'"
+            "SELECT conname FROM pg_constraint WHERE conrelid = 'users'::regclass AND contype = 'u'"
         )
     )
     constraints = {row[0] for row in result.fetchall()}
@@ -81,9 +77,7 @@ async def test_unique_constraint_email_per_clinic(db_session: AsyncSession):
 async def test_indexes_exist(db_session: AsyncSession):
     """Debe existir índice compuesto (clinic_id, telefono) y (clinic_id, dni) en pacientes."""
     result = await db_session.execute(
-        text(
-            "SELECT indexname FROM pg_indexes WHERE tablename = 'pacientes'"
-        )
+        text("SELECT indexname FROM pg_indexes WHERE tablename = 'pacientes'")
     )
     indexes = {row[0] for row in result.fetchall()}
     assert any("clinic_id" in i and "telefono" in i for i in indexes), (

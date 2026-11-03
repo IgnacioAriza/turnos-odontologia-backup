@@ -2,11 +2,12 @@
 
 import pytest
 from fastapi.testclient import TestClient
-from app.main import create_app
-from app.domain.personas.models import User
-from app.domain.clinica.models import Clinic
-from app.core.security import hash_password
+
 from app.core.config import settings
+from app.core.security import hash_password
+from app.domain.clinica.models import Clinic
+from app.domain.personas.models import User
+from app.main import create_app
 
 
 @pytest.fixture

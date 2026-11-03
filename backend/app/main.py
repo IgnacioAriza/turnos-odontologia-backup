@@ -75,6 +75,7 @@ def create_app() -> FastAPI:
         }
 
     from app.api.auth import router as auth_router
+
     app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 
     # Placeholder for router imports - will be added in C-02+

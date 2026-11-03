@@ -1,9 +1,8 @@
 """Pydantic schemas para el dominio auth."""
 
-from pydantic import BaseModel, EmailStr
-from typing import Optional
 from uuid import UUID
-from datetime import datetime
+
+from pydantic import BaseModel, EmailStr
 
 
 class LoginRequest(BaseModel):

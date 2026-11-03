@@ -1,7 +1,6 @@
 """Tests para rate limiting de login."""
 
-import pytest
-from app.core.rate_limit import check_rate_limit, RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW
+from app.core.rate_limit import RATE_LIMIT_REQUESTS, check_rate_limit
 
 
 def test_rate_limit_permite_hasta_5_requests():
@@ -11,7 +10,7 @@ def test_rate_limit_permite_hasta_5_requests():
 
     for i in range(RATE_LIMIT_REQUESTS):
         allowed, _ = check_rate_limit(ip, email)
-        assert allowed is True, f"Request {i+1} debería estar permitido"
+        assert allowed is True, f"Request {i + 1} debería estar permitido"
 
 
 def test_rate_limit_rechaza_6to_request():
@@ -19,7 +18,7 @@ def test_rate_limit_rechaza_6to_request():
     ip = "192.168.1.2"
     email = "test2@clinica.com"
 
-    for i in range(RATE_LIMIT_REQUESTS):
+    for _ in range(RATE_LIMIT_REQUESTS):
         allowed, _ = check_rate_limit(ip, email)
         assert allowed is True
 

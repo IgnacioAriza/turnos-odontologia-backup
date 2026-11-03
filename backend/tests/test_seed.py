@@ -16,6 +16,7 @@ from app.domain.personas.models import User
 async def test_seed_creates_clinic(db_session: AsyncSession):
     """El seed debe crear exactamente 1 clínica."""
     from backend.scripts.seed import seed
+
     await seed()
 
     result = await db_session.execute(select(Clinic))
@@ -32,6 +33,7 @@ async def test_seed_creates_clinic(db_session: AsyncSession):
 async def test_seed_creates_users(db_session: AsyncSession):
     """El seed debe crear admin, recepcion y odontólogo."""
     from backend.scripts.seed import seed
+
     await seed()
 
     result = await db_session.execute(select(User))
@@ -50,6 +52,7 @@ async def test_seed_creates_users(db_session: AsyncSession):
 async def test_seed_creates_sillones(db_session: AsyncSession):
     """El seed debe crear 2-3 sillones activos."""
     from backend.scripts.seed import seed
+
     await seed()
 
     result = await db_session.execute(select(Sillon))
@@ -66,6 +69,7 @@ async def test_seed_creates_sillones(db_session: AsyncSession):
 async def test_seed_idempotent(db_session: AsyncSession):
     """Ejecutar seed dos veces no debe duplicar datos."""
     from backend.scripts.seed import seed
+
     await seed()
     await seed()
 

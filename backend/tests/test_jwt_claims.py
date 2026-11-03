@@ -1,16 +1,15 @@
 """Tests para claims del JWT."""
 
-import pytest
 from jose import jwt
+
 from app.core.config import settings
 
 
 def test_jwt_claims_requeridos():
     """El JWT debe contener: sub, clinic_id, rol, email, jti, type, iat, exp."""
     import datetime
-    from datetime import timezone as tz
 
-    now = datetime.datetime.now(tz.utc)
+    now = datetime.datetime.now(datetime.UTC)
     token = jwt.encode(
         {
             "sub": "user-123",
@@ -43,9 +42,8 @@ def test_jwt_claims_requeridos():
 def test_jwt_tipo_refresh():
     """El refresh token debe tener type='refresh'."""
     import datetime
-    from datetime import timezone as tz
 
-    now = datetime.datetime.now(tz.utc)
+    now = datetime.datetime.now(datetime.UTC)
     token = jwt.encode(
         {
             "sub": "user-123",

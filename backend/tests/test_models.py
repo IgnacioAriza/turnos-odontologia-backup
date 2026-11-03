@@ -1,11 +1,14 @@
 """Tests para los modelos de dominio (Clinic, User, Paciente, Sillon, Bloqueo)."""
 
+from datetime import datetime, timedelta
+
 import pytest
-from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.clinica.models import Clinic, Sillon, Bloqueo
-from app.domain.personas.models import User, Paciente
+from app.core.config import settings
+from app.domain.clinica.models import Bloqueo, Clinic, Sillon
+from app.domain.personas.models import Paciente, User
 
 
 @pytest.mark.asyncio
@@ -117,7 +120,6 @@ async def test_bloqueo_model(db_session: AsyncSession):
     db_session.add(paciente)
     await db_session.flush()
 
-    from datetime import datetime, timedelta
     desde = datetime(2026, 11, 1, 10, 0, 0)
     hasta = desde + timedelta(days=30)
 
@@ -139,7 +141,7 @@ async def test_bloqueo_model(db_session: AsyncSession):
 
 
 @pytest.mark.skipif(
-    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    "sqlite" in settings.database_url,
     reason="Requires PostgreSQL for UNIQUE constraint per clinic_id",
 )
 @pytest.mark.asyncio
@@ -177,5 +179,5 @@ async def test_email_unique_per_clinic(db_session: AsyncSession):
         rol="recepcion",
     )
     db_session.add(user3)
-    with pytest.raises(Exception):
+    with pytest.raises(SQLAlchemyError):
         await db_session.flush()

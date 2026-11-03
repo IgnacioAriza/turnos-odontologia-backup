@@ -4,8 +4,8 @@ Agrega columnas de autenticación a la tabla users y crea la tabla de lista negr
 de refresh tokens para rotación y logout.
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.

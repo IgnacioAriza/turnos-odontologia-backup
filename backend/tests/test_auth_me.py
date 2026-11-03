@@ -2,9 +2,10 @@
 
 import pytest
 from fastapi.testclient import TestClient
-from app.main import create_app
 from jose import jwt
+
 from app.core.config import settings
+from app.main import create_app
 
 
 @pytest.fixture
@@ -21,10 +22,9 @@ def test_me_sin_token_retorna_401(client: TestClient):
 def test_me_con_token_valido(client: TestClient):
     """GET /me con token válido retorna datos del usuario."""
     import datetime
-    from datetime import timezone as tz
     import uuid
 
-    now = datetime.datetime.now(tz.utc)
+    now = datetime.datetime.now(datetime.UTC)
     token = jwt.encode(
         {
             "sub": str(uuid.uuid4()),

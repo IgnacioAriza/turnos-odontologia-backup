@@ -4,10 +4,10 @@ Sigue el patrón Repository + Unit of Work para desacoplar la lógica de negocio
 de la persistencia y gestionar límites de transacción explícitos.
 """
 
-from typing import Generic, TypeVar, Optional, List
+from typing import Any, Generic, TypeVar
 from uuid import UUID
 
-from sqlalchemy import select, delete, update
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.base import Base
@@ -22,21 +22,21 @@ class BaseRepository(Generic[ModelType]):
         self.session = session
         self.model = model
 
-    async def get(self, id: UUID | int) -> Optional[ModelType]:
+    async def get(self, id: UUID | int) -> ModelType | None:
         """Obtener un registro por su ID."""
         result = await self.session.execute(
-            select(self.model).where(self.model.id == id)
+            select(self.model).where(self.model.id == id)  # type: ignore[attr-defined]
         )
         return result.scalar_one_or_none()
 
     async def list(
         self,
         *,
-        clinic_id: Optional[UUID | int] = None,
-        is_active: Optional[bool] = None,
+        clinic_id: UUID | int | None = None,
+        is_active: bool | None = None,
         limit: int = 100,
         offset: int = 0,
-    ) -> List[ModelType]:
+    ) -> list[ModelType]:
         """Listar registros con filtros opcionales de clinic_id e is_active."""
         query = select(self.model)
 
@@ -48,9 +48,9 @@ class BaseRepository(Generic[ModelType]):
 
         query = query.offset(offset).limit(limit)
         result = await self.session.execute(query)
-        return result.scalars().all()
+        return list(result.scalars().all())
 
-    async def create(self, obj_in: dict) -> ModelType:
+    async def create(self, obj_in: dict[str, Any]) -> ModelType:
         """Crear un nuevo registro."""
         db_obj = self.model(**obj_in)
         self.session.add(db_obj)
@@ -61,8 +61,8 @@ class BaseRepository(Generic[ModelType]):
     async def update(
         self,
         id: UUID | int,
-        obj_in: dict,
-    ) -> Optional[ModelType]:
+        obj_in: dict[str, Any],
+    ) -> ModelType | None:
         """Actualizar un registro existente por su ID."""
         db_obj = await self.get(id)
         if db_obj is None:

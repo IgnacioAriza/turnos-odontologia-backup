@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from typing import Any
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -23,9 +24,16 @@ def get_engine() -> AsyncEngine:
     """Obtener o crear el engine de base de datos de forma lazy."""
     global _engine
     if _engine is None:
-        _engine = create_async_engine(
-            settings.database_url, echo=False, pool_pre_ping=True, pool_size=10, max_overflow=20
-        )
+        if "sqlite" in settings.database_url:
+            _engine = create_async_engine(
+                settings.database_url,
+                echo=False,
+                connect_args={"check_same_thread": False},
+            )
+        else:
+            _engine = create_async_engine(
+                settings.database_url, echo=False, pool_pre_ping=True, pool_size=10, max_overflow=20
+            )
     return _engine
 
 
@@ -57,7 +65,7 @@ class _ModuleLazy:
 _lazy = _ModuleLazy()
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     """Soportar importación directa de engine y async_session_factory."""
     if name == "engine":
         return get_engine()
@@ -67,7 +75,8 @@ def __getattr__(name: str):
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with get_async_session_factory() as session:
+    factory = get_async_session_factory()
+    async with factory() as session:
         try:
             yield session
         finally:

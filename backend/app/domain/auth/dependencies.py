@@ -1,10 +1,10 @@
 """Dependencias de RBAC y autenticación para rutas internas."""
 
-from typing import Annotated, Optional
-from uuid import UUID
+from collections.abc import Callable
+from typing import Annotated, Any
 
-from fastapi import Depends, HTTPException, status, Request
-from jose import jwt, JWTError
+from fastapi import Depends, HTTPException, Request, status
+from jose import JWTError, jwt
 
 from app.core.config import settings
 from app.domain.auth.service import AuthService
@@ -20,10 +20,8 @@ async def get_auth_service(request: Request) -> AuthService:
 
 async def get_current_user(
     request: Request,
-) -> Optional[dict]:
+) -> dict[str, Any] | None:
     """Extraer y validar el usuario actual desde el JWT Bearer token."""
-    from app.infrastructure.db.session import async_session
-
     authorization = request.headers.get("authorization")
     if not authorization:
         return None
@@ -33,7 +31,7 @@ async def get_current_user(
         return None
 
     try:
-        payload = jwt.decode(
+        payload: dict[str, Any] = jwt.decode(
             token,
             settings.jwt_secret,
             algorithms=["HS256"],
@@ -43,7 +41,7 @@ async def get_current_user(
         return None
 
 
-def require_role(allowed_roles: list[str]):
+def require_role(allowed_roles: list[str]) -> Callable[..., Any]:
     """Dependency factory para exigir un rol específico en rutas internas.
 
     Uso:
@@ -51,8 +49,8 @@ def require_role(allowed_roles: list[str]):
     """
 
     async def role_checker(
-        current_user: Annotated[Optional[dict], Depends(get_current_user)]
-    ):
+        current_user: Annotated[dict[str, Any] | None, Depends(get_current_user)],
+    ) -> dict[str, Any]:
         if current_user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -70,8 +68,8 @@ def require_role(allowed_roles: list[str]):
 
 
 def require_odonto_confinement(
-    current_user: Annotated[Optional[dict], Depends(get_current_user)]
-):
+    current_user: Annotated[dict[str, Any] | None, Depends(get_current_user)],
+) -> str | None:
     """Confinar odontólogo a su propio odontologo_id.
 
     Si el rol es odonto, retorna el odontologo_id para filtrar consultas.
@@ -82,5 +80,6 @@ def require_odonto_confinement(
             detail="No autenticado",
         )
     if current_user.get("rol") == "odonto":
-        return current_user.get("sub")  # odontologo_id = user id
+        sub = current_user.get("sub")
+        return str(sub) if sub is not None else None
     return None

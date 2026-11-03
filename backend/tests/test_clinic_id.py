@@ -1,12 +1,11 @@
 """Tests para clinic_id obligatorio en todas las tablas de negocio."""
 
 import pytest
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.clinica.models import Clinic, Sillon, Bloqueo
-from app.domain.personas.models import User, Paciente
+from app.domain.clinica.models import Bloqueo, Sillon
+from app.domain.personas.models import Paciente, User
 
 
 @pytest.mark.skipif(
@@ -88,6 +87,7 @@ async def test_clinic_id_required_on_bloqueos(db_session: AsyncSession):
 async def test_clinic_fk_constraint(db_session: AsyncSession):
     """clinic_id debe referenciar a clinic.id válido."""
     from uuid import uuid4
+
     sillon = Sillon(
         clinic_id=uuid4(),  # UUID inexistente
         nombre="FK Test",

@@ -1,18 +1,16 @@
 """Router de autenticación: login, refresh, logout, me."""
 
-from datetime import datetime, timedelta, timezone
-from typing import Annotated, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Annotated, Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Cookie
-from jose import jwt, JWTError
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 
 from app.core.config import settings
 from app.domain.auth.dependencies import get_auth_service, get_current_user
-from app.domain.auth.schemas import LoginRequest, TokenResponse, UserMe, RefreshRequest
+from app.domain.auth.schemas import LoginRequest, TokenResponse, UserMe
 from app.domain.auth.service import AuthService
 from app.infrastructure.db.session import async_session
-
 
 router = APIRouter(tags=["auth"])
 
@@ -23,7 +21,7 @@ async def login(
     login_data: LoginRequest,
     response: Response,
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
-):
+) -> TokenResponse:
     """Autenticar usuario y devolver access + refresh tokens.
 
     Rate limiting: 5 requests por 60s por IP+email (implementado en middleware/dependency).
@@ -37,15 +35,6 @@ async def login(
 
     access_token = auth_service.create_access_token(user)
     refresh_token = auth_service.create_refresh_token(user)
-
-    # Decodificar refresh token para obtener jti y expiración
-    refresh_payload = jwt.decode(
-        refresh_token,
-        settings.JWT_SECRET,
-        algorithms=["HS256"],
-    )
-    refresh_jti = refresh_payload.get("jti")
-    refresh_exp = datetime.fromtimestamp(refresh_payload.get("exp", 0), tz=timezone.utc)
 
     # Establecer refresh token en cookie HttpOnly
     response.set_cookie(
@@ -62,7 +51,7 @@ async def login(
         access_token=access_token,
         refresh_token=refresh_token,
         token_type="bearer",
-        expires_in=int(timedelta(minutes=settings.JWT_EXPIRES_MIN).total_seconds()),
+        expires_in=int(timedelta(minutes=settings.jwt_expires_min).total_seconds()),
     )
 
 
@@ -70,9 +59,9 @@ async def login(
 async def refresh(
     request: Request,
     response: Response,
-    refresh_token: Annotated[Optional[str], Cookie()] = None,
-    auth_service: Annotated[AuthService, Depends(get_auth_service)] = None,
-):
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    refresh_token: Annotated[str | None, Cookie()] = None,
+) -> TokenResponse:
     """Rotar refresh token y devolver nuevo access + refresh."""
     if not refresh_token:
         raise HTTPException(
@@ -88,20 +77,28 @@ async def refresh(
         )
 
     jti = payload.get("jti")
-    if await auth_service.is_refresh_token_blacklisted(jti):
+    if not jti or await auth_service.is_refresh_token_blacklisted(jti):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh token revocado",
         )
 
-    user_id = UUID(payload.get("sub"))
+    sub = payload.get("sub")
+    if not sub:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token inválido",
+        )
+    user_id = UUID(sub)
     # Blacklist del refresh token anterior
-    refresh_exp = datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc)
+    refresh_exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
     await auth_service.blacklist_refresh_token(jti, user_id, refresh_exp)
 
     # Obtener usuario completo para crear nuevos tokens
-    from app.domain.personas.models import User
     from sqlalchemy import select
+
+    from app.domain.personas.models import User
+
     async with async_session() as session:
         result = await session.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
@@ -114,15 +111,6 @@ async def refresh(
 
     access_token = auth_service.create_access_token(user)
     new_refresh_token = auth_service.create_refresh_token(user)
-
-    new_payload = jwt.decode(
-        new_refresh_token,
-        settings.JWT_SECRET,
-        algorithms=["HS256"],
-    )
-    new_jti = new_payload.get("jti")
-    new_exp = datetime.fromtimestamp(new_payload.get("exp", 0), tz=timezone.utc)
-    await auth_service.blacklist_refresh_token(new_jti, user_id, new_exp)
 
     response.set_cookie(
         key="refresh_token",
@@ -138,24 +126,26 @@ async def refresh(
         access_token=access_token,
         refresh_token=new_refresh_token,
         token_type="bearer",
-        expires_in=int(timedelta(minutes=settings.JWT_EXPIRES_MIN).total_seconds()),
+        expires_in=int(timedelta(minutes=settings.jwt_expires_min).total_seconds()),
     )
 
 
 @router.post("/logout")
 async def logout(
     response: Response,
-    refresh_token: Annotated[Optional[str], Cookie()] = None,
-    auth_service: Annotated[AuthService, Depends(get_auth_service)] = None,
-):
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    refresh_token: Annotated[str | None, Cookie()] = None,
+) -> dict[str, str]:
     """Blacklistear refresh token y limpiar cookie."""
     if refresh_token:
         payload = await auth_service.decode_token(refresh_token)
         if payload:
             jti = payload.get("jti")
-            user_id = UUID(payload.get("sub"))
-            exp = datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc)
-            await auth_service.blacklist_refresh_token(jti, user_id, exp)
+            sub = payload.get("sub")
+            if jti and sub:
+                user_id = UUID(sub)
+                exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
+                await auth_service.blacklist_refresh_token(jti, user_id, exp)
 
     response.delete_cookie(key="refresh_token", path="/api/auth")
     return {"detail": "Sesión cerrada"}
@@ -163,8 +153,8 @@ async def logout(
 
 @router.get("/me", response_model=UserMe)
 async def me(
-    current_user: Annotated[Optional[dict], Depends(get_current_user)] = None,
-):
+    current_user: Annotated[dict[str, Any] | None, Depends(get_current_user)] = None,
+) -> UserMe:
     """Obtener perfil del usuario autenticado."""
     if current_user is None:
         raise HTTPException(
@@ -172,10 +162,21 @@ async def me(
             detail="No autenticado",
         )
 
+    sub = current_user.get("sub")
+    email = current_user.get("email")
+    rol = current_user.get("rol")
+    clinic_id = current_user.get("clinic_id")
+
+    if not sub or not email or not rol or not clinic_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido",
+        )
+
     return UserMe(
-        id=UUID(current_user.get("sub")),
-        email=current_user.get("email"),
-        rol=current_user.get("rol"),
-        clinic_id=UUID(current_user.get("clinic_id")),
+        id=UUID(sub),
+        email=email,
+        rol=rol,
+        clinic_id=UUID(clinic_id),
         activo=True,
     )

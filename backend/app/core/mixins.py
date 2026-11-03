@@ -6,10 +6,8 @@ Permite soft deletes y trazabilidad de creación/actualización.
 
 from datetime import datetime
 
-from sqlalchemy import DateTime, Boolean, func
+from sqlalchemy import Boolean, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
-
-from app.infrastructure.db.base import Base
 
 
 class AuditMixin:

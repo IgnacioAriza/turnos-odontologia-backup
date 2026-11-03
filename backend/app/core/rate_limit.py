@@ -5,17 +5,17 @@ con fallback a almacenamiento en memoria para tests.
 """
 
 import time
-from typing import Dict, Tuple
 from collections import defaultdict
 
 try:
     import redis as redis_lib
+
     _redis_available = True
 except ImportError:
     _redis_available = False
 
 # Almacenamiento en memoria (fallback para tests)
-_memory_store: Dict[str, list] = defaultdict(list)
+_memory_store: dict[str, list[float]] = defaultdict(list)
 
 RATE_LIMIT_REQUESTS = 5
 RATE_LIMIT_WINDOW = 60  # segundos
@@ -25,7 +25,7 @@ def _get_key(ip: str, email: str) -> str:
     return f"ratelimit:login:{ip}:{email}"
 
 
-def check_rate_limit(ip: str, email: str) -> Tuple[bool, int]:
+def check_rate_limit(ip: str, email: str) -> tuple[bool, int]:
     """Verificar si el request excede el rate limit.
 
     Returns:
@@ -48,7 +48,8 @@ def check_rate_limit(ip: str, email: str) -> Tuple[bool, int]:
                 # Calcular tiempo hasta que expire el más antiguo
                 oldest = r.zrange(key, 0, 0, withscores=True)
                 if oldest:
-                    retry_after = int(oldest[0][1] + RATE_LIMIT_WINDOW - now)
+                    score = float(oldest[0][1])
+                    retry_after = int(score + RATE_LIMIT_WINDOW - now)
                     return False, max(0, retry_after)
                 return False, RATE_LIMIT_WINDOW
             return True, 0
@@ -61,8 +62,8 @@ def check_rate_limit(ip: str, email: str) -> Tuple[bool, int]:
     _memory_store[key].append(now)
 
     if len(_memory_store[key]) > RATE_LIMIT_REQUESTS:
-        oldest = min(_memory_store[key])
-        retry_after = int(oldest + RATE_LIMIT_WINDOW - now)
+        oldest_ts = min(_memory_store[key])
+        retry_after = int(oldest_ts + RATE_LIMIT_WINDOW - now)
         return False, max(0, retry_after)
 
     return True, 0
