@@ -17,7 +17,11 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("application_startup")
-    await init_db()
+    try:
+        await init_db()
+    except Exception as e:
+        logger.error("init_db_error", error=str(e), exc_info=True)
+        raise
     yield
     logger.info("application_shutdown")
     await close_db()
@@ -47,25 +51,25 @@ def create_app() -> FastAPI:
         import redis.asyncio as redis
 
         from app.core.config import settings
-        from app.infrastructure.db.base import engine
+        from app.infrastructure.db.base import get_engine
 
         db_status = "disconnected"
         redis_status = "disconnected"
 
         try:
-            async with engine.connect() as conn:
+            async with get_engine().connect() as conn:
                 await conn.execute(text("SELECT 1"))
             db_status = "connected"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("healthcheck_db_failed", error=str(e))
 
         try:
             r = redis.from_url(settings.redis_url)
             await r.ping()
             await r.close()
             redis_status = "connected"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("healthcheck_redis_failed", error=str(e))
 
         return {
             "status": "ok",
@@ -74,18 +78,13 @@ def create_app() -> FastAPI:
             "redis": redis_status,
         }
 
+    # Import all domain models and routers
     from app.api.auth import router as auth_router
+    from app.domain.auth import models as _auth_models  # noqa: F401
+    from app.domain.clinica import models as _clinica_models  # noqa: F401
+    from app.domain.personas import models as _personas_models  # noqa: F401
 
     app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
-
-    # Placeholder for router imports - will be added in C-02+
-    # from app.api.public import router as public_router
-    # from app.api.internal import router as internal_router
-    # from app.api.webhooks import router as webhooks_router
-    #
-    # app.include_router(public_router, prefix="/api")
-    # app.include_router(internal_router, prefix="/api/internal")
-    # app.include_router(webhooks_router, prefix="/api/webhooks")
 
     return app
 

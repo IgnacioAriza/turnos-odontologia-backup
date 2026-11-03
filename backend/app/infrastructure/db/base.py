@@ -84,6 +84,11 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
+    # Asegurar que todos los modelos del dominio estén registrados en Base.metadata
+    from app.domain.auth import models as _auth_models  # noqa: F401
+    from app.domain.clinica import models as _clinica_models  # noqa: F401
+    from app.domain.personas import models as _personas_models  # noqa: F401
+
     async with get_engine().begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

@@ -10,6 +10,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 # Add the backend directory to sys.path so we can import app
 sys.path.append(str(Path(__file__).resolve().parents[4]))
 
+import app.domain.auth.models  # noqa: F401
+import app.domain.clinica.models  # noqa: F401
+import app.domain.personas.models  # noqa: F401
 from app.core.config import settings
 from app.infrastructure.db.base import Base
 

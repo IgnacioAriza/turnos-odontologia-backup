@@ -46,5 +46,13 @@ class Settings(BaseSettings):
     def JWT_EXPIRES_MIN(self) -> int:  # noqa: N802
         return self.jwt_expires_min
 
+    @property
+    def DATABASE_URL(self) -> str:  # noqa: N802
+        return self.database_url
+
+    @property
+    def REDIS_URL(self) -> str:  # noqa: N802
+        return self.redis_url
+
 
 settings = Settings()
