@@ -6,6 +6,7 @@ from app.main import create_app
 from app.domain.personas.models import User
 from app.domain.clinica.models import Clinic
 from app.core.security import hash_password
+from app.core.config import settings
 
 
 @pytest.fixture
@@ -13,6 +14,10 @@ def client():
     return TestClient(create_app())
 
 
+@pytest.mark.skipif(
+    "sqlite" in settings.database_url,
+    reason="Requires PostgreSQL for database operations",
+)
 def test_refresh_rotation_invalida_anterior(client: TestClient, db_session):
     """Rotación de refresh token invalida el anterior."""
     clinic = Clinic(nombre="Test Clinic", timezone="America/Argentina/Buenos_Aires")

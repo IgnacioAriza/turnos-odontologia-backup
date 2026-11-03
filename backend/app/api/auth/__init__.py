@@ -1,1 +1,3 @@
-# Auth API routes: POST /login, /refresh, /logout, GET /me
+from .router import router
+
+__all__ = ["router"]

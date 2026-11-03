@@ -138,6 +138,10 @@ async def test_bloqueo_model(db_session: AsyncSession):
     assert bloqueo.motivo == "2_faltas"
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for UNIQUE constraint per clinic_id",
+)
 @pytest.mark.asyncio
 async def test_email_unique_per_clinic(db_session: AsyncSession):
     """El email debe ser único por clínica."""

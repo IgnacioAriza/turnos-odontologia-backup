@@ -6,6 +6,7 @@ from app.main import create_app
 from app.domain.personas.models import User
 from app.domain.clinica.models import Clinic
 from app.core.security import hash_password
+from app.core.config import settings
 
 
 @pytest.fixture
@@ -13,6 +14,10 @@ def client():
     return TestClient(create_app())
 
 
+@pytest.mark.skipif(
+    "sqlite" in settings.database_url,
+    reason="Requires PostgreSQL for database operations",
+)
 def test_login_correcto(client: TestClient, db_session):
     """Login con credenciales válidas retorna 200 + tokens."""
     clinic = Clinic(nombre="Test Clinic", timezone="America/Argentina/Buenos_Aires")
@@ -41,6 +46,10 @@ def test_login_correcto(client: TestClient, db_session):
     assert data["expires_in"] > 0
 
 
+@pytest.mark.skipif(
+    "sqlite" in settings.database_url,
+    reason="Requires PostgreSQL for database operations",
+)
 def test_login_contraseña_incorrecta(client: TestClient, db_session):
     """Login con contraseña incorrecta retorna 401."""
     clinic = Clinic(nombre="Test Clinic", timezone="America/Argentina/Buenos_Aires")
@@ -64,6 +73,10 @@ def test_login_contraseña_incorrecta(client: TestClient, db_session):
     assert response.status_code == 401
 
 
+@pytest.mark.skipif(
+    "sqlite" in settings.database_url,
+    reason="Requires PostgreSQL for database operations",
+)
 def test_login_usuario_inexistente(client: TestClient):
     """Login con email inexistente retorna 401."""
     response = client.post(
@@ -73,6 +86,10 @@ def test_login_usuario_inexistente(client: TestClient):
     assert response.status_code == 401
 
 
+@pytest.mark.skipif(
+    "sqlite" in settings.database_url,
+    reason="Requires PostgreSQL for database operations",
+)
 def test_login_usuario_inactivo(client: TestClient, db_session):
     """Login con usuario inactivo retorna 401."""
     clinic = Clinic(nombre="Test Clinic", timezone="America/Argentina/Buenos_Aires")

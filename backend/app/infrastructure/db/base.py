@@ -15,17 +15,59 @@ class Base(DeclarativeBase):
     pass
 
 
-engine: AsyncEngine = create_async_engine(
-    settings.database_url, echo=False, pool_pre_ping=True, pool_size=10, max_overflow=20
-)
+_engine: AsyncEngine | None = None
+_async_session_factory: async_sessionmaker[AsyncSession] | None = None
 
-async_session_factory = async_sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False, autoflush=False
-)
+
+def get_engine() -> AsyncEngine:
+    """Obtener o crear el engine de base de datos de forma lazy."""
+    global _engine
+    if _engine is None:
+        _engine = create_async_engine(
+            settings.database_url, echo=False, pool_pre_ping=True, pool_size=10, max_overflow=20
+        )
+    return _engine
+
+
+def get_async_session_factory() -> async_sessionmaker[AsyncSession]:
+    """Obtener o crear la factory de sesiones de forma lazy."""
+    global _async_session_factory
+    if _async_session_factory is None:
+        _async_session_factory = async_sessionmaker(
+            get_engine(), class_=AsyncSession, expire_on_commit=False, autoflush=False
+        )
+    return _async_session_factory
+
+
+# Para compatibilidad hacia atrás, crear propiedades de módulo
+# que se evalúan de forma lazy al accederse
+class _ModuleLazy:
+    """Wrapper para acceso lazy a engine y async_session_factory."""
+
+    @property
+    def engine(self) -> AsyncEngine:
+        return get_engine()
+
+    @property
+    def async_session_factory(self) -> async_sessionmaker[AsyncSession]:
+        return get_async_session_factory()
+
+
+# Instancia lazy para importación hacia atrás
+_lazy = _ModuleLazy()
+
+
+def __getattr__(name: str):
+    """Soportar importación directa de engine y async_session_factory."""
+    if name == "engine":
+        return get_engine()
+    if name == "async_session_factory":
+        return get_async_session_factory()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_factory() as session:
+    async with get_async_session_factory() as session:
         try:
             yield session
         finally:
@@ -33,9 +75,10 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
-    async with engine.begin() as conn:
+    async with get_engine().begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def close_db() -> None:
-    await engine.dispose()
+    if _engine is not None:
+        await _engine.dispose()

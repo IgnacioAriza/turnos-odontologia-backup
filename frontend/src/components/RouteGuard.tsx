@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface RouteGuardProps {
   allowedRoles?: string[];
+  children: React.ReactNode;
 }
 
 export function RouteGuard({ allowedRoles, children }: RouteGuardProps) {

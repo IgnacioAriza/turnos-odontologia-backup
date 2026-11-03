@@ -9,6 +9,10 @@ from app.domain.clinica.models import Clinic, Sillon, Bloqueo
 from app.domain.personas.models import User, Paciente
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for NOT NULL and FK constraints",
+)
 @pytest.mark.asyncio
 async def test_clinic_id_required_on_users(db_session: AsyncSession):
     """users.clinic_id es NOT NULL."""
@@ -23,6 +27,10 @@ async def test_clinic_id_required_on_users(db_session: AsyncSession):
     await db_session.rollback()
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for NOT NULL and FK constraints",
+)
 @pytest.mark.asyncio
 async def test_clinic_id_required_on_pacientes(db_session: AsyncSession):
     """pacientes.clinic_id es NOT NULL."""
@@ -37,6 +45,10 @@ async def test_clinic_id_required_on_pacientes(db_session: AsyncSession):
     await db_session.rollback()
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for NOT NULL and FK constraints",
+)
 @pytest.mark.asyncio
 async def test_clinic_id_required_on_sillones(db_session: AsyncSession):
     """sillones.clinic_id es NOT NULL."""
@@ -49,6 +61,10 @@ async def test_clinic_id_required_on_sillones(db_session: AsyncSession):
     await db_session.rollback()
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for NOT NULL and FK constraints",
+)
 @pytest.mark.asyncio
 async def test_clinic_id_required_on_bloqueos(db_session: AsyncSession):
     """bloqueos.clinic_id es NOT NULL."""
@@ -64,6 +80,10 @@ async def test_clinic_id_required_on_bloqueos(db_session: AsyncSession):
     await db_session.rollback()
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for FK constraints",
+)
 @pytest.mark.asyncio
 async def test_clinic_fk_constraint(db_session: AsyncSession):
     """clinic_id debe referenciar a clinic.id válido."""

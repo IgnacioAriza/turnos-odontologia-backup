@@ -7,6 +7,10 @@ from app.core.config import settings
 
 def test_jwt_claims_requeridos():
     """El JWT debe contener: sub, clinic_id, rol, email, jti, type, iat, exp."""
+    import datetime
+    from datetime import timezone as tz
+
+    now = datetime.datetime.now(tz.utc)
     token = jwt.encode(
         {
             "sub": "user-123",
@@ -15,11 +19,13 @@ def test_jwt_claims_requeridos():
             "email": "recepcion@clinica.com",
             "jti": "test-jti-123",
             "type": "access",
+            "iat": now,
+            "exp": now + datetime.timedelta(minutes=30),
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
-    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
 
     assert "sub" in payload
     assert "clinic_id" in payload
@@ -36,6 +42,10 @@ def test_jwt_claims_requeridos():
 
 def test_jwt_tipo_refresh():
     """El refresh token debe tener type='refresh'."""
+    import datetime
+    from datetime import timezone as tz
+
+    now = datetime.datetime.now(tz.utc)
     token = jwt.encode(
         {
             "sub": "user-123",
@@ -44,9 +54,11 @@ def test_jwt_tipo_refresh():
             "email": "admin@clinica.com",
             "jti": "refresh-jti",
             "type": "refresh",
+            "iat": now,
+            "exp": now + datetime.timedelta(days=7),
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
-    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
     assert payload["type"] == "refresh"

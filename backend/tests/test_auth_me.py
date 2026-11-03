@@ -20,16 +20,23 @@ def test_me_sin_token_retorna_401(client: TestClient):
 
 def test_me_con_token_valido(client: TestClient):
     """GET /me con token válido retorna datos del usuario."""
+    import datetime
+    from datetime import timezone as tz
+    import uuid
+
+    now = datetime.datetime.now(tz.utc)
     token = jwt.encode(
         {
-            "sub": "user-123",
-            "clinic_id": "clinic-123",
+            "sub": str(uuid.uuid4()),
+            "clinic_id": str(uuid.uuid4()),
             "rol": "admin",
             "email": "admin@clinica.com",
-            "jti": "test-jti",
+            "jti": str(uuid.uuid4()),
             "type": "access",
+            "iat": now,
+            "exp": now + datetime.timedelta(minutes=30),
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
     response = client.get(

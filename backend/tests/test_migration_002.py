@@ -1,10 +1,14 @@
 """Tests para la migración 002 de Alembic (esquema inicial C-02)."""
 
 import pytest
-from sqlalchemy import text, inspect
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for information_schema queries",
+)
 @pytest.mark.asyncio
 async def test_tables_exist(db_session: AsyncSession):
     """Todas las tablas de la migración 002 deben existir."""
@@ -21,6 +25,10 @@ async def test_tables_exist(db_session: AsyncSession):
         assert table in tables, f"Tabla {table} no encontrada"
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for information_schema queries",
+)
 @pytest.mark.asyncio
 async def test_columns_exist(db_session: AsyncSession):
     """Columnas clave deben existir en cada tabla."""
@@ -46,6 +54,10 @@ async def test_columns_exist(db_session: AsyncSession):
     assert {"id", "clinic_id", "nombre", "telefono", "dni"} <= pacientes_cols
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for pg_constraint queries",
+)
 @pytest.mark.asyncio
 async def test_unique_constraint_email_per_clinic(db_session: AsyncSession):
     """Debe existir constraint UNIQUE (clinic_id, email) en users."""
@@ -61,6 +73,10 @@ async def test_unique_constraint_email_per_clinic(db_session: AsyncSession):
     )
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for pg_indexes queries",
+)
 @pytest.mark.asyncio
 async def test_indexes_exist(db_session: AsyncSession):
     """Debe existir índice compuesto (clinic_id, telefono) y (clinic_id, dni) en pacientes."""

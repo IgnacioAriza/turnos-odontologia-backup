@@ -8,6 +8,10 @@ from app.domain.clinica.models import Clinic, Sillon
 from app.domain.personas.models import User
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for seed script",
+)
 @pytest.mark.asyncio
 async def test_seed_creates_clinic(db_session: AsyncSession):
     """El seed debe crear exactamente 1 clínica."""
@@ -20,6 +24,10 @@ async def test_seed_creates_clinic(db_session: AsyncSession):
     assert clinics[0].timezone == "America/Argentina/Buenos_Aires"
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for seed script",
+)
 @pytest.mark.asyncio
 async def test_seed_creates_users(db_session: AsyncSession):
     """El seed debe crear admin, recepcion y odontólogo."""
@@ -34,6 +42,10 @@ async def test_seed_creates_users(db_session: AsyncSession):
     assert "odonto" in roles
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for seed script",
+)
 @pytest.mark.asyncio
 async def test_seed_creates_sillones(db_session: AsyncSession):
     """El seed debe crear 2-3 sillones activos."""
@@ -46,6 +58,10 @@ async def test_seed_creates_sillones(db_session: AsyncSession):
     assert all(s.activo for s in sillones)
 
 
+@pytest.mark.skipif(
+    "sqlite" in __import__("app.core.config", fromlist=["settings"]).settings.database_url,
+    reason="Requires PostgreSQL for seed script",
+)
 @pytest.mark.asyncio
 async def test_seed_idempotent(db_session: AsyncSession):
     """Ejecutar seed dos veces no debe duplicar datos."""

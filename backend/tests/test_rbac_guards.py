@@ -23,11 +23,11 @@ def test_require_role_recepcion(client: TestClient):
             "jti": "test-jti",
             "type": "access",
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
     # Verificar que el token tiene el rol correcto
-    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
     assert payload["rol"] == "recepcion"
 
 
@@ -42,10 +42,10 @@ def test_require_role_admin(client: TestClient):
             "jti": "test-jti-2",
             "type": "access",
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
-    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
     assert payload["rol"] == "admin"
 
 
@@ -60,9 +60,9 @@ def test_odonto_no_puede_acceder_ruta_admin(client: TestClient):
             "jti": "test-jti-3",
             "type": "access",
         },
-        settings.JWT_SECRET,
+        settings.jwt_secret,
         algorithm="HS256",
     )
-    payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
     assert payload["rol"] == "odonto"
     assert payload["rol"] != "admin"
