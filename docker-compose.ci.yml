@@ -48,6 +48,8 @@ services:
       - SMTP_URL=
       - FRONTEND_URL=http://localhost:5173
       - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy

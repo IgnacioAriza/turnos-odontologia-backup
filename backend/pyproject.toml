@@ -33,6 +33,7 @@ dev = [
     "mypy>=1.10.0",
     "types-passlib>=1.7.4.20240101",
     "anyio>=4.0.0",
+    "pyyaml>=6.0.0",
 ]
 
 [build-system]
