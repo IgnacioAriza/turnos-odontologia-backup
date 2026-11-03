@@ -1,0 +1,12 @@
+schema: spec-driven
+created: 2026-11-03
+change_number: C-02
+dependencies:
+  - C-01-foundation-setup
+phase: 1
+gate: 1
+agent: A
+skills_used:
+  - python-fastapi-development
+  - supabase-postgres-best-practices
+  - test-driven-development

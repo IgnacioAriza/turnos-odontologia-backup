@@ -1,0 +1,12 @@
+schema: spec-driven
+created: 2026-11-03
+change_number: C-03
+dependencies:
+  - C-02-core-models-clinica-personas
+phase: 1
+gate: 2
+agent: A
+skills_used:
+  - python-fastapi-development
+  - auth-implementation-patterns
+  - test-driven-development

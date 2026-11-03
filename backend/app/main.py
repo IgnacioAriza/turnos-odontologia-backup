@@ -74,6 +74,8 @@ async def health_check() -> dict[str, str]:
     }
 
 
+from app.api.auth import router as auth_router
+
 # Placeholder for router imports - will be added in C-02+
 # from app.api.public import router as public_router
 # from app.api.internal import router as internal_router
@@ -82,3 +84,5 @@ async def health_check() -> dict[str, str]:
 # app.include_router(public_router, prefix="/api")
 # app.include_router(internal_router, prefix="/api/internal")
 # app.include_router(webhooks_router, prefix="/api/webhooks")
+
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])

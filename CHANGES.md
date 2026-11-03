@@ -113,7 +113,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ## FASE 0 — Cimientos
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado y archivado
 - **Scope**: Scaffolding completo del monolito modular + infra base (DD-01, DD-02 escalabilidad)
   - Estructura `backend/app/{main.py, core/, domain/{turnos,pagos,notificaciones,clinica,personas}, infrastructure/{db,queue,integrations}, api/{public,internal,webhooks}}` + `frontend/src/{features/{booking,agenda,panel-dia,admin}, shared/, pages/}` según `08`
   - `backend`: FastAPI app mínima + `GET /api/health`, Alembic inicializado, `core/` con settings (Pydantic), logger, `TZ_CLINICA=America/Argentina/Buenos_Aires`, exceptions RFC (409 solape)
@@ -132,7 +132,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ---
 
 ### [C-02] `core-models-clinica-personas`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado (SDD: proposal, spec, design, tasks; código real en backend/app/domain/{clinica,personas}, backend/app/core/{mixins,repository,security}, backend/scripts/seed.py, backend/tests/test_*, backend/app/infrastructure/db/migrations/versions/002_clinica_personas.py)
 - **Scope**: Modelos base + migraciones iniciales + seed mínimo (DD-06 `clinic_id` día 1)
   - Modelos: `Clinic`, `User` (rol recepcion|odonto|admin), `Paciente`, `Sillon`, `Bloqueo` (estructura; lógica en C-07)
   - `AuditMixin` (`is_active`, `created_at`, `updated_at`); `BaseRepository[T]` + `UnitOfWork`; `clinic_id` FK obligatorio en todas las tablas de negocio
@@ -154,7 +154,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 > C-03 desbloquea todo lo interno. C-04 deja aranceles en lectura + seed (RN-ADMIN-02, IN-01).
 
 ### [C-03] `auth-interno-jwt`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado (SDD: proposal, spec, design, tasks; código real en backend/app/domain/auth, backend/app/api/auth, backend/app/core/rate_limit.py, backend/app/main.py, backend/app/infrastructure/db/migrations/versions/003_auth.py, backend/tests/test_auth_*, frontend/src/pages/Login.tsx, frontend/src/components/RouteGuard.tsx, frontend/src/pages/role/*.tsx)
 - **Scope**: Autenticación JWT + RBAC para roles internos (recepción/odontólogo/admin). Login paciente NO entra (v1.1 C-11)
   - `POST /api/auth/login` — JWT access + refresh, rate limiting 5/60s por IP+email; `POST /api/auth/refresh` (rotación + blacklist anterior); `POST /api/auth/logout` (blacklist); `GET /api/auth/me`
   - Claims JWT: `sub`, `clinic_id`, `rol`, `email`, `jti`, `type`, `iat`, `exp`; refresh en cookie HttpOnly (secure, samesite=lax); `JWT_SECRET`, `JWT_EXPIRES_MIN=480` via env
