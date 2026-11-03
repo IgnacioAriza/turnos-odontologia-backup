@@ -1,0 +1,2 @@
+# Scripts de shell deben conservar terminaciones LF en cualquier checkout.
+*.sh text eol=lf

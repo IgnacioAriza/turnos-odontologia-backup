@@ -42,18 +42,7 @@ jobs:
         run: pytest tests/ -v --cov=app --cov-fail-under=50
 
       - name: Docker Compose smoke test
-        run: |
-          docker compose -f ../docker-compose.ci.yml up -d
-          sleep 30
-          curl -f http://localhost:8000/api/health || (docker compose -f ../docker-compose.ci.yml logs api && exit 1)
-        env:
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/turnos_odontologia
-          REDIS_URL: redis://localhost:6379/0
-          JWT_SECRET: dev-secret-change-in-production
-          JWT_EXPIRES_MIN: 30
-          TZ_CLINICA: America/Argentina/Buenos_Aires
-          FRONTEND_URL: http://localhost:5173
-          LOG_LEVEL: INFO
+        run: bash ../scripts/ci/smoke-test.sh 180
 
   frontend:
     name: Frontend
@@ -65,10 +54,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node 20
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # Vite 8 / Vitest 5 / jsdom 30 requieren Node ^22.22.2 || ^24.15.0.
+          node-version-file: frontend/.nvmrc
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
