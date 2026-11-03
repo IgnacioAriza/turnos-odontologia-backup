@@ -8,9 +8,9 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from jose import jwt, JWTError
 
 from app.core.config import settings
+from app.domain.auth.dependencies import get_auth_service, get_current_user
 from app.domain.auth.schemas import LoginRequest, TokenResponse, UserMe, RefreshRequest
 from app.domain.auth.service import AuthService
-from app.domain.auth.dependencies import get_auth_service, get_current_user
 from app.infrastructure.db.session import async_session
 
 
