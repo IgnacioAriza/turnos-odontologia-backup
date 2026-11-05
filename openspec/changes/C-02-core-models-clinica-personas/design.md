@@ -2,136 +2,106 @@
 
 ## Context
 
-Builds on C-01 foundation (FastAPI app, Pydantic settings, SQLAlchemy base, Alembic, structlog, exception handlers). Follows KB 04_modelo_de_datos.md ERD, KB 08_arquitectura_propuesta.md patterns, KB 09_decisiones_y_supuestos.md decisions (DD-02, DD-06), KB 03_actores_y_roles.md RBAC matrix.
+C-01 ya estableció el scaffoundation: estructura modular `app/{core, domain/{turnos,pagos,notificaciones,clinica,personas}, infrastructure/{db,queue,integrations}, api/{public,internal,webhooks}}`, `core/config.py` (12 vars), `core/exceptions.py` (RFC 7807), `core/logging.py` (structlog), `infrastructure/db/base.py` (SQLAlchemy async), `main.py` con `/api/health`, Alembic inicializado. C-02 añade los primeros modelos de negocio y la migración 001.
 
-## Architecture Decisions
+## Goals / Non-Goals
 
-### 1. Multi-tenancy by clinic_id from day 1 (DD-06)
-**Decision**: All business tables carry `clinic_id` as a mandatory FK referencing `clinic.id`. Clinic itself has no clinic_id.
-**Rationale**: Prepares for multi-sede in v2 without schema migration. Cost today is one column + index; remodelling later is painful.
-**Alternatives**: Model without clinic_id and migrate in v2 (rejected — migration pain).
+**Goals:**
+- Modelos SQLAlchemy 2.0 para Clinic, User, Paciente, Sillon, Bloqueo.
+- `AuditMixin` con `is_active`, `created_at`, `updated_at`.
+- `BaseRepository[T]` + `UnitOfWork` patrón.
+- `clinic_id` FK obligatorio en todas las tablas de negocio (DD-06).
+- Migración 001: tablas clinic, users, pacientes, sillones, bloqueos.
+- Índices: `(clinic_id, telefono)`, `(clinic_id, dni)` en pacientes; email UNIQUE por clínica en users.
+- Seed mínimo idempotente: 1 clinic, 1 admin + 1 recepción + 1 odontólogo, 2-3 sillones.
+- Tests: constraints UNIQUE, filtros clinic_id, seed idempotente.
 
-### 2. AuditMixin pattern
-**Decision**: All business models inherit from `AuditMixin` providing `is_active`, `created_at`, `updated_at`.
-**Rationale**: Soft deletes + audit trail without ad-hoc columns per model.
-**Alternatives**: Add columns individually per model (rejected — inconsistency).
+**Non-Goals:**
+- No endpoints API (llegan en C-03+).
+- No lógica de anti-solape (C-05).
+- No auth JWT (C-03).
+- No catálogo de prácticas/aranceles (C-04).
+- No lógica de bloqueo por 2 faltas (C-07); Bloqueo solo estructura.
 
-### 3. Repository + UnitOfWork pattern
-**Decision**: `BaseRepository[T]` generic CRUD + `UnitOfWork` managing session boundaries.
-**Rationale**: Decouples business logic from persistence; enables atomic transactions across multiple repositories.
-**Alternatives**: Direct SQLAlchemy in service layer (rejected — harder to test, tightly coupled).
+## Decisions
 
-### 4. Soft delete vs hard delete
-**Decision**: `is_active=False` soft delete for models with AuditMixin; hard delete only for models without it.
-**Rationale**: Preserves referential integrity and audit history.
-**Alternatives**: Hard delete everywhere (rejected — loses audit trail, breaks FK references).
+### 1. Modelos SQLAlchemy 2.0 declarativos (async)
+**Decision:** Usar `sqlalchemy.orm.DeclarativeBase` con `Mapped[mapped_column]` en `app/domain/{clinica,personas}/models.py`. Sesión async (`AsyncSession`) en `infrastructure/db/base.py`.
 
-### 5. Password hashing with bcrypt
-**Decision**: Use `passlib[bcrypt]` for password hashing (already in pyproject.toml).
-**Rationale**: Industry standard, already available as dependency, secure.
-**Alternatives**: argon2 (good but not in dependencies yet), plaintext (rejected — security violation).
+**Rationale:** Coherente con C-01 (SQLAlchemy 2.0 async). FastAPI es async-native.
 
-### 6. UUID primary keys
-**Decision**: All models use `UUID` primary keys with `uuid4()` default.
-**Rationale**: Prevents ID enumeration, supports distributed generation, matches KB 04.
-**Alternatives**: Integer auto-increment (rejected — security through obscurity issues).
+**Alternatives:** SQLAlchemy sync (bloquea event loop); otro ORM (no está en el stack dado).
 
-### 7. Odontólogo confinement via odontologo_id
-**Decision**: `User.odontologo_id` is a self-referential FK (nullable), used to confine odontólogos to their own appointments/patients.
-**Rationale**: Matches KB 03 RBAC matrix — odontólogo sees only their own data.
-**Alternatives**: Separate Odontólogo table (rejected — over-engineering for v1).
+### 2. `clinic_id` obligatorio desde día 1 (DD-06)
+**Decision:** Todas las tablas de negocio llevan `clinic_id` como FK no nulo, aunque v1 sea 1 clínica.
 
-## Entity Relationship Diagram (textual)
+**Rationale:** Costo bajo hoy (una columna + índice); re-modelar multi-sede después es doloroso.
 
-```
-Clinic 1──* User (clinic_id FK)
-Clinic 1──* Paciente (clinic_id FK)
-Clinic 1──* Sillon (clinic_id FK)
-Clinic 1──* Bloqueo (clinic_id FK)
-User(odonto) 1──* Turno (via odontologo_id — C-05)
-Sillon 1──* Turno (via sillon_id — C-05)
-Paciente 1──* Turno (via paciente_id — C-05)
-Paciente 1──* Bloqueo (via paciente_id — C-07)
-User 1──* Bloqueo (created_by — C-07)
-```
+**Alternatives:** Sin clinic_id y migrar en v2 (rechazado por DD-06).
 
-## Directory Structure
+### 3. `AuditMixin`
+**Decision:** Mixin con `is_active: bool = True`, `created_at: DateTime`, `updated_at: DateTime`. Heredado por todos los modelos de negocio.
 
-```
-backend/app/domain/clinica/
-├── __init__.py
-├── models.py          # Clinic, Sillon, Bloqueo
-├── schemas.py         # Pydantic schemas (create/update/out)
-└── repository.py      # ClinicRepository, SillonRepository, BloqueoRepository
+**Rationale:** Soft delete y trazabilidad de creación/modificación en todas las entidades.
 
-backend/app/domain/personas/
-├── __init__.py
-├── models.py          # User, Paciente
-├── schemas.py         # Pydantic schemas
-└── repository.py      # UserRepository, PacienteRepository
+**Alternatives:** Columnas duplicadas en cada modelo (más boilerplate).
 
-backend/app/core/
-├── mixins.py          # AuditMixin (new)
-├── repository.py      # BaseRepository[T] + UnitOfWork (new)
-└── security.py        # Password hashing utilities (new)
+### 4. `BaseRepository[T]` + `UnitOfWork`
+**Decision:** Repositorio genérico con métodos CRUD async (`get`, `list`, `create`, `update`, `delete`, `exists`). UnitOfWork coordina múltiples repos en una transacción.
 
-backend/app/infrastructure/db/migrations/versions/
-├── 002_clinica_personas.py  # Migration 001 for C-02 (numbered 002 since 001 is C-01 baseline)
+**Rationale:** Separación de acceso a datos y lógica de negocio; facilita testing con mocks.
 
-backend/scripts/
-└── seed.py            # Idempotent seed script
+**Alternatives:** Queries directas en services (acoplamiento).
 
-backend/tests/
-├── test_models.py
-├── test_audit_mixin.py
-├── test_repository.py
-├── test_clinic_id.py
-├── test_migration_002.py
-└── test_seed.py
-```
+### 5. Índices y constraints
+**Decision:**
+- `users.email` UNIQUE con `clinic_id` (único por clínica, no global).
+- `pacientes`: índice `(clinic_id, telefono)`, índice `(clinic_id, dni)`.
+- `TipoPractica.sena_pct` CHECK 0-100 y `Turno.fin > inicio` CHECK son reglas de dominio documentadas aquí como referencia futura, pero las tablas `TipoPractica` y `Turno` se crean en C-04 y C-05 respectivamente, no en C-02.
 
-## Files to Create
+**Rationale:** Cumple 04_modelo_de_datos.md y reglas RN. Las constraints de tablas ajenas a C-02 se documentan como referencia pero no se implementan en esta migración.
 
-| File | Purpose |
-|------|---------|
-| `backend/app/core/mixins.py` | `AuditMixin` with is_active, created_at, updated_at |
-| `backend/app/core/repository.py` | `BaseRepository[T]` + `UnitOfWork` |
-| `backend/app/core/security.py` | `hash_password`, `verify_password` (bcrypt) |
-| `backend/app/domain/clinica/models.py` | `Clinic`, `Sillon`, `Bloqueo` models |
-| `backend/app/domain/clinica/schemas.py` | Pydantic schemas for clinica domain |
-| `backend/app/domain/clinica/repository.py` | Repositories for clinica domain |
-| `backend/app/domain/personas/models.py` | `User`, `Paciente` models |
-| `backend/app/domain/personas/schemas.py` | Pydantic schemas for personas domain |
-| `backend/app/domain/personas/repository.py` | Repositories for personas domain |
-| `backend/app/infrastructure/db/migrations/versions/002_clinica_personas.py` | Migration 002 (C-02 initial schema) |
-| `backend/scripts/seed.py` | Idempotent seed script |
-| `backend/tests/test_models.py` | Model field/type tests |
-| `backend/tests/test_audit_mixin.py` | AuditMixin behavior |
-| `backend/tests/test_repository.py` | Repository CRUD + UnitOfWork |
-| `backend/tests/test_clinic_id.py` | clinic_id NOT NULL + FK constraints |
-| `backend/tests/test_migration_002.py` | Alembic migration 002 |
-| `backend/tests/test_seed.py` | Seed idempotency |
+**Alternatives:** Sin índices (consultas lentas por clinic_id).
 
-## Files to Modify
+### 6. Seed idempotente
+**Decision:** El seed usa `INSERT ... ON CONFLICT DO NOTHING` (o equivalente con `exists()` check) para que volver a ejecutarlo no duplique datos.
 
-| File | Change |
-|------|--------|
-| `backend/app/domain/clinica/__init__.py` | Already exists (empty) — no change needed |
-| `backend/app/domain/personas/__init__.py` | Already exists (empty) — no change needed |
-| `backend/app/infrastructure/db/base.py` | Already exists — `Base` already defined |
+**Rationale:** Permite re-seed en desarrollo sin corrupto datos.
 
-## Verification Strategy
+**Alternatives:** Seed que falla si ya existen datos (menos flexible en dev).
 
-Each requirement has corresponding tests:
-- R1 (models) → `test_models.py`
-- R2 (AuditMixin) → `test_audit_mixin.py`
-- R3 (Repository + UnitOfWork) → `test_repository.py`
-- R4 (clinic_id mandatory) → `test_clinic_id.py`
-- R5 (migration 002) → `test_migration_002.py`
-- R6 (seed) → `test_seed.py`
+### 7. Alembic migración 001
+**Decision:** Migración autogenerada desde los modelos, revisada manualmente. `upgrade()` crea tablas e índices; `downgrade()` los elimina en orden inverso.
 
-Edge cases to verify:
-- Duplicate email per clinic → UNIQUE constraint error
-- Seed run twice → no duplicates (idempotent)
-- Missing clinic_id on insert → NOT NULL constraint violation
-- Deleting clinic with related users → FK cascade/restrict
+**Rationale:** Estándar Alembic. Permite rollback limpio.
+
+**Alternatives:** Migración SQL a mano (más propensa a errores).
+
+## Risks / Trade-offs
+
+| Risk | Mitigation |
+|---|---|
+| Alembic autogenerate ignora cambios | Revisar migración generada antes de commitear; probar `alembic upgrade head` y `downgrade` |
+| `clinic_id` olvidado en alguna tabla | Test que filtra todas las tablas de negocio tienen clinic_id; revisión de PR |
+| Seed no idempotente | Probar ejecutar seed dos veces; verificar no duplicados |
+| Email único global en lugar de por clínica | Constraint named `uq_users_clinic_id_email`; test de email repetido en diferente clinic_id debe permitir |
+
+## Migration Plan
+
+1. Crear `app/domain/clinica/models.py` (Clinic, Sillon).
+2. Crear `app/domain/personas/models.py` (User, Paciente, Bloqueo).
+3. Crear `app/domain/clinica/repository.py` y `app/domain/personas/repository.py` (BaseRepository).
+4. Crear `app/domain/uow.py` (UnitOfWork).
+5. Crear `app/domain/__init__.py` exports.
+6. Generar migración 001 con `alembic revision --autogenerate`.
+7. Revisar migración 001; aplicar `alembic upgrade head`.
+8. Crear script de seed idempotente.
+9. Escribir tests (constraints, clinic_id, seed idempotente).
+10. Ejecutar `pytest` completo; verificar verde.
+
+**Rollback:** `alembic downgrade -1` elimina las tablas de C-02; no hay datos de producción aún.
+
+## Open Questions
+
+- Valores iniciales de `sena_pct` por práctica (P-Alta-02 pendiente) — valores provisorios en C-04.
+- Tabla de horarios de atención — definir en C-04/C-05.

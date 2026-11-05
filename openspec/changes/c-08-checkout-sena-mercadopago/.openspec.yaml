@@ -1,0 +1,7 @@
+schema: spec-driven
+created: 2026-10-29
+change: C-08
+name: checkout-sena-mercadopago
+status: prepared
+phase: 4
+depends_on: [C-01, C-05]
