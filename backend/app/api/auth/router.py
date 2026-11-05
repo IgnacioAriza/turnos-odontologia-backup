@@ -1,18 +1,17 @@
 """Router de autenticación: login, refresh, logout, me."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Cookie
-from jose import jwt, JWTError
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
+from jose import jwt
 
 from app.core.config import settings
 from app.domain.auth.dependencies import get_auth_service, get_current_user
-from app.domain.auth.schemas import LoginRequest, TokenResponse, UserMe, RefreshRequest
+from app.domain.auth.schemas import LoginRequest, TokenResponse, UserMe
 from app.domain.auth.service import AuthService
 from app.infrastructure.db.session import async_session
-
 
 router = APIRouter(tags=["auth"])
 
@@ -39,7 +38,7 @@ async def login(
     refresh_token = auth_service.create_refresh_token(user)
 
     # Decodificar refresh token para obtener jti y expiración
-    refresh_payload = jwt.decode(
+    jwt.decode(
         refresh_token,
         settings.JWT_SECRET,
         algorithms=["HS256"],
@@ -94,12 +93,13 @@ async def refresh(
 
     user_id = UUID(payload.get("sub"))
     # Blacklist del refresh token anterior
-    refresh_exp = datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc)
+    refresh_exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
     await auth_service.blacklist_refresh_token(jti, user_id, refresh_exp)
 
     # Obtener usuario completo para crear nuevos tokens
-    from app.domain.personas.models import User
     from sqlalchemy import select
+
+    from app.domain.personas.models import User
     async with async_session() as session:
         result = await session.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
@@ -119,7 +119,7 @@ async def refresh(
         algorithms=["HS256"],
     )
     new_jti = new_payload.get("jti")
-    new_exp = datetime.fromtimestamp(new_payload.get("exp", 0), tz=timezone.utc)
+    new_exp = datetime.fromtimestamp(new_payload.get("exp", 0), tz=UTC)
     await auth_service.blacklist_refresh_token(new_jti, user_id, new_exp)
 
     response.set_cookie(
@@ -152,7 +152,7 @@ async def logout(
         if payload:
             jti = payload.get("jti")
             user_id = UUID(payload.get("sub"))
-            exp = datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc)
+            exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
             await auth_service.blacklist_refresh_token(jti, user_id, exp)
 
     response.delete_cookie(key="refresh_token", path="/api/auth")
