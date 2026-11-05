@@ -1,7 +1,7 @@
 """Router de autenticación: login, refresh, logout, me."""
 
 from datetime import UTC, datetime, timedelta
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
@@ -22,7 +22,7 @@ async def login(
     login_data: LoginRequest,
     response: Response,
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
-):
+) -> TokenResponse:
     """Autenticar usuario y devolver access + refresh tokens.
 
     Rate limiting: 5 requests por 60s por IP+email (implementado en middleware/dependency).
@@ -68,13 +68,19 @@ async def refresh(
     request: Request,
     response: Response,
     refresh_token: Annotated[str | None, Cookie()] = None,
-    auth_service: Annotated[AuthService, Depends(get_auth_service)] = None,
-):
+    auth_service: Annotated[AuthService | None, Depends(get_auth_service)] = None,
+) -> TokenResponse:
     """Rotar refresh token y devolver nuevo access + refresh."""
     if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh token requerido",
+        )
+
+    if auth_service is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Servicio de autenticación no disponible",
         )
 
     payload = await auth_service.decode_token(refresh_token)
@@ -85,13 +91,24 @@ async def refresh(
         )
 
     jti = payload.get("jti")
+    if jti is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token sin jti",
+        )
     if await auth_service.is_refresh_token_blacklisted(jti):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh token revocado",
         )
 
-    user_id = UUID(payload.get("sub"))
+    sub = payload.get("sub")
+    if sub is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token sin sub",
+        )
+    user_id = UUID(sub)
     # Blacklist del refresh token anterior
     refresh_exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
     await auth_service.blacklist_refresh_token(jti, user_id, refresh_exp)
@@ -120,6 +137,11 @@ async def refresh(
         algorithms=["HS256"],
     )
     new_jti = new_payload.get("jti")
+    if new_jti is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Refresh token sin jti",
+        )
     new_exp = datetime.fromtimestamp(new_payload.get("exp", 0), tz=UTC)
     await auth_service.blacklist_refresh_token(new_jti, user_id, new_exp)
 
@@ -145,14 +167,25 @@ async def refresh(
 async def logout(
     response: Response,
     refresh_token: Annotated[str | None, Cookie()] = None,
-    auth_service: Annotated[AuthService, Depends(get_auth_service)] = None,
-):
+    auth_service: Annotated[AuthService | None, Depends(get_auth_service)] = None,
+) -> dict[str, str]:
     """Blacklistear refresh token y limpiar cookie."""
-    if refresh_token:
+    if refresh_token and auth_service is not None:
         payload = await auth_service.decode_token(refresh_token)
         if payload:
             jti = payload.get("jti")
-            user_id = UUID(payload.get("sub"))
+            if jti is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Refresh token sin jti",
+                )
+            sub = payload.get("sub")
+            if sub is None:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Refresh token sin sub",
+                )
+            user_id = UUID(sub)
             exp = datetime.fromtimestamp(payload.get("exp", 0), tz=UTC)
             await auth_service.blacklist_refresh_token(jti, user_id, exp)
 
@@ -162,8 +195,8 @@ async def logout(
 
 @router.get("/me", response_model=UserMe)
 async def me(
-    current_user: Annotated[dict | None, Depends(get_current_user)] = None,
-):
+    current_user: Annotated[dict[str, Any] | None, Depends(get_current_user)] = None,
+) -> UserMe:
     """Obtener perfil del usuario autenticado."""
     if current_user is None:
         raise HTTPException(
@@ -171,10 +204,35 @@ async def me(
             detail="No autenticado",
         )
 
+    sub = current_user.get("sub")
+    if sub is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Usuario sin sub",
+        )
+    email = current_user.get("email")
+    if email is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Usuario sin email",
+        )
+    rol = current_user.get("rol")
+    if rol is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Usuario sin rol",
+        )
+    clinic_id = current_user.get("clinic_id")
+    if clinic_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Usuario sin clinic_id",
+        )
+
     return UserMe(
-        id=UUID(current_user.get("sub")),
-        email=current_user.get("email"),
-        rol=current_user.get("rol"),
-        clinic_id=UUID(current_user.get("clinic_id")),
+        id=UUID(sub),
+        email=email,
+        rol=rol,
+        clinic_id=UUID(clinic_id),
         activo=True,
     )

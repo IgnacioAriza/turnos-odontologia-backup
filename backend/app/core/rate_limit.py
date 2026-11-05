@@ -13,8 +13,8 @@ try:
 
     _redis_available = True
 except ImportError:
-    redis_lib = None
-    RedisError = Exception
+    redis_lib = None  # type: ignore
+    RedisError = Exception  # type: ignore
     _redis_available = False
 
 # Almacenamiento en memoria (fallback para tests)
