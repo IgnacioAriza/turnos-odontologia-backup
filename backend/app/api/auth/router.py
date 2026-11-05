@@ -100,6 +100,7 @@ async def refresh(
     from sqlalchemy import select
 
     from app.domain.personas.models import User
+
     async with async_session() as session:
         result = await session.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
