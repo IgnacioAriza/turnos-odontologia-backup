@@ -9,9 +9,12 @@ from collections import defaultdict
 
 try:
     import redis as redis_lib
+    from redis.exceptions import RedisError
 
     _redis_available = True
 except ImportError:
+    redis_lib = None
+    RedisError = Exception
     _redis_available = False
 
 # Almacenamiento en memoria (fallback para tests)
@@ -53,8 +56,8 @@ def check_rate_limit(ip: str, email: str) -> tuple[bool, int]:
                     return False, max(0, retry_after)
                 return False, RATE_LIMIT_WINDOW
             return True, 0
-        except Exception:
-            # Fallback a memoria si Redis falla
+        except RedisError:
+            # Fallback a memoria si Redis no está disponible
             pass
 
     # Fallback: almacenamiento en memoria

@@ -1,6 +1,6 @@
 """Modelos del dominio auth: RefreshTokenBlacklist."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
 from sqlalchemy import DateTime, ForeignKey, String
@@ -26,3 +26,7 @@ class RefreshTokenBlacklist(Base, AuditMixin):
         index=True,
     )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    @classmethod
+    def is_expired(cls, expires_at: datetime) -> bool:
+        return datetime.now(timezone.utc) > expires_at
