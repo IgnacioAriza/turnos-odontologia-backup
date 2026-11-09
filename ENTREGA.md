@@ -6,9 +6,9 @@
 
 ## Repositorio
 
-- Ruta local: `C:\Users\Ignacio\Documents\GitHub\turnos-odontologia`
-- Enlace al repositorio remoto: [pendiente — subir a GitHub/GitLab y completar aquí]
-- Commit de entrega: [pendiente — completar después de hacer commit]
+- Ruta local: `C:\Users\USUARIO\Desktop\turnos-odontologia-backup`
+- Enlace al repositorio remoto: https://github.com/IgnacioAriza/turnos-odontologia-backup
+- Commit de entrega: `010c758` (base de la entrega; actualizar con el hash del commit final que incluya estos artefactos)
 
 ## Video de demostración
 
@@ -40,15 +40,15 @@
 - `AGENTS.md` (documentadas)
 - `CLAUDE.md` (documentadas)
 
-### Changes preparados con SDD (no implementados, no verificados, no archivados)
-- `openspec/changes/c-02-core-models-clinica-personas/` (proposal, design, tasks, .openspec.yaml)
-- `openspec/changes/c-08-checkout-sena-mercadopago/` (proposal, design, tasks, .openspec.yaml)
+### Changes con SDD preparado (no archivados)
+- `openspec/changes/C-02-core-models-clinica-personas/` (proposal, design, tasks, .openspec.yaml; el código de C-02 ya existía de una instancia previa y sigue marcado `[x]` en CHANGES.md)
+- `openspec/changes/c-08-checkout-sena-mercadopago/` (proposal, design, tasks, .openspec.yaml; C-08 sigue `[ ]` pendiente)
 
 ## Requisitos cumplidos
 
 - [x] Skills propias creadas, registradas y documentadas en AGENTS.md/CLAUDE.md
 - [x] Servidor MCP existente conectado y herramienta real ejecutada (evidencia guardada)
-- [x] Changes pendientes preparados con SDD (proposal, design, tasks con 3 escenarios verificables cada uno)
+- [x] Changes con SDD preparado (proposal, design, tasks con 3 escenarios verificables cada uno)
 - [x] Fichas de investigación (docs/skills-mcp/investigacion.md, investigacion-c08-seguridad.md)
 - [x] Informes de aplicación (docs/skills-mcp/aplicacion.md, aplicacion-c08.md)
 - [x] Revisión crítica con defectos detectados y corregidos (antes/después)
@@ -57,7 +57,7 @@
 
 ## Pendientes (completar antes de entregar el .zip)
 
-- [ ] Subir repositorio a Git/GitLab y poner enlace en este ENTREGA.md
-- [ ] Hacer commit de entrega y poner el hash en este ENTREGA.md
+- [x] Subir repositorio a GitHub y poner enlace en este ENTREGA.md
+- [ ] Hacer commit de entrega y actualizar el hash en este ENTREGA.md
 - [ ] Grabar video de demostración (máx. 5 min) y poner enlace aquí
 - [ ] Empaquetar todo en `TP-Skills-MCP-Ariza.zip` (solo apellidos correspondientes)

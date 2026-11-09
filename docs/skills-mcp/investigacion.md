@@ -93,8 +93,8 @@ Se elige **filesystem** porque no hay Docker ni PostgreSQL disponible en este en
 | `CLAUDE.md` | Documentar `reglas-turnos-review` | Copia de AGENTS.md. |
 | `docs/skills-mcp/investigacion.md` | Crear | Ficha de investigación (Parte 1). |
 | `docs/skills-mcp/aplicacion.md` | Crear | Informe de aplicación (Parte 2). |
-| `openspec/changes/c-02-core-models-clinica-personas/` | Crear proposal.md, design.md, specs, tasks.md | Change C-02 preparado con SDD. |
-| `CHANGES.md` | No marcar C-02 como `[x]` | Queda preparado, no implementado. |
+| `openspec/changes/C-02-core-models-clinica-personas/` | Crear proposal.md, design.md, tasks.md | Change C-02 preparado con SDD. |
+| `CHANGES.md` | Sin cambios | El estado de implementación ya está registrado; el TP solo prepara los artefactos SDD. |
 
 ## 8. Fuentes consultadas
 

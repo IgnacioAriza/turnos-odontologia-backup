@@ -19,9 +19,9 @@ Ficha: `docs/skills-mcp/investigacion-c08-seguridad.md`
 ### Skill propia: `pagos-seguridad-review`
 
 - **Ubicación:** `skills/pagos-seguridad-review/SKILL.md`
-- **Registrada en:** `.atl/skill-registry.md` (tabla User Skills, mapeo a cambios C-08/C-09, Compact Rules).
-- **Documentada en:** `AGENTS.md` y `CLAUDE.md` (sección "Skill propia: `pagos-seguridad-review`").
-- **Evidencia de uso:** `docs/skills-mcp/revision-pagos-seguridad.md` (por crear — reporte con 6 pasos del skill-creator: lectura de fundación de pagos, extracción de reglas RN-PAGO, detección de reglas ambiguas y casos de borde de seguridad, 3 escenarios verificables).
+- **Registrada en:** `.atl/skill-registry.md` (sección Project Skills, mapeo a C-08/C-09, Compact Rules).
+- **Documentada en:** `AGENTS.md` y `CLAUDE.md` (sección "Skills propias del proyecto").
+- **Evidencia de uso:** `docs/skills-mcp/revision-pagos-seguridad.md` — reporte con 6 pasos: lectura de la fundación de pagos, extracción de reglas RN-PAGO, detección de 4 reglas ambiguas y 5 casos de borde de seguridad, 3 escenarios verificables.
 
 ### MCP: `mcp-server-filesystem`
 
@@ -69,7 +69,7 @@ El change **no está marcado como `[x]` en CHANGES.md** ni archivado, per alcanc
 | `AGENTS.md` | Documentar `pagos-seguridad-review` (instrucciones del agente). |
 | `CLAUDE.md` | Documentar `pagos-seguridad-review` (copia de AGENTS.md). |
 | `docs/skills-mcp/investigacion-c08-seguridad.md` | Ficha de investigación C-08 (Parte 1 del TP). |
-| `docs/skills-mcp/revision-pagos-seguridad.md` | Reporte de uso de la skill propia sobre C-08 (por crear). |
+| `docs/skills-mcp/revision-pagos-seguridad.md` | Reporte de uso de la skill propia sobre C-08. |
 | `docs/skills-mcp/evidencias/mcp-evidencia-c08.md` | Evidencia de invocación real del MCP sobre archivos de pagos. |
 | `docs/skills-mcp/aplicacion-c08.md` | Informe de aplicación C-08 (Parte 2 del TP, este archivo). |
 | `openspec/changes/c-08-checkout-sena-mercadopago/proposal.md` | Artefacto SDD del change C-08. |

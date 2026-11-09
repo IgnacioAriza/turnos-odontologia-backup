@@ -52,18 +52,30 @@ La fuente de verdad del dominio vive en `knowledge-base/`. **Leé el archivo rel
 
 ## Skills Disponibles
 
-Fuente de verdad: `.atl/skill-registry.md` (6 user skills + 6 workflow openspec). No re-escanear.
+Fuente de verdad: `.atl/skill-registry.md` (6 user skills + 2 project skills + 6 workflow openspec). No re-escanear.
 
 | Agente | Rol | Skills que carga |
 |--------|-----|------------------|
 | Backend Core | FastAPI / Postgres / TDD | `python-fastapi-development`, `supabase-postgres-best-practices`, `test-driven-development` |
 | Backend Aux | Auth JWT / RBAC / seguridad | `auth-implementation-patterns` |
 | Frontend | React 18+ / TS 5+ / Vite / mobile-first | `vercel-react-best-practices`, `frontend-design` |
+| Revisión de dominio | Reglas de turnos / seguridad de pagos | `reglas-turnos-review`, `pagos-seguridad-review` |
 | Orquestación | SDD / OPSX / docs | `openspec-propose`, `openspec-explore`, `openspec-apply-change`, `openspec-update-change`, `openspec-sync-specs`, `openspec-archive-change` |
 
 Cargá la skill correspondiente al contexto ANTES de escribir código.
 
-> Los compact rules de cada skill los resuelve el orquestador desde `.atl/skill-registry.md` (generado por `skill-registry`; no versionado — no está en el repo). Esta tabla solo mapea skill→rol.
+### Skills propias del proyecto
+
+Viven en `skills/` (no en el catálogo global) y se disparan por dominio, no por rol:
+
+| Skill | Ruta | Cuándo usarla |
+|-------|------|---------------|
+| `reglas-turnos-review` | `skills/reglas-turnos-review/SKILL.md` | Antes de preparar o revisar C-02, C-05, C-06 y C-07: detecta reglas ambiguas, casos de borde faltantes y genera escenarios verificables. |
+| `pagos-seguridad-review` | `skills/pagos-seguridad-review/SKILL.md` | Antes de preparar o revisar C-08 y C-09: revisa montos de seña, idempotencia, firma de webhook y secretos MP. |
+
+Cada skill produce un reporte markdown en `docs/skills-mcp/revision-*.md` listo para copiar a `proposal.md`, `design.md` y `tasks.md`.
+
+> Los compact rules de cada skill los resuelve el orquestador desde `.atl/skill-registry.md` (generado por `skill-registry` y versionado en el repo). Esta tabla solo mapea skill→rol.
 
 ---
 

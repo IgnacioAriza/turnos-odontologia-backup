@@ -8,12 +8,19 @@ Project: turnos-odontologia (SaaS odontologia: FastAPI + PostgreSQL/Redis + Reac
 
 | Trigger | Skill | Path |
 |---------|-------|------|
-| Writing, reviewing, or refactoring React/Next.js code; React components, Next.js pages, data fetching, bundle optimization, performance | vercel-react-best-practices | C:\Users\Lenovo\.agents\skills\vercel-react-best-practices\SKILL.md |
-| Building new UI or reshaping existing one; aesthetic direction, typography, non-templated visual design | frontend-design | C:\Users\Lenovo\.agents\skills\frontend-design\SKILL.md |
-| BEFORE writing/changing anything in Postgres: tables, columns, schema, migrations, RLS, indexes, triggers, functions, pg_cron/pgmq, pgvector, dumps; or diagnosing slow queries, EXPLAIN, connections, locking, bloat, wrong-tenant rows | supabase-postgres-best-practices | C:\Users\Lenovo\.agents\skills\supabase-postgres-best-practices\SKILL.md |
-| Implementing any feature or bugfix, before writing implementation code | test-driven-development | C:\Users\Lenovo\.agents\skills\test-driven-development\SKILL.md |
-| Implementing auth systems, securing APIs, OAuth2/social login, RBAC, session management, auth migration, auth debugging, SSO/multi-tenancy | auth-implementation-patterns | C:\Users\Lenovo\.agents\skills\auth-implementation-patterns\SKILL.md |
-| Building FastAPI REST APIs, async Python backends, SQLAlchemy integration, API auth, microservices | python-fastapi-development | C:\Users\Lenovo\.agents\skills\python-fastapi-development\SKILL.md |
+| Writing, reviewing, or refactoring React/Next.js code; React components, Next.js pages, data fetching, bundle optimization, performance | vercel-react-best-practices | C:\Users\USUARIO\.agents\skills\vercel-react-best-practices\SKILL.md |
+| Building new UI or reshaping existing one; aesthetic direction, typography, non-templated visual design | frontend-design | C:\Users\USUARIO\.agents\skills\frontend-design\SKILL.md |
+| BEFORE writing/changing anything in Postgres: tables, columns, schema, migrations, RLS, indexes, triggers, functions, pg_cron/pgmq, pgvector, dumps; or diagnosing slow queries, EXPLAIN, connections, locking, bloat, wrong-tenant rows | supabase-postgres-best-practices | C:\Users\USUARIO\.agents\skills\supabase-postgres-best-practices\SKILL.md |
+| Implementing any feature or bugfix, before writing implementation code | test-driven-development | C:\Users\USUARIO\.agents\skills\test-driven-development\SKILL.md |
+| Implementing auth systems, securing APIs, OAuth2/social login, RBAC, session management, auth migration, auth debugging, SSO/multi-tenancy | auth-implementation-patterns | C:\Users\USUARIO\.agents\skills\auth-implementation-patterns\SKILL.md |
+| Building FastAPI REST APIs, async Python backends, SQLAlchemy integration, API auth, microservices | python-fastapi-development | C:\Users\USUARIO\.agents\skills\python-fastapi-development\SKILL.md |
+
+## Project Skills (own, repo-local)
+
+| Trigger | Skill | Path |
+|---------|-------|------|
+| Preparing/reviewing turnos changes (C-02, C-05, C-06, C-07); ambiguous business rules, missing edge cases, verifiable scenarios | reglas-turnos-review | skills/reglas-turnos-review/SKILL.md |
+| Preparing/reviewing payments changes (C-08, C-09); sena monto, MP webhook idempotency, signature, MP_* secrets, payment edge cases | pagos-seguridad-review | skills/pagos-seguridad-review/SKILL.md |
 
 ## Project Workflow Skills (openspec, read on demand)
 
@@ -36,6 +43,8 @@ Project: turnos-odontologia (SaaS odontologia: FastAPI + PostgreSQL/Redis + Reac
 | test-driven-development | C-05, C-06, C-09 (solape 409, TTL 30min, ventana 12hs, webhook idempotente) |
 | auth-implementation-patterns | C-03, C-11 (login JWT + RBAC recepcion/odonto/admin) |
 | python-fastapi-development | C-01, C-02, C-05 (routers public/internal/webhooks, Pydantic settings) |
+| reglas-turnos-review | C-02, C-05, C-06, C-07 (ambiguedades de reglas, casos de borde, escenarios verificables) |
+| pagos-seguridad-review | C-08, C-09 (monto de sena, idempotencia de webhook, firma, secretos MP) |
 
 ## Compact Rules
 
@@ -89,11 +98,26 @@ Pre-digested rules per skill. Delegators copy matching blocks into sub-agent pro
 - Errors: custom exceptions + handlers with consistent error envelope; request logging; no stack traces to clients
 - Quality gates: pytest >80% coverage, mypy clean, ruff/black clean, OpenAPI docs complete, Dockerfile+compose for api/postgres/redis/worker
 
+### reglas-turnos-review
+- Trigger before any turnos change; read KB 04/05/09 + CHANGES.md first, then the change's openspec artifacts
+- Output 3+ verifiable scenarios (happy path, business error, edge) each with a KB rule reference; never invent rules not in the KB
+- Always check: email-unique scope per clinic_id, sena_pct 0-100, 2nd no-show → 30d block, cancel <12h, 2nd reschedule, manage_token guessability, sillón/odontólogo overlap, duplicate webhook
+- Report lands in `docs/skills-mcp/revision-reglas-turnos.md`, copy-ready for proposal/design/tasks
+
+### pagos-seguridad-review
+- Trigger before C-08/C-09 or any change touching Pago / Turno.monto_sena; read KB 11/05/08/04/07 + CHANGES.md
+- Enforce: monto_sena is a snapshot at booking (never recalculate), ARS with explicit rounding, one approved payment per turno
+- Webhook: verify signature (401 on invalid), idempotent replay (200 no-op), store raw_webhook for audit without leaking PII
+- Secrets: MP_ACCESS_TOKEN / MP_WEBHOOK_SECRET / MP_TTL_MIN only from env; add a test/CI scan for hardcoded MP token patterns
+- Report lands in `docs/skills-mcp/revision-pagos-seguridad.md`, copy-ready for proposal/design/tasks
+
 ## Project Conventions
 
 | File | Path | Notes |
 |------|------|-------|
-| (none yet) | — | CLAUDE.md/AGENTS.md not created (agents phase, later); no .cursorrules/GEMINI.md/copilot-instructions/.gitignore at root |
+| AGENTS.md / CLAUDE.md | AGENTS.md, CLAUDE.md | Project agent instructions: stack, KB navigation, skills by role, 10 hard rules, workflow |
+| Skill registry | .atl/skill-registry.md | Versioned; source of truth for skill→role mapping and compact rules |
+| Project skills | skills/reglas-turnos-review/, skills/pagos-seguridad-review/ | Repo-local domain review skills (turnos rules, payments security) |
 
 KB reference for domain rules (read on demand, not injected): `knowledge-base/05_reglas_de_negocio.md` (solape, 12hs, 1 reprogramacion, bloqueo 2 faltas, sena %), `knowledge-base/04_modelo_de_datos.md`, `knowledge-base/08_arquitectura_propuesta.md`, `knowledge-base/11_pagos_mercadopago.md`, `knowledge-base/12_whatsapp_twilio.md`.
 

@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Se preparó el change **C-02 `core-models-clinica-personas`** con Spec-Driven Development (SDD), integrando una **skill propia** (`reglas-turnos-review`) y un **servidor MCP** (`mcp-server-filesystem`). El change queda **preparado para implementar** (no implementado, no verificado, no archivado), listo para una instancia posterior.
+Se preparó el change **C-02 `core-models-clinica-personas`** con Spec-Driven Development (SDD), integrando una **skill propia** (`reglas-turnos-review`) y un **servidor MCP** (`mcp-server-filesystem`). Los artefactos SDD quedan preparados y revisados para una instancia posterior; el código de C-02 ya existía de una instancia previa (marcado `[x]` en `CHANGES.md`) y no se re-ejecutó en este TP.
 
 ## Parte 1 — Investigación (clase)
 
@@ -18,8 +18,8 @@ Ficha: `docs/skills-mcp/investigacion.md`
 ### Skill propia: `reglas-turnos-review`
 
 - **Ubicación:** `skills/reglas-turnos-review/SKILL.md`
-- **Registrada en:** `.atl/skill-registry.md` (tabla User Skills, mapeo a cambios C-02/C-05/C-06/C-07, Compact Rules).
-- **Documentada en:** `AGENTS.md` y `CLAUDE.md`.
+- **Registrada en:** `.atl/skill-registry.md` (sección Project Skills, mapeo a cambios C-02/C-05/C-06/C-07, Compact Rules).
+- **Documentada en:** `AGENTS.md` y `CLAUDE.md` (sección "Skills propias del proyecto").
 - **Evidencia de uso:** `docs/skills-mcp/revision-reglas-turnos.md` — reporte con 6 pasos del skill-creator: detección de 4 reglas ambiguas y 6 casos de borde faltantes, 3 escenarios verificables.
 
 ### MCP: `mcp-server-filesystem`
@@ -31,11 +31,11 @@ Ficha: `docs/skills-mcp/investigacion.md`
 
 ### Change C-02 preparado (SDD)
 
-Artefactos en `openspec/changes/c-02-core-models-clinica-personas/`:
+Artefactos en `openspec/changes/C-02-core-models-clinica-personas/`:
 - `proposal.md`, `design.md`, `tasks.md`, `.openspec.yaml` (status: prepared, phase: 1, depends_on: C-01).
 - `tasks.md` con 3 escenarios verificables: (1) funcionamiento esperado — mismo email diferente clinic_id se inserta; (2) error de negocio — mismo email mismo clinic_id rechaza unique_violation; (3) caso de borde — sena_pct=150 rechaza CHECK violation.
 
-El change **no está marcado como `[x]` en CHANGES.md** ni archivado, per alcance del TP.
+El change **no se archivó**: su estado de implementación sigue registrado en `CHANGES.md` con independencia de estos artefactos SDD.
 
 ## Revisión crítica
 
@@ -47,7 +47,7 @@ El change **no está marcado como `[x]` en CHANGES.md** ni archivado, per alcanc
 
 - No se pudo probar `mcp-server-postgres` (no hay PostgreSQL ni Docker disponible).
 - El `README.md` del proyecto aún no incluye una sección dedicada al MCP.
-- El change C-02 queda preparado; su implementación y archivado quedan para una instancia posterior.
+- El change C-02 queda sin archivar; el archivado queda para una instancia posterior.
 
 ## Archivos modificados y motivo
 
@@ -61,7 +61,7 @@ El change **no está marcado como `[x]` en CHANGES.md** ni archivado, per alcanc
 | `docs/skills-mcp/revision-reglas-turnos.md` | Reporte de uso de la skill. |
 | `docs/skills-mcp/evidencias/mcp-evidencia.md` | Evidencia de invocación real del MCP. |
 | `docs/skills-mcp/aplicacion.md` | Informe de aplicación. |
-| `openspec/changes/c-02-core-models-clinica-personas/` | Artefactos SDD del change C-02. |
+| `openspec/changes/C-02-core-models-clinica-personas/` | Artefactos SDD del change C-02. |
 
 ## Fuentes con URL y fecha de consulta
 
