@@ -177,7 +177,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Catálogo clínico + aranceles en LECTURA (v1.0) con seed de `% seña` por práctica (DD-05, RN-ADMIN-02)
   - Modelos: `TipoPractica` (`nombre`, `duracion_min > 0`, `precio_base`, `sena_pct 0-100`), `Arancel` (`tipo_practica_id UNIQUE`, `precio`, `sena_pct`, `vigente_desde`)
   - Endpoints internos (JWT): `GET /api/internal/tipos-practica`, `GET /api/internal/sillones`, `GET /api/admin/aranceles` (lectura v1.0); CRUD admin de `% seña` global por práctica (RN-ADMIN-01 con auditoría quien/cuando/antes/después); ABM completo queda para C-13
-  - Migración 003: tablas `tipos_practica`, `aranceles`; seed: limpieza/arreglo/endodoncia/extracción/ortodoncia-control con `duracion_min`, `precio_base`, `sena_pct` inicial (pregunta Alta P-Alta pendiente de Admin — seed con valores provisorios documentados)
+  - Migración 004: tablas `tipos_practica`, `aranceles` y `auditorias_sena`; seed: limpieza/arreglo/endodoncia/extracción/ortodoncia-control con `duracion_min`, `precio_base`, `sena_pct` inicial (pregunta Alta P-Alta pendiente de Admin — seed con valores provisorios documentados)
   - Frontend: pantalla admin lectura de aranceles/precios + selector de práctica (reusado por booking C-06)
   - Tests: CHECK `sena_pct`, foto de precio no muta (prepara RN-PAGO-02), RBAC lectura vs escritura
 - **Dependencias**: C-03

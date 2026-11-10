@@ -77,3 +77,28 @@ class BloqueoOut(BloqueoBase):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class TipoPracticaOut(BaseModel):
+    id: UUID
+    clinic_id: UUID
+    nombre: str
+    duracion_min: int
+    precio_base: float
+    sena_pct: int
+    activa: bool
+
+    model_config = {"from_attributes": True}
+
+
+class ArancelAdminOut(BaseModel):
+    tipo_practica_id: UUID
+    nombre: str
+    duracion_min: int
+    precio: float
+    sena_pct: int
+    activa: bool
+
+
+class SenaPctUpdate(BaseModel):
+    sena_pct: int = Field(..., ge=0, le=100)

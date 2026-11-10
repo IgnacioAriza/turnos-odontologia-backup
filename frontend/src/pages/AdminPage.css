@@ -173,6 +173,90 @@
   background-color: #eff6ff;
 }
 
+.admin-table tbody tr.selected {
+  background-color: #eff6ff;
+}
+
+.admin-empty {
+  text-align: center;
+  color: #6b7280;
+}
+
+.admin-status {
+  color: #6b7280;
+}
+
+.admin-alert {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.875rem 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  color: #991b1b;
+}
+
+.admin-edit-panel {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  max-width: 420px;
+}
+
+.admin-edit-panel h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  color: #1f2937;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  min-height: 44px;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.admin-form-error {
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.admin-form-ok {
+  color: #166534;
+  font-size: 0.875rem;
+}
+
 @media (max-width: 640px) {
   .admin-tabs {
     flex-wrap: nowrap;

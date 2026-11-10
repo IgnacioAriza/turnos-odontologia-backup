@@ -79,12 +79,16 @@ def create_app() -> FastAPI:
         }
 
     # Import all domain models and routers
+    from app.api.admin import router as admin_router
     from app.api.auth import router as auth_router
+    from app.api.internal.catalogo import router as internal_catalogo_router
     from app.domain.auth import models as _auth_models  # noqa: F401
     from app.domain.clinica import models as _clinica_models  # noqa: F401
     from app.domain.personas import models as _personas_models  # noqa: F401
 
     app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+    app.include_router(internal_catalogo_router, prefix="/api/internal")
+    app.include_router(admin_router, prefix="/api/admin")
 
     return app
 
