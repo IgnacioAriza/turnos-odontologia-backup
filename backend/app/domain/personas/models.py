@@ -1,9 +1,10 @@
 """Modelos del dominio personas: User, Paciente."""
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.mixins import AuditMixin
@@ -11,6 +12,7 @@ from app.infrastructure.db.base import Base
 
 if TYPE_CHECKING:
     from app.domain.clinica.models import Bloqueo, Clinic
+    from app.domain.turnos.models import Turno
 
 
 class User(Base, AuditMixin):
@@ -50,6 +52,10 @@ class Paciente(Base, AuditMixin):
     """Paciente de la clínica."""
 
     __tablename__ = "pacientes"
+    __table_args__ = (
+        UniqueConstraint("clinic_id", "telefono", name="uq_pacientes_clinic_id_telefono"),
+        Index("ix_pacientes_clinic_id_dni", "clinic_id", "dni"),
+    )
 
     id: Mapped[UUID] = mapped_column(
         primary_key=True,
@@ -62,9 +68,12 @@ class Paciente(Base, AuditMixin):
     )
     nombre: Mapped[str] = mapped_column(String(200), nullable=False)
     telefono: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    dni: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    dni: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    faltas_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    bloqueado_hasta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="pacientes")
     bloqueos: Mapped[list["Bloqueo"]] = relationship(
         "Bloqueo", back_populates="paciente", cascade="all, delete-orphan"
     )
+    turnos: Mapped[list["Turno"]] = relationship("Turno", back_populates="paciente")

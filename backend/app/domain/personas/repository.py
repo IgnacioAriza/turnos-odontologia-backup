@@ -3,6 +3,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.repository import BaseRepository, UnitOfWork
@@ -36,6 +37,20 @@ class UserRepository(BaseRepository[User]):
         result = await self.session.execute(query)
         return list(result.scalars().all())
 
+    async def list_odontologos(self, clinic_id: UUID) -> list[User]:
+        """Odontólogos activos de la clínica, ordenados por email."""
+        result = await self.session.execute(
+            select(User)
+            .where(
+                User.clinic_id == clinic_id,
+                User.rol == "odonto",
+                User.activo.is_(True),
+                User.is_active.is_(True),
+            )
+            .order_by(User.email)
+        )
+        return list(result.scalars().all())
+
 
 class PacienteRepository(BaseRepository[Paciente]):
     def __init__(self, session: AsyncSession):
@@ -58,6 +73,42 @@ class PacienteRepository(BaseRepository[Paciente]):
             )
         )
         return result.scalar_one_or_none()
+
+    async def get_or_create_by_telefono(
+        self,
+        *,
+        clinic_id: UUID,
+        telefono: str,
+        nombre: str,
+        dni: str | None = None,
+    ) -> Paciente:
+        """Obtener o crear el paciente por `(clinic_id, telefono)`.
+
+        La creación usa un savepoint para que una carrera con otro request que
+        inserte el mismo teléfono no invalide la transacción completa: se captura
+        `IntegrityError`, se hace rollback del savepoint y se re-selecciona.
+        """
+        existente = await self.get_by_telefono(clinic_id, telefono)
+        if existente is not None:
+            return existente
+
+        try:
+            async with self.session.begin_nested():
+                paciente = Paciente(
+                    clinic_id=clinic_id,
+                    nombre=nombre,
+                    telefono=telefono,
+                    dni=dni,
+                    is_active=True,
+                )
+                self.session.add(paciente)
+                await self.session.flush()
+            return paciente
+        except IntegrityError:
+            existente = await self.get_by_telefono(clinic_id, telefono)
+            if existente is None:
+                raise
+            return existente
 
 
 __all__ = ["UserRepository", "PacienteRepository", "UnitOfWork"]

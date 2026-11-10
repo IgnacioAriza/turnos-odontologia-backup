@@ -5,6 +5,7 @@ Inserta:
 - 1 admin, 1 recepción, 1 odontólogo
 - 2-3 sillones activos
 - 5 prácticas base con su arancel 1:1 (C-04)
+- 6 franjas de atención: L-V 08:00-20:00 y sábado 08:00-13:00 (C-05)
 
 Los porcentajes de seña del seed son PROVISORIOS hasta que el Admin de la
 clínica responda la pregunta de prioridad Alta de
@@ -21,7 +22,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from datetime import date
+from datetime import date, time
 from decimal import Decimal
 from uuid import uuid4
 
@@ -32,6 +33,7 @@ from app.core.config import settings
 from app.core.security import hash_password
 from app.domain.clinica.models import Arancel, Clinic, Sillon, TipoPractica
 from app.domain.personas.models import User
+from app.domain.turnos.models import HorarioAtencion
 from app.infrastructure.db.base import Base
 
 PRACTICAS_SEED: list[dict[str, object]] = [
@@ -56,6 +58,12 @@ PRACTICAS_SEED: list[dict[str, object]] = [
         "sena_pct": 20,
     },
 ]
+
+# Horarios de atención: lunes a viernes 08:00-20:00, sábado 08:00-13:00.
+# Domingo queda cerrado (no se inserta franja).
+HORARIOS_SEED: list[dict[str, object]] = [
+    {"dia_semana": dia, "hora_desde": time(8, 0), "hora_hasta": time(20, 0)} for dia in range(5)
+] + [{"dia_semana": 5, "hora_desde": time(8, 0), "hora_hasta": time(13, 0)}]
 
 
 async def seed() -> None:
@@ -164,10 +172,34 @@ async def seed() -> None:
                     )
                 )
 
+        # --- Horarios de atención (C-05) ---
+        for horario_data in HORARIOS_SEED:
+            dia_semana = int(horario_data["dia_semana"])  # type: ignore[arg-type]
+            hora_desde = horario_data["hora_desde"]
+            result = await session.execute(
+                select(HorarioAtencion).where(
+                    HorarioAtencion.clinic_id == clinic.id,  # type: ignore[attr-defined]
+                    HorarioAtencion.dia_semana == dia_semana,
+                    HorarioAtencion.hora_desde == hora_desde,
+                )
+            )
+            if result.scalar_one_or_none() is None:
+                session.add(
+                    HorarioAtencion(
+                        id=uuid4(),
+                        clinic_id=clinic.id,
+                        dia_semana=dia_semana,
+                        hora_desde=hora_desde,  # type: ignore[arg-type]
+                        hora_hasta=horario_data["hora_hasta"],  # type: ignore[arg-type]
+                        activo=True,
+                        is_active=True,
+                    )
+                )
+
         await session.commit()
         print(
             "✅ Seed completado: clínica, usuarios, sillones, "
-            "prácticas y aranceles insertados (idempotente)."
+            "prácticas, aranceles y horarios insertados (idempotente)."
         )
 
 

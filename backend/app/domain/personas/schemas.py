@@ -38,7 +38,7 @@ class UserOut(UserBase):
 class PacienteBase(BaseModel):
     nombre: str = Field(..., min_length=1, max_length=200)
     telefono: str = Field(..., min_length=8, max_length=50)
-    dni: str = Field(..., min_length=6, max_length=20)
+    dni: str | None = Field(default=None, min_length=6, max_length=20)
 
 
 class PacienteCreate(PacienteBase):

@@ -14,6 +14,7 @@ os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
 import app.domain.auth.models  # noqa: F401
 import app.domain.clinica.models  # noqa: F401
 import app.domain.personas.models  # noqa: F401
+import app.domain.turnos.models  # noqa: F401
 from app.infrastructure.db.base import Base, get_async_session_factory, get_engine
 
 # Usar el MISMO engine que la app usa (get_engine está cacheado)
