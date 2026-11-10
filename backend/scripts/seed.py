@@ -89,7 +89,8 @@ async def seed() -> None:
         ]:
             result = await session.execute(
                 select(User).where(
-                    User.clinic_id == clinic.id, User.email == email  # type: ignore[attr-defined]
+                    User.clinic_id == clinic.id,
+                    User.email == email,  # type: ignore[attr-defined]
                 )
             )
             if result.scalar_one_or_none() is None:

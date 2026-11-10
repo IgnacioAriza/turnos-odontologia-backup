@@ -29,8 +29,7 @@ async def test_columns_exist(db_session):
     """Columnas clave de tipos_practica y aranceles."""
     result = await db_session.execute(
         text(
-            "SELECT column_name FROM information_schema.columns "
-            "WHERE table_name = 'tipos_practica'"
+            "SELECT column_name FROM information_schema.columns WHERE table_name = 'tipos_practica'"
         )
     )
     tipo_cols = {row[0] for row in result.fetchall()}
@@ -48,7 +47,7 @@ async def test_columns_exist(db_session):
     } <= tipo_cols
 
     result = await db_session.execute(
-        text("SELECT column_name FROM information_schema.columns " "WHERE table_name = 'aranceles'")
+        text("SELECT column_name FROM information_schema.columns WHERE table_name = 'aranceles'")
     )
     arancel_cols = {row[0] for row in result.fetchall()}
     assert {"id", "tipo_practica_id", "precio", "sena_pct", "vigente_desde"} <= arancel_cols

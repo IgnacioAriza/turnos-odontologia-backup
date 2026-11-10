@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-/// <reference types="@testing-library/jest-dom" />
+/// <reference types="@testing-library/jest-dom/vitest" />
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
@@ -13,16 +13,4 @@ interface ImportMeta {
 declare module '*.css' {
   const content: { [className: string]: string };
   export default content;
-}
-
-declare namespace Vi {
-  interface JestAssertion<T = any> extends jest.Matchers<void, T> {}
-}
-
-declare namespace vitest {
-  interface Assertion<T = any> extends jest.Matchers<void, T> {}
-}
-
-declare module 'vitest' {
-  interface Assertion<T = any> extends jest.Matchers<void, T> {}
 }
