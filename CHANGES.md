@@ -173,7 +173,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ---
 
 ### [C-04] `catalogo-sillones-practicas`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-09; tarea 6.5 diferida a C-05)
 - **Scope**: Catálogo clínico + aranceles en LECTURA (v1.0) con seed de `% seña` por práctica (DD-05, RN-ADMIN-02)
   - Modelos: `TipoPractica` (`nombre`, `duracion_min > 0`, `precio_base`, `sena_pct 0-100`), `Arancel` (`tipo_practica_id UNIQUE`, `precio`, `sena_pct`, `vigente_desde`)
   - Endpoints internos (JWT): `GET /api/internal/tipos-practica`, `GET /api/internal/sillones`, `GET /api/admin/aranceles` (lectura v1.0); CRUD admin de `% seña` global por práctica (RN-ADMIN-01 con auditoría quien/cuando/antes/después); ABM completo queda para C-13
@@ -202,8 +202,8 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
   - `GET /api/public/slots?fecha=&practica=` — huecos por `duracion_min`, respeta horarios de atención, sin datos de otros pacientes, carga < 2s (cache Redis TTL corto)
   - `POST /api/public/reservas` (sin JWT): valida bloqueo 30d (403 con `bloqueado_hasta`), crea `Turno(pendiente_sena)` + `manage_token` + `monto_sena` + job Redis expiración `MP_TTL_MIN=30` (RN-RES-04; libera slot si no hay pago)
   - `POST /api/internal/turnos` — creación interna (mostrador/teléfono, mismo motor, sin `manage_token` público)
-  - Migración 004: tabla `turnos` + constraints; worker expiración `pendiente_sena`
-  - Tests: solape sillón 409, solape odontólogo 409, TTL libera slot, bloqueo rechaza, `manage_token` unguessable
+  - Migración 005: tabla `turnos` + constraints; worker expiración `pendiente_sena`
+  - Tests: solape sillón 409, solape odontólogo 409, TTL libera slot, bloqueo rechaza, `manage_token` unguessable; verificar que cambiar el `% seña` de una práctica no muta el `monto_sena` de turnos existentes (tarea 6.5 diferida de C-04)
 - **Dependencias**: C-04
 - **Governance**: CRITICO
 - **Leer antes**:
@@ -279,7 +279,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Webhook MP idempotente + conciliación diaria (US-008; RN-PAGO-03)
   - `POST /api/webhooks/mercadopago`: valida firma (`MP_WEBHOOK_SECRET`), busca `mp_payment_id` → si existe 200 sin efectos; solo `aprobado` mueve `pendiente_sena → confirmado` y dispara WA + job T-24hs (llama a C-10); guarda `raw_webhook jsonb`
   - Modelo `Pago`: `turno_id`, `mp_payment_id UNIQUE`, `mp_preference_id`, `monto`, `moneda="ARS"`, `estado`, `idempotency_key UNIQUE`
-  - Migración 005: tabla `pagos`; worker de reproceso de webhooks pendientes (idempotente)
+  - Migración 006: tabla `pagos`; worker de reproceso de webhooks pendientes (idempotente)
   - `GET /api/admin/conciliacion?fecha=` — reporte turnos confirmados vs señas aprobadas; reembolsos solo según RN-CANCEL-02/03 (1.ª repro migra; tardía no reembolsa; manual solo Admin auditado)
   - Tests: webhook duplicado 200 sin doble confirmación, firma inválida 401, reproceso seguro, reporte cuadra
 - **Dependencias**: C-08
@@ -299,7 +299,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
   - Al confirmar (C-09): envío WA inmediato + job Redis `scheduled_for = inicio - 24h`; al cancelar/reprogramar (C-06) antes de T-24hs: cancela job (RN-NOTIF-03), repro reprograma job nuevo
   - Modelo `Notificacion`: `turno_id`, `canal`, `tipo`, `proveedor="twilio"`, `provider_sid`, `estado: encolado|enviado|entregado|fallido`, `scheduled_for`, `sent_at`; índice parcial UNIQUE un `recordatorio_24h` whatsapp por turno; fallo → backoff + email, turno no cambia de estado
   - `POST /api/webhooks/twilio` (opcional v1.0): estados de entrega; respaldo evento Google Calendar + email (US-009)
-  - Migración 006: tabla `notificaciones` + scheduler Redis
+  - Migración 007: tabla `notificaciones` + scheduler Redis
   - Tests: exactamente 1 recordatorio por turno, cancelación cancela job, fallo Twilio → `fallido` + reintento sin mutar turno
 - **Dependencias**: C-06, C-09
 - **Governance**: ALTO
@@ -321,7 +321,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Login paciente OPCIONAL + historial (US-010; reserva sigue sin login)
   - Extiende `User` rol `paciente` + link `Paciente.user_id nullable`; `POST /api/auth/paciente/registro|login`; JWT rol `paciente` con RBAC (solo su historial)
   - `GET /api/paciente/mis-turnos` — historial + próximos + links gestionar con token; reserva pública intacta (login solo añade historial)
-  - Migración 007: `pacientes.user_id`, rol `paciente`; vinculación por teléfono+DNI al registrarse
+  - Migración 008: `pacientes.user_id`, rol `paciente`; vinculación por teléfono+DNI al registrarse
   - Frontend: `/login-paciente` + `/mis-turnos` (mobile-first)
   - Tests: reserva sin login sigue funcionando, paciente A no ve turnos de B, vinculación por teléfono
 - **Dependencias**: C-03, C-05
@@ -339,7 +339,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Odontograma + historia clínica básica con auditoría (US-011)
   - Modelos: `OdontogramaPieza` (paciente, pieza FDI, estado, notas) + `HistoriaEvento` (turno/paciente, tipo, detalle, `created_by`, `created_at` inmutable); lectura + carga básica por turno/paciente desde panel odontólogo
   - Endpoints (JWT `odonto|admin`): `GET /api/pacientes/{id}/odontograma`, `PUT /api/pacientes/{id}/odontograma`, `GET/POST /api/pacientes/{id}/historia`; auditoría de cambios (quien/cuando/antes/después)
-  - Migración 008: tablas odontograma + historia
+  - Migración 009: tablas odontograma + historia
   - Frontend: visor/editor odontograma en ficha paciente (dentro de agenda/panel C-07)
   - Tests: odonto solo edita sus pacientes, auditoría registra cambios, lectura no filtra datos sensibles cruzados
 - **Dependencias**: C-07
@@ -357,7 +357,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: ABM de aranceles/nomenclador por Admin con vigencia y auditoría (US-012; RN-ADMIN-01/02)
   - CRUD `POST/PATCH/DELETE /api/admin/aranceles` + `POST /api/admin/tipos-practica` (solo `admin`); `vigente_desde`, auditoría completa; **no altera turnos existentes** (foto `monto_sena` intacta, RN-PAGO-02)
   - Frontend `features/admin/`: tabla aranceles + editor `% seña` por práctica + historial de vigencia
-  - Migración 009: auditoría aranceles (`arancel_historial`)
+  - Migración 010: auditoría aranceles (`arancel_historial`)
   - Tests: cambio de precio no muta turnos pasados, no-admin 403, vigencia futura no afecta reservas actuales
 - **Dependencias**: C-04
 - **Governance**: ALTO
