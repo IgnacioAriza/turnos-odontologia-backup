@@ -41,7 +41,7 @@ El backend SHALL exponer `GET /api/public/slots?fecha=&practica=` devolviendo hu
 #### Scenario: Slots alineados a la duración
 
 - **WHEN** se piden slots para una práctica de 30 minutos en una franja de 08:00 a 10:00
-- **THEN** se devuelven los inicios 08:00, 08:30 y 09:00, sin pasar el fin de la franja
+- **THEN** se devuelven los inicios 08:00, 08:30, 09:00 y 09:30, sin que ningún turno termine después del fin de la franja
 
 #### Scenario: Slot ocupado excluido
 
