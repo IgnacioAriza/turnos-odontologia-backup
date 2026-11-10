@@ -132,11 +132,11 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ---
 
 ### [C-02] `core-models-clinica-personas`
-- **Estado**: `[x]` implementado (SDD: proposal, spec, design, tasks; código real en backend/app/domain/{clinica,personas}, backend/app/core/{mixins,repository,security}, backend/scripts/seed.py, backend/tests/test_*, backend/app/infrastructure/db/migrations/versions/002_clinica_personas.py)
+- **Estado**: `[x]` implementado y archivado 2026-11-10 (SDD: proposal, design, tasks; código real en backend/app/domain/{clinica,personas}, backend/app/core/{mixins,repository,security}, backend/scripts/seed.py, backend/tests/test_*, backend/app/infrastructure/db/migrations/versions/002_clinica_personas.py)
 - **Scope**: Modelos base + migraciones iniciales + seed mínimo (DD-06 `clinic_id` día 1)
   - Modelos: `Clinic`, `User` (rol recepcion|odonto|admin), `Paciente`, `Sillon`, `Bloqueo` (estructura; lógica en C-07)
   - `AuditMixin` (`is_active`, `created_at`, `updated_at`); `BaseRepository[T]` + `UnitOfWork`; `clinic_id` FK obligatorio en todas las tablas de negocio
-  - Migración 001: tablas `clinic`, `users` (email UNIQUE por clínica), `pacientes` (índices `(clinic_id,telefono)`, `(clinic_id,dni)`), `sillones`, `bloqueos`
+  - Migración 002: tablas `clinic`, `users` (email UNIQUE por clínica), `pacientes` (índices `(clinic_id,telefono)`, `(clinic_id,dni)`), `sillones`, `bloqueos`
   - Seed mínimo: 1 `Clinic` (timezone AR, `wa_sender` Twilio, cuenta MP), 1 admin + 1 recepción + 1 odontólogo, 2-3 sillones activos
   - Tests: constraints UNIQUE, filtros `clinic_id` omnipresentes, seed idempotente
 - **Dependencias**: C-01
@@ -153,8 +153,8 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 
 > C-03 desbloquea todo lo interno. C-04 deja aranceles en lectura + seed (RN-ADMIN-02, IN-01).
 
-### [C-03] `auth-interno-jwt`
-- **Estado**: `[x]` implementado (SDD: proposal, spec, design, tasks; código real en backend/app/domain/auth, backend/app/api/auth, backend/app/core/rate_limit.py, backend/app/main.py, backend/app/infrastructure/db/migrations/versions/003_auth.py, backend/tests/test_auth_*, frontend/src/pages/Login.tsx, frontend/src/components/RouteGuard.tsx, frontend/src/pages/role/*.tsx)
+### [C-03] `auth-interno-rbac`
+- **Estado**: `[x]` implementado y archivado 2026-11-10 (SDD: proposal, design, tasks; código real en backend/app/domain/auth, backend/app/api/auth, backend/app/core/rate_limit.py, backend/app/main.py, backend/app/infrastructure/db/migrations/versions/003_auth.py, backend/tests/test_auth_*, frontend/src/pages/Login.tsx, frontend/src/components/RouteGuard.tsx, frontend/src/pages/role/*.tsx)
 - **Scope**: Autenticación JWT + RBAC para roles internos (recepción/odontólogo/admin). Login paciente NO entra (v1.1 C-11)
   - `POST /api/auth/login` — JWT access + refresh, rate limiting 5/60s por IP+email; `POST /api/auth/refresh` (rotación + blacklist anterior); `POST /api/auth/logout` (blacklist); `GET /api/auth/me`
   - Claims JWT: `sub`, `clinic_id`, `rol`, `email`, `jti`, `type`, `iat`, `exp`; refresh en cookie HttpOnly (secure, samesite=lax); `JWT_SECRET`, `JWT_EXPIRES_MIN=480` via env

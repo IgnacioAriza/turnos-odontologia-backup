@@ -1,0 +1,8 @@
+schema: spec-driven
+created: 2026-10-29
+skip_specs: true
+x-change: C-02
+x-name: core-models-clinica-personas
+x-status: archived
+x-phase: 1
+x-depends-on: [C-01]
