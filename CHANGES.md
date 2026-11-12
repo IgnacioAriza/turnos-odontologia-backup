@@ -248,6 +248,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
   - `GET /api/agenda?vista=dia|semana&sillon=&odontologo=&estado=` — multi-sillón día/semana, filtros por sillón/odontólogo/estado; crear turno interno usa motor C-05 (solape → 409 claro)
   - `GET /api/panel/dia?fecha=` — lista por hora con estado de seña + contacto WA; `PATCH /api/panel/turnos/{id}` marcar `completado`/`ausente`; 2.ª falta → `Bloqueo(desde, hasta=now()+30d, motivo="2_faltas", created_by)` automático (DD-04)
   - Excepción a bloqueo por recepción con motivo obligatorio auditado (RN-AUS-02); falta la marca recepción/odontólogo, nunca automática
+  - Migración 007: tabla `excepciones_bloqueo` para la excepción auditada (006 = C-06)
   - Frontend `features/agenda/` (día/semana multi-sillón) + `features/panel-dia/` (llegadas, señas, faltas) + vista `odonto` filtrada por `odontologo_id = yo` sin ABM
   - Tests: agenda sin solape, `ausente` x2 dispara bloqueo 30d, bloqueado → 403 con `bloqueado_hasta`, excepción auditada
 - **Dependencias**: C-05, C-03
@@ -288,7 +289,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Webhook MP idempotente + conciliación diaria (US-008; RN-PAGO-03)
   - `POST /api/webhooks/mercadopago`: valida firma (`MP_WEBHOOK_SECRET`), busca `mp_payment_id` → si existe 200 sin efectos; solo `aprobado` mueve `pendiente_sena → confirmado` y dispara WA + job T-24hs (llama a C-10); guarda `raw_webhook jsonb`
   - Modelo `Pago`: `turno_id`, `mp_payment_id UNIQUE`, `mp_preference_id`, `monto`, `moneda="ARS"`, `estado`, `idempotency_key UNIQUE`
-  - Migración 007: tabla `pagos` (006 ya la usa C-06 para `sena_perdida` y `reprogramado_de_id`); worker de reproceso de webhooks pendientes (idempotente)
+  - Migración 008: tabla `pagos` (006 = C-06, 007 = C-07); worker de reproceso de webhooks pendientes (idempotente)
   - `GET /api/admin/conciliacion?fecha=` — reporte turnos confirmados vs señas aprobadas; reembolsos solo según RN-CANCEL-02/03 (1.ª repro migra; tardía no reembolsa; manual solo Admin auditado)
   - Tests: webhook duplicado 200 sin doble confirmación, firma inválida 401, reproceso seguro, reporte cuadra
 - **Dependencias**: C-08
@@ -308,7 +309,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
   - Al confirmar (C-09): envío WA inmediato + job Redis `scheduled_for = inicio - 24h`; al cancelar/reprogramar (C-06) antes de T-24hs: cancela job (RN-NOTIF-03), repro reprograma job nuevo
   - Modelo `Notificacion`: `turno_id`, `canal`, `tipo`, `proveedor="twilio"`, `provider_sid`, `estado: encolado|enviado|entregado|fallido`, `scheduled_for`, `sent_at`; índice parcial UNIQUE un `recordatorio_24h` whatsapp por turno; fallo → backoff + email, turno no cambia de estado
   - `POST /api/webhooks/twilio` (opcional v1.0): estados de entrega; respaldo evento Google Calendar + email (US-009)
-  - Migración 008: tabla `notificaciones` + scheduler Redis (006 = C-06, 007 = C-09)
+  - Migración 009: tabla `notificaciones` + scheduler Redis (006 = C-06, 007 = C-07, 008 = C-09)
   - Tests: exactamente 1 recordatorio por turno, cancelación cancela job, fallo Twilio → `fallido` + reintento sin mutar turno
 - **Dependencias**: C-06, C-09
 - **Governance**: ALTO
