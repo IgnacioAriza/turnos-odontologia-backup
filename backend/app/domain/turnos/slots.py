@@ -157,3 +157,38 @@ def slot_para_inicio(slots: Sequence[Slot], inicio: datetime) -> Slot | None:
         if slot.inicio == objetivo:
             return slot
     return None
+
+
+def esta_alineado(
+    *,
+    inicio: datetime,
+    fecha: date,
+    duracion_min: int,
+    horarios: Sequence[_HorarioLike],
+    tz: str | None = None,
+) -> bool:
+    """Indica si `inicio` cae en la grilla de alguna franja del día.
+
+    No mira ocupación ni recursos: solo si el inicio es un múltiplo de la
+    duración dentro de una franja activa y el turno termina antes del cierre.
+    """
+    if duracion_min <= 0:
+        raise ValueError("duracion_min debe ser mayor a cero")
+
+    zona = ZoneInfo(tz or settings.tz_clinica)
+    duracion = timedelta(minutes=duracion_min)
+    objetivo = _aware_utc(inicio)
+
+    for horario in horarios:
+        if not getattr(horario, "activo", True):
+            continue
+        if horario.dia_semana != fecha.weekday():
+            continue
+        franja_inicio = datetime.combine(fecha, horario.hora_desde, tzinfo=zona).astimezone(UTC)
+        franja_fin = datetime.combine(fecha, horario.hora_hasta, tzinfo=zona).astimezone(UTC)
+        cursor = franja_inicio
+        while cursor + duracion <= franja_fin:
+            if cursor == objetivo:
+                return True
+            cursor += duracion
+    return False

@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="C-06 · Mockup Reservar (/reservar)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Mockup estático de /reservar para C-06 — aprobación visual pendiente"
+    />
+    <title>Mockup · Reservar</title>
+    <link rel="stylesheet" href="../../../../design-system/tokens.css" />
+    <link rel="icon" type="image/svg+xml" href="../../../../design-system/assets/logo.svg" />
+    <style>
+      /* ==================================================================
+         Tablero de revisión (chrome del mockup, no es UI del producto).
+         Todos los valores salen de design-system/tokens.css (rev. 1).
+         ================================================================== */
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; }
+
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--color-text);
+        background: var(--color-bg-secondary);
+      }
+      h1, h2, h3, h4 {
+        font-weight: var(--weight-semibold);
+        line-height: var(--leading-tight);
+        color: var(--color-text);
+      }
+      p { margin: 0; }
+      a { color: var(--color-primary); text-decoration: none; }
+      a:hover { color: var(--color-primary-hover); }
+      img, svg { display: block; max-width: 100%; }
+      button, input, select, textarea { font: inherit; color: inherit; }
+      ul, ol { list-style: none; }
+      :focus-visible {
+        outline: var(--focus-ring-width) solid var(--color-border-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+      .is-focus {
+        outline: var(--focus-ring-width) solid var(--color-border-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+      .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        overflow-wrap: anywhere;
+      }
+
+      .mk-topbar {
+        position: sticky; top: 0; z-index: 20;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .mk-topbar-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-sm) var(--spacing-md);
+        display: flex; flex-wrap: wrap; align-items: center;
+        gap: var(--spacing-sm); justify-content: space-between;
+      }
+      .mk-mock-label {
+        font-size: var(--text-sm); font-weight: var(--weight-semibold);
+        background: var(--color-warning-light);
+        border: 1px solid var(--color-warning);
+        color: var(--color-warning-text);
+        border-radius: var(--radius-full);
+        padding: var(--spacing-xs) var(--spacing-md);
+      }
+      .mk-not-app {
+        font-size: var(--text-xs); font-weight: var(--weight-semibold);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--color-text-secondary);
+        border: 1px dashed var(--color-border-strong);
+        border-radius: var(--radius-full);
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+
+      .mk-shell {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-md) var(--spacing-2xl);
+      }
+      .mk-board-head h1 { font-size: var(--text-3xl); margin-bottom: var(--spacing-sm); }
+      .mk-board-head > p {
+        max-width: var(--layout-prose);
+        color: var(--color-text-secondary);
+        font-size: var(--text-base);
+      }
+      .mk-legend {
+        margin-top: var(--spacing-md);
+        max-width: var(--layout-prose);
+        padding: var(--spacing-md);
+        background: var(--color-bg);
+        border: 1px dashed var(--color-border-strong);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-legend strong { color: var(--color-text); }
+
+      .mk-state {
+        margin-top: var(--spacing-2xl);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--color-border);
+      }
+      .mk-state-head {
+        display: flex; flex-wrap: wrap; align-items: baseline;
+        gap: var(--spacing-xs) var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+      }
+      .mk-state-num {
+        font-family: var(--font-mono); font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        color: var(--color-primary-deep);
+        background: var(--color-primary-light);
+        border: 1px solid var(--color-primary-mid);
+        border-radius: var(--radius-full);
+        padding: 2px var(--spacing-sm);
+      }
+      .mk-state-head h2 { font-size: var(--text-xl); }
+      .mk-route {
+        font-family: var(--font-mono); font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+        background: var(--color-bg-tertiary);
+        border-radius: var(--radius-sm);
+        padding: 2px var(--spacing-sm);
+      }
+      .mk-state-desc {
+        flex: 1 1 100%;
+        margin-top: var(--spacing-xs);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-state-body {
+        display: grid;
+        grid-template-columns: 390px minmax(0, 1fr);
+        gap: var(--spacing-lg);
+        align-items: start;
+      }
+      .mk-side { display: grid; gap: var(--spacing-md); font-size: var(--text-sm); }
+      .mk-side-block {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-md);
+      }
+      .mk-side-block h3 {
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--spacing-sm);
+      }
+      .mk-side-block ul {
+        display: grid; gap: var(--spacing-xs);
+        padding-left: var(--spacing-md);
+        list-style: disc;
+        color: var(--color-text-secondary);
+      }
+      .mk-side-block li { line-height: var(--leading-normal); }
+      .mk-tbd {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        color: var(--color-warning-text);
+        background: var(--color-warning-light);
+        border: 1px dashed var(--color-warning);
+        border-radius: var(--radius-sm);
+        padding: 0 var(--spacing-xs);
+      }
+      /* El ajuste responsive vive al final de la hoja, después de las reglas
+         de escritorio, para poder sobrescribirlas. */
+
+      /* ==================================================================
+         UI de la pantalla (equivalentes a los componentes del design system)
+         ================================================================== */
+      .mk-phone {
+        width: 390px;
+        max-width: 100%;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+      }
+      .app-header { background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+      .app-header-inner {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+        min-height: var(--control-height);
+      }
+      .logo { height: 36px; width: auto; }
+      .nav-link {
+        display: inline-flex; align-items: center;
+        min-height: var(--touch-target);
+        padding: 0 var(--spacing-sm);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        color: var(--color-text-secondary);
+      }
+      .nav-link:hover { background: var(--color-bg-tertiary); color: var(--color-text); }
+      .screen {
+        display: grid; gap: var(--spacing-md);
+        padding: var(--spacing-md);
+      }
+      .screen-title { font-size: var(--text-2xl); }
+      .screen-sub { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+      .card {
+        display: grid; gap: var(--spacing-sm);
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-sm);
+      }
+      .card-head {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: var(--spacing-sm); flex-wrap: wrap;
+      }
+      .card-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+      .meta { font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .card-foot {
+        display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--color-border);
+      }
+      .price { font-size: var(--text-xl); font-weight: var(--weight-bold); }
+
+      .field { display: grid; gap: var(--spacing-xs); }
+      .field label { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text-secondary); }
+      .input, .select {
+        width: 100%;
+        min-height: var(--control-height);
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: var(--color-bg);
+        color: var(--color-text);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+      }
+      .input::placeholder { color: var(--color-text-placeholder); }
+      .input:hover, .select:hover { border-color: var(--color-secondary); }
+      .input:focus, .select:focus {
+        outline: none;
+        border-color: var(--color-border-focus);
+        box-shadow: var(--shadow-focus);
+      }
+      .input--error { border-color: var(--color-danger); }
+      .input--error:focus {
+        outline: var(--focus-ring-width) solid var(--color-danger);
+        outline-offset: var(--focus-ring-offset);
+        box-shadow: none;
+      }
+      .input[disabled], .select[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        cursor: not-allowed;
+      }
+      .help { font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .error-msg {
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        color: var(--color-danger-text);
+      }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: var(--spacing-sm);
+        min-height: var(--control-height);
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font-size: var(--text-base);
+        font-weight: var(--weight-semibold);
+        text-align: center;
+        cursor: pointer;
+        transition: background-color var(--transition-fast), border-color var(--transition-fast),
+          color var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      .btn--primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+      .btn--primary:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+      .btn--secondary {
+        background: var(--color-bg); color: var(--color-primary);
+        border-color: var(--color-border-strong);
+      }
+      .btn--secondary:hover { background: var(--color-primary-light); border-color: var(--color-primary); }
+      .btn--ghost { background: transparent; color: var(--color-text-secondary); }
+      .btn--ghost:hover { background: var(--color-bg-tertiary); color: var(--color-text); }
+      .btn--block { width: 100%; }
+      .btn--sm { min-height: var(--touch-target); padding: var(--spacing-xs) var(--spacing-md); font-size: var(--text-sm); }
+      .btn[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        border-color: var(--color-border);
+        cursor: not-allowed;
+      }
+      .btn--loading { pointer-events: none; opacity: 0.9; }
+      .spinner {
+        width: 16px; height: 16px;
+        border: 2px solid var(--color-primary-contrast);
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: var(--radius-full);
+        animation: mk-spin 700ms linear infinite;
+      }
+      @keyframes mk-spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .spinner { animation: none; border-right-color: var(--color-primary-contrast); }
+      }
+
+      .badge {
+        display: inline-flex; align-items: center; gap: var(--spacing-xs);
+        padding: 2px var(--spacing-sm);
+        border: 1px solid transparent;
+        border-radius: var(--radius-full);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        white-space: nowrap;
+      }
+      .badge::before {
+        content: ""; width: 6px; height: 6px;
+        border-radius: var(--radius-full); background: currentColor;
+      }
+      .badge--plain::before { display: none; }
+      .badge--neutral {
+        background: var(--color-primary-light);
+        color: var(--color-primary-deep);
+        border-color: var(--color-primary-mid);
+      }
+      .badge--pending {
+        background: var(--color-warning-light);
+        color: var(--color-warning-text);
+        border-color: var(--color-warning);
+      }
+
+      .alert {
+        display: flex; align-items: flex-start; gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        border: 1px solid transparent;
+        border-left-width: 4px;
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+      }
+      .alert strong { display: block; margin-bottom: 2px; font-weight: var(--weight-semibold); }
+      .alert__icon { flex: 0 0 auto; font-size: var(--text-lg); line-height: var(--leading-tight); }
+      .alert--danger {
+        background: var(--color-danger-light);
+        border-color: var(--color-danger);
+        color: var(--color-danger-text);
+      }
+      .alert--warning {
+        background: var(--color-warning-light);
+        border-color: var(--color-warning);
+        color: var(--color-warning-text);
+      }
+      .alert--success {
+        background: var(--color-success-light);
+        border-color: var(--color-success);
+        color: var(--color-success-text);
+      }
+      .code {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        border: 1px solid currentColor;
+        border-radius: var(--radius-sm);
+        padding: 0 var(--spacing-xs);
+        white-space: nowrap;
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+        gap: var(--spacing-sm);
+      }
+      .slot {
+        display: flex; align-items: center; justify-content: center;
+        gap: var(--spacing-xs);
+        min-height: var(--touch-target);
+        padding: var(--spacing-xs);
+        background: var(--color-bg);
+        color: var(--color-text);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        cursor: pointer;
+      }
+      .slot:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+      .slot--selected {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-primary-contrast);
+        font-weight: var(--weight-semibold);
+      }
+      .slot[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        border-color: var(--color-border);
+        text-decoration: line-through;
+        cursor: not-allowed;
+      }
+
+      .stepper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-sm);
+      }
+      .step {
+        display: flex; align-items: center; gap: var(--spacing-sm);
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+      }
+      .step-num {
+        display: grid; place-items: center;
+        width: 24px; height: 24px; flex: 0 0 auto;
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-full);
+        background: var(--color-bg);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-bold);
+      }
+      .step--done .step-num {
+        background: var(--color-success);
+        border-color: var(--color-success);
+        color: var(--color-primary-contrast);
+      }
+      .step--active { color: var(--color-text); font-weight: var(--weight-semibold); }
+      .step--active .step-num {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-primary-contrast);
+      }
+
+      /* ---------------- desktop 1440 ---------------- */
+      .mk-desktop-section {
+        margin-top: var(--spacing-3xl);
+        background: var(--color-bg);
+        border-top: 1px solid var(--color-border);
+      }
+      .mk-desktop-head {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-md);
+      }
+      .mk-desktop-head h2 { font-size: var(--text-2xl); }
+      .mk-desktop-head p {
+        max-width: var(--layout-prose);
+        margin-top: var(--spacing-xs);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-desktop-canvas {
+        min-height: 900px;
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .app-header--wide .app-header-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+      .desktop-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-3xl);
+      }
+      .desktop-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: var(--spacing-xl);
+        align-items: start;
+      }
+      .desktop-col { display: grid; gap: var(--spacing-md); }
+      .stepper--row { grid-template-columns: repeat(4, auto); gap: var(--spacing-lg); justify-content: start; }
+      .desktop-col--sticky { position: sticky; top: var(--spacing-2xl); }
+      .mk-after {
+        margin-top: var(--spacing-sm);
+        display: grid;
+        gap: var(--spacing-xs);
+        padding-left: var(--spacing-lg);
+        list-style: decimal;
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-desktop-note {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: 0 var(--spacing-lg) var(--spacing-lg);
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+      }
+
+      /* ------------------------------------------------------------------
+         Responsive: por debajo del ancho de escritorio (1100px) todo el
+         tablero y la seccion desktop colapsan a una columna. Ninguna
+         columna conserva min-width fijo por debajo de 390px.
+         ------------------------------------------------------------------ */
+      @media (max-width: 1100px) {
+        .mk-state-body { grid-template-columns: minmax(0, 1fr); }
+        .desktop-grid { grid-template-columns: minmax(0, 1fr); }
+        .desktop-col { min-width: 0; }
+        .desktop-col--sticky { position: static; }
+        .desktop-inner { padding: var(--spacing-lg) var(--spacing-md) var(--spacing-2xl); }
+        .mk-desktop-head { padding: var(--spacing-2xl) var(--spacing-md) var(--spacing-md); }
+        .mk-desktop-note { padding: 0 var(--spacing-md) var(--spacing-lg); }
+      }
+      @media (max-width: 860px) {
+        .actions--row { grid-template-columns: minmax(0, 1fr); }
+        .stepper--row { grid-template-columns: repeat(2, auto); }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mk-topbar">
+      <div class="mk-topbar-inner">
+        <p class="mk-mock-label">Mockup estático — C-06 · design system rev. 1</p>
+        <p class="mk-not-app">No es la app · maqueta para aprobación</p>
+      </div>
+    </header>
+
+    <main class="mk-shell">
+      <header class="mk-board-head">
+        <h1>Reservar turno — datos y entrega a la seña</h1>
+        <p>
+          Pantalla pública <code>/reservar</code> de <span data-brand-name>Turnos Odontología</span>. Seis estados
+          obligatorios en ancho mobile (390&nbsp;px) y el formulario principal en desktop (1440&nbsp;px).
+        </p>
+        <div class="mk-legend">
+          <p>
+            <strong>Qué estás viendo.</strong> Maquetas HTML estáticas para aprobar el diseño antes de implementar
+            C-06. No son la aplicación: no cargan datos ni envían formularios, y el envío en curso y el spinner
+            están congelados en un estado. Los valores visuales salen de <code>design-system/tokens.css</code>
+            (revisión 1).
+          </p>
+        </div>
+      </header>
+
+      <!-- ============================ ESTADO 01 ============================ -->
+      <section class="mk-state" id="estado-01" aria-labelledby="estado-01-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">01</span>
+          <h2 id="estado-01-titulo">Formulario vacío con resumen del turno</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            El paciente llega con el horario ya elegido. El resumen no se toca y los campos arrancan vacíos.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Confirmá tus datos</h3>
+              <ol class="stepper" aria-label="Pasos de la reserva">
+                <li class="step step--done">
+                  <span class="step-num" aria-hidden="true">✓</span>Práctica<span class="sr-only"> (completado)</span>
+                </li>
+                <li class="step step--done">
+                  <span class="step-num" aria-hidden="true">✓</span>Horario<span class="sr-only"> (completado)</span>
+                </li>
+                <li class="step step--active" aria-current="step">
+                  <span class="step-num" aria-hidden="true">3</span>Datos<span class="sr-only"> (paso actual)</span>
+                </li>
+                <li class="step">
+                  <span class="step-num" aria-hidden="true">4</span>Seña
+                </li>
+              </ol>
+
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <a class="btn btn--ghost btn--sm" href="home.html">Cambiar</a>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña (30&nbsp;%)</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+
+              <form class="card" novalidate>
+                <div class="field">
+                  <label for="res-nombre">Nombre y apellido</label>
+                  <input
+                    class="input"
+                    id="res-nombre"
+                    name="nombre"
+                    type="text"
+                    autocomplete="name"
+                    placeholder="Juana Pérez"
+                  />
+                </div>
+                <div class="field">
+                  <label for="res-tel">WhatsApp</label>
+                  <input
+                    class="input"
+                    id="res-tel"
+                    name="telefono"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="11 5555 1234"
+                    aria-describedby="res-tel-help"
+                  />
+                  <span class="help" id="res-tel-help">
+                    Código de área y número, sin 0 ni 15. Ejemplo: 11 5555 1234.
+                  </span>
+                </div>
+                <button class="btn btn--primary btn--block" type="button">Confirmar turno</button>
+                <p class="help">
+                  En el paso siguiente se paga la seña. Si no se acredita, el horario se libera.
+                </p>
+              </form>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li><code>POST /api/public/reservas</code> con <code>nombre</code>, <code>telefono</code>, <code>practica_id</code> e <code>inicio</code>.</li>
+                <li>La respuesta 201 es <code>ReservaOut</code>: <code>turno_id</code>, <code>manage_token</code>, <code>inicio</code>, <code>fin</code>, <code>monto_sena</code> y <code>estado</code>.</li>
+                <li>El teléfono se normaliza a E.164 antes de enviar: <code>11 5555 1234</code> → <code>+5491155551234</code>.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  El precio y el porcentaje de seña <strong>no</strong> se conocen antes de reservar: ningún
+                  endpoint público los expone. “30&nbsp;%” y “$&nbsp;9.000” son ilustrativos; el monto real llega
+                  recién en la respuesta 201 (<code>monto_sena</code>).
+                </li>
+                <li>
+                  El TTL para pagar la seña es <code>mp_ttl_min</code> en configuración; el mockup no muestra
+                  cuenta regresiva porque el valor no está definido en el contrato público.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>Etiquetas asociadas, <code>autocomplete</code> de nombre y teléfono, campos de 48&nbsp;px.</li>
+                <li>El resumen va antes del formulario: el paciente confirma qué está reservando.</li>
+                <li>Los cuatro pasos son una lista ordenada con <code>aria-current="step"</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 02 ============================ -->
+      <section class="mk-state" id="estado-02" aria-labelledby="estado-02-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">02</span>
+          <h2 id="estado-02-titulo">Teléfono inválido</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            El número no alcanza los 10 dígitos nacionales. El error vive en el campo, el envío queda bloqueado y el
+            nombre ya cargado no se pierde.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Confirmá tus datos</h3>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <a class="btn btn--ghost btn--sm" href="home.html">Cambiar</a>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña (30&nbsp;%)</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+              <form class="card" novalidate>
+                <div class="field">
+                  <label for="res-nombre-err">Nombre y apellido</label>
+                  <input
+                    class="input"
+                    id="res-nombre-err"
+                    name="nombre"
+                    type="text"
+                    autocomplete="name"
+                    value="Juana Pérez"
+                  />
+                </div>
+                <div class="field">
+                  <label for="res-tel-err">WhatsApp</label>
+                  <input
+                    class="input input--error"
+                    id="res-tel-err"
+                    name="telefono"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    value="11 2345"
+                    aria-invalid="true"
+                    aria-describedby="res-tel-err-msg"
+                  />
+                  <span class="error-msg" id="res-tel-err-msg" role="status" aria-live="polite">
+                    Ingresá un número de 10 dígitos, sin 0 ni 15. Ejemplo: 11 5555 1234.
+                  </span>
+                </div>
+                <button class="btn btn--primary btn--block" type="button" disabled>Confirmar turno</button>
+                <p class="help">Corregí el WhatsApp para poder confirmar el turno.</p>
+              </form>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li><code>normalizarTelefonoAR(input)</code> devuelve <code>null</code> cuando el número no llega a 10 dígitos nacionales.</li>
+                <li>El envío se bloquea en el cliente: no se hace <code>POST</code> con un teléfono inválido.</li>
+                <li>El formato de entrada acepta espacios, guiones y el prefijo <code>+54 9</code>.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  El contrato público de la reserva no devuelve un error de validación de teléfono con un
+                  <code>codigo</code> propio; la validación es del cliente. Si el backend rechaza igual (422), el
+                  copy de ese caso queda sin definir.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li><code>aria-invalid="true"</code> y <code>aria-describedby</code> apuntando al mensaje.</li>
+                <li>El mensaje aparece en una región <code>aria-live="polite"</code>.</li>
+                <li>El borde rojo no es el único indicador: hay texto de error y el CTA está deshabilitado.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 03 ============================ -->
+      <section class="mk-state" id="estado-03" aria-labelledby="estado-03-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">03</span>
+          <h2 id="estado-03-titulo">Envío en curso</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            La reserva se está confirmando. El botón muestra spinner y <code>aria-busy</code>, los campos quedan
+            bloqueados y se anuncia el estado sin sacar al paciente de la pantalla.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Confirmá tus datos</h3>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña (30&nbsp;%)</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+              <form class="card" novalidate>
+                <div class="field">
+                  <label for="res-nombre-busy">Nombre y apellido</label>
+                  <input class="input" id="res-nombre-busy" type="text" value="Juana Pérez" disabled />
+                </div>
+                <div class="field">
+                  <label for="res-tel-busy">WhatsApp</label>
+                  <input class="input" id="res-tel-busy" type="tel" value="11 5555 1234" disabled />
+                  <span class="help">Se va a enviar como +54 9 11 5555 1234.</span>
+                </div>
+                <button
+                  class="btn btn--primary btn--block btn--loading"
+                  type="button"
+                  aria-busy="true"
+                  disabled
+                >
+                  <span class="spinner" aria-hidden="true"></span>
+                  Confirmando tu turno…
+                </button>
+                <p class="help" role="status" aria-live="polite">
+                  Estamos confirmando el turno. No cierres esta pantalla.
+                </p>
+              </form>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>Un único <code>POST /api/public/reservas</code> en vuelo; sin reintentos automáticos.</li>
+                <li>El botón queda <code>disabled</code> y con <code>aria-busy="true"</code> hasta la respuesta.</li>
+                <li>Si la respuesta es 409, se pasa al estado 06 sin perder los datos.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  No hay endpoint de “estado de la reserva”: si el request se cuelga, el paciente no tiene forma de
+                  saber si el turno se creó. Falta definir el timeout y el copy de error de red.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>El texto “Estamos confirmando…” es una región <code>role="status"</code>, anunciada sin mover el foco.</li>
+                <li>El spinner es decorativo (<code>aria-hidden</code>): el estado se comunica con palabras.</li>
+                <li>Con <code>prefers-reduced-motion</code> el spinner deja de girar.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ============================ ESTADO 04 ============================ -->
+      <section class="mk-state" id="estado-04" aria-labelledby="estado-04-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">04</span>
+          <h2 id="estado-04-titulo">Reserva creada (201) con URL de pago</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            Camino “hay checkout”: el turno nace <code>pendiente_sena</code>, se ofrece pagar la seña y se entrega el
+            enlace de gestión antes de salir hacia Mercado Pago.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Turno reservado</h3>
+              <div class="alert alert--success" role="status" aria-live="polite">
+                <span class="alert__icon" aria-hidden="true">✓</span>
+                <div>
+                  <strong>Te guardamos el horario</strong>
+                  Falta pagar la seña para confirmar el turno.
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <span class="badge badge--pending">Pendiente de seña</span>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+              <button class="btn btn--primary btn--block" type="button">Pagar la seña · $ 9.000</button>
+              <a class="btn btn--secondary btn--block" href="gestionar.html">Gestionar mi turno</a>
+              <p class="help">
+                Guardá el enlace de gestión: es la única forma de cancelar o reprogramar sin llamar.
+              </p>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>201 con <code>estado: "pendiente_sena"</code> y <code>manage_token</code>; el enlace es <code>/gestionar/{token}</code>.</li>
+                <li>El pago y su URL son de C-08: C-06 solo entrega la reserva al checkout.</li>
+                <li>La reserva es exitosa aunque el pago no exista todavía.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  <strong>El contrato actual no devuelve URL de pago.</strong> <code>ReservaOut</code> tiene
+                  <code>turno_id</code>, <code>manage_token</code>, <code>inicio</code>, <code>fin</code>,
+                  <code>monto_sena</code> y <code>estado</code>, y nada más. El campo y su nombre
+                  (<code>pago_url</code> u otro) los define C-08: acá el botón es solo el punto de entrega.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>El estado del turno es texto (“Pendiente de seña”), no solo color.</li>
+                <li>“Pagar” es la acción primaria; “Gestionar mi turno” queda como acción secundaria visible.</li>
+                <li>La confirmación se anuncia con <code>role="status"</code> al llegar a la pantalla.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 05 ============================ -->
+      <section class="mk-state" id="estado-05" aria-labelledby="estado-05-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">05</span>
+          <h2 id="estado-05-titulo">Reserva creada (201) sin URL de pago</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            Camino “checkout todavía no disponible”: se muestra el turno pendiente de seña con su enlace de gestión,
+            sin bloquear la reserva y sin simular un pago aprobado.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Turno reservado</h3>
+              <div class="alert alert--warning" role="status" aria-live="polite">
+                <span class="alert__icon" aria-hidden="true">…</span>
+                <div>
+                  <strong>El pago online todavía no está disponible</strong>
+                  Tu turno quedó reservado como pendiente de seña. No se acreditó ningún pago.
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <span class="badge badge--pending">Pendiente de seña</span>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña a coordinar</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+              <a class="btn btn--primary btn--block" href="gestionar.html">Gestionar mi turno</a>
+              <p class="help">
+                Guardá este enlace. El estado del turno va a seguir siendo “pendiente de seña” hasta que se acredite
+                el pago.
+              </p>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>Misma respuesta 201 que el estado 04; solo cambia la ausencia de URL de pago.</li>
+                <li>El badge sigue en <code>pendiente_sena</code>: nunca aparece “Confirmado” sin pago acreditado.</li>
+                <li>La reserva no se bloquea ni se descarta por no tener checkout.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  Cómo se cobra la seña cuando no hay checkout (¿mostrador?, ¿transferencia?) no está definido en
+                  C-06: el mockup no promete un canal. Lo resuelve C-08.
+                </li>
+                <li>
+                  Falta decidir si el turno pendiente sin pago se cancela solo al vencer el TTL y qué copy se le
+                  muestra al paciente en ese caso.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>El aviso usa tokens de warning y texto que explica el estado real.</li>
+                <li>No hay un botón de pago falso ni un check verde de “pagado”.</li>
+                <li>La acción principal pasa a ser “Gestionar mi turno”, con 48&nbsp;px de alto.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 06 ============================ -->
+      <section class="mk-state" id="estado-06" aria-labelledby="estado-06-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">06</span>
+          <h2 id="estado-06-titulo">409: el horario se ocupó en el último momento</h2>
+          <span class="mk-route">/reservar</span>
+          <p class="mk-state-desc">
+            Otro paciente tomó el horario mientras se completaba el formulario. Se avisa, se refrescan los horarios
+            y los datos cargados quedan intactos.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+                <a class="nav-link" href="home.html">Inicio</a>
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Elegí otro horario</h3>
+              <div class="alert alert--warning" role="status" aria-live="polite">
+                <span class="alert__icon" aria-hidden="true">⏱</span>
+                <div>
+                  <strong>Ese horario se acaba de ocupar</strong>
+                  Las 09:30 ya no están disponibles. Elegí otro de la lista: tus datos siguen cargados.
+                  <span class="code">409</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · horarios actualizados</p>
+                  </div>
+                </div>
+                <div class="slots" role="group" aria-label="Horarios disponibles actualizados del jueves 12 de noviembre">
+                  <button class="slot" type="button">09:00</button>
+                  <button class="slot" type="button" disabled>09:30</button>
+                  <button class="slot" type="button">10:00</button>
+                  <button class="slot" type="button" disabled>10:30</button>
+                  <button class="slot" type="button">11:00</button>
+                  <button class="slot" type="button" disabled>11:30</button>
+                  <button class="slot" type="button">12:00</button>
+                  <button class="slot" type="button">12:30</button>
+                </div>
+              </div>
+              <form class="card" novalidate>
+                <div class="field">
+                  <label for="res-nombre-409">Nombre y apellido</label>
+                  <input class="input" id="res-nombre-409" type="text" value="Juana Pérez" />
+                </div>
+                <div class="field">
+                  <label for="res-tel-409">WhatsApp</label>
+                  <input class="input" id="res-tel-409" type="tel" value="11 5555 1234" />
+                </div>
+                <button class="btn btn--primary btn--block" type="button" disabled>Confirmar turno</button>
+                <p class="help">Elegí un horario disponible para volver a intentar.</p>
+              </form>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>El backend responde 409 con <code>detail: "El horario seleccionado ya no está disponible"</code>.</li>
+                <li>El cliente vuelve a pedir <code>GET /api/public/slots</code> con la misma práctica y fecha.</li>
+                <li><code>nombre</code> y <code>telefono</code> viven en estado del formulario, no en la respuesta: por eso se conservan.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  <strong>El 409 de <code>POST /api/public/reservas</code> no trae <code>codigo</code> estable</strong>
+                  (a diferencia de gestión, que usa <code>solape</code>). Sin código, el frontend no puede distinguir
+                  “slot ocupado” de otro conflicto sin mirar el texto. El chip del mockup muestra solo el status.
+                </li>
+                <li>
+                  No está definido qué pasa si el refresco de horarios también falla estando el 409 en pantalla.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>La alerta aparece en <code>role="status" aria-live="polite"</code> sin robar el foco del formulario.</li>
+                <li>El slot ocupado queda <code>disabled</code> y tachado, además del color.</li>
+                <li>El CTA deshabilitado explica en texto por qué no se puede confirmar.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========================= DESKTOP 1440 ========================= -->
+    <section class="mk-desktop-section" aria-labelledby="desktop-titulo">
+      <div class="mk-desktop-head">
+        <h2 id="desktop-titulo">Desktop 1440</h2>
+        <p>
+          El formulario de datos en layout ancho: stepper horizontal, campos a la izquierda y resumen del turno fijo
+          (sticky) a la derecha. El contenido respeta <code>--layout-max</code> (1200&nbsp;px); el resumen no se
+          estira a los 1440&nbsp;px.
+        </p>
+      </div>
+      <div class="mk-desktop-canvas">
+        <header class="app-header app-header--wide">
+          <div class="app-header-inner">
+            <img
+              class="logo"
+              src="../../../../design-system/assets/logo.svg"
+              alt="Turnos Odontología - logo provisorio"
+              width="150"
+              height="42"
+            />
+            <a class="nav-link" href="home.html">Volver al inicio</a>
+          </div>
+        </header>
+        <div class="desktop-inner">
+          <div class="desktop-grid">
+            <div class="desktop-col">
+              <div class="hero">
+                <h3>Confirmá tus datos</h3>
+                <p>Te enviamos el recordatorio por WhatsApp 24&nbsp;horas antes del turno.</p>
+              </div>
+              <ol class="stepper stepper--row" aria-label="Pasos de la reserva">
+                <li class="step step--done">
+                  <span class="step-num" aria-hidden="true">V</span>Práctica<span class="sr-only"> (completado)</span>
+                </li>
+                <li class="step step--done">
+                  <span class="step-num" aria-hidden="true">V</span>Horario<span class="sr-only"> (completado)</span>
+                </li>
+                <li class="step step--active" aria-current="step">
+                  <span class="step-num" aria-hidden="true">3</span>Datos<span class="sr-only"> (paso actual)</span>
+                </li>
+                <li class="step">
+                  <span class="step-num" aria-hidden="true">4</span>Seña
+                </li>
+              </ol>
+              <form class="card" novalidate>
+                <div class="field">
+                  <label for="d-nombre">Nombre y apellido</label>
+                  <input
+                    class="input"
+                    id="d-nombre"
+                    name="nombre"
+                    type="text"
+                    autocomplete="name"
+                    value="Juana Pérez"
+                  />
+                </div>
+                <div class="field">
+                  <label for="d-tel">WhatsApp</label>
+                  <input
+                    class="input"
+                    id="d-tel"
+                    name="telefono"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    value="11 5555 1234"
+                    aria-describedby="d-tel-help"
+                  />
+                  <span class="help" id="d-tel-help">
+                    Con código de área, sin 0 ni 15. Ejemplo: 11 5555 1234.
+                  </span>
+                </div>
+                <button class="btn btn--primary btn--block" type="button">Confirmar turno</button>
+                <p class="help">
+                  Al confirmar aceptás la política de cancelación: cancelar dentro de las 12&nbsp;horas hace perder la
+                  seña.
+                </p>
+              </form>
+            </div>
+            <div class="desktop-col desktop-col--sticky">
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Limpieza dental · 40 min</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <a class="btn btn--ghost btn--sm" href="home.html">Cambiar</a>
+                </div>
+                <div class="card-foot">
+                  <span class="meta">Seña (30&nbsp;%)</span>
+                  <span class="price">$ 9.000</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title">Qué pasa después</div>
+                <ol class="mk-after">
+                  <li>Se abre el pago de la seña en Mercado Pago.</li>
+                  <li>El turno queda reservado aunque el pago tarde: el webhook lo confirma.</li>
+                  <li>Recibís un único recordatorio por WhatsApp 24&nbsp;horas antes.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mk-desktop-note">
+        Captura de referencia: 1440&nbsp;×&nbsp;900. El frame ocupa el ancho completo de la ventana; el contenido
+        queda centrado a 1200&nbsp;px, igual que en la app.
+      </p>
+    </section>
+
+    <script src="../../../../design-system/brand.js"></script>
+  </body>
+</html>

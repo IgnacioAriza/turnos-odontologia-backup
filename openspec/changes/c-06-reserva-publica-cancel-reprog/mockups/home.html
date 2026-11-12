@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="C-06 · Mockup Home (/)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Mockup estático de la landing pública / para C-06 — aprobación visual pendiente"
+    />
+    <title>Mockup · Home</title>
+    <link rel="stylesheet" href="../../../../design-system/tokens.css" />
+    <link rel="icon" type="image/svg+xml" href="../../../../design-system/assets/logo.svg" />
+    <style>
+      /* ==================================================================
+         Tablero de revisión (chrome del mockup, no es UI del producto).
+         Todos los valores salen de design-system/tokens.css (rev. 1).
+         ================================================================== */
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; }
+
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--color-text);
+        background: var(--color-bg-secondary);
+      }
+      h1, h2, h3, h4 {
+        font-weight: var(--weight-semibold);
+        line-height: var(--leading-tight);
+        color: var(--color-text);
+      }
+      p { margin: 0; }
+      a { color: var(--color-primary); text-decoration: none; }
+      a:hover { color: var(--color-primary-hover); }
+      img, svg { display: block; max-width: 100%; }
+      button, input, select, textarea { font: inherit; color: inherit; }
+      ul, ol { list-style: none; }
+      :focus-visible {
+        outline: var(--focus-ring-width) solid var(--color-border-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+      .is-focus {
+        outline: var(--focus-ring-width) solid var(--color-border-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+      .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------------- barra fija del tablero ---------------- */
+      .mk-topbar {
+        position: sticky; top: 0; z-index: 20;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .mk-topbar-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-sm) var(--spacing-md);
+        display: flex; flex-wrap: wrap; align-items: center;
+        gap: var(--spacing-sm); justify-content: space-between;
+      }
+      .mk-mock-label {
+        font-size: var(--text-sm); font-weight: var(--weight-semibold);
+        color: var(--color-text);
+        background: var(--color-warning-light);
+        border: 1px solid var(--color-warning);
+        color: var(--color-warning-text);
+        border-radius: var(--radius-full);
+        padding: var(--spacing-xs) var(--spacing-md);
+      }
+      .mk-not-app {
+        font-size: var(--text-xs); font-weight: var(--weight-semibold);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--color-text-secondary);
+        border: 1px dashed var(--color-border-strong);
+        border-radius: var(--radius-full);
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+
+      /* ---------------- cuerpo del tablero ---------------- */
+      .mk-shell {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-md) var(--spacing-2xl);
+      }
+      .mk-board-head h1 { font-size: var(--text-3xl); margin-bottom: var(--spacing-sm); }
+      .mk-board-head > p {
+        max-width: var(--layout-prose);
+        color: var(--color-text-secondary);
+        font-size: var(--text-base);
+      }
+      .mk-legend {
+        margin-top: var(--spacing-md);
+        max-width: var(--layout-prose);
+        padding: var(--spacing-md);
+        background: var(--color-bg);
+        border: 1px dashed var(--color-border-strong);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-legend strong { color: var(--color-text); }
+
+      .mk-state {
+        margin-top: var(--spacing-2xl);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--color-border);
+      }
+      .mk-state-head {
+        display: flex; flex-wrap: wrap; align-items: baseline;
+        gap: var(--spacing-xs) var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+      }
+      .mk-state-num {
+        font-family: var(--font-mono); font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        color: var(--color-primary-deep);
+        background: var(--color-primary-light);
+        border: 1px solid var(--color-primary-mid);
+        border-radius: var(--radius-full);
+        padding: 2px var(--spacing-sm);
+      }
+      .mk-state-head h2 { font-size: var(--text-xl); }
+      .mk-route {
+        font-family: var(--font-mono); font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+        background: var(--color-bg-tertiary);
+        border-radius: var(--radius-sm);
+        padding: 2px var(--spacing-sm);
+      }
+      .mk-state-desc {
+        flex: 1 1 100%;
+        margin-top: var(--spacing-xs);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-state-body {
+        display: grid;
+        grid-template-columns: 390px minmax(0, 1fr);
+        gap: var(--spacing-lg);
+        align-items: start;
+      }
+      .mk-side { display: grid; gap: var(--spacing-md); font-size: var(--text-sm); }
+      .mk-side-block {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-md);
+      }
+      .mk-side-block h3 {
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--spacing-sm);
+      }
+      .mk-side-block ul {
+        display: grid; gap: var(--spacing-xs);
+        padding-left: var(--spacing-md);
+        list-style: disc;
+        color: var(--color-text-secondary);
+      }
+      .mk-side-block li { line-height: var(--leading-normal); }
+      .mk-tbd {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        color: var(--color-warning-text);
+        background: var(--color-warning-light);
+        border: 1px dashed var(--color-warning);
+        border-radius: var(--radius-sm);
+        padding: 0 var(--spacing-xs);
+      }
+      /* El ajuste responsive vive al final de la hoja, después de las reglas
+         de escritorio, para poder sobrescribirlas. */
+
+      /* ==================================================================
+         UI de la pantalla (equivalentes a los componentes del design system)
+         ================================================================== */
+      .mk-phone {
+        width: 390px;
+        max-width: 100%;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+      }
+      .app-header { background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+      .app-header-inner {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+        min-height: var(--control-height);
+      }
+      .logo { height: 36px; width: auto; }
+      .nav-link {
+        display: inline-flex; align-items: center;
+        min-height: var(--touch-target);
+        padding: 0 var(--spacing-sm);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        color: var(--color-text-secondary);
+      }
+      .nav-link:hover { background: var(--color-bg-tertiary); color: var(--color-text); }
+      .screen {
+        display: grid; gap: var(--spacing-md);
+        padding: var(--spacing-md);
+      }
+      .screen-title { font-size: var(--text-2xl); }
+      .screen-sub { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+      .hero {
+        background: var(--gradient-hero);
+        border: 1px solid var(--color-primary-mid);
+        border-radius: var(--radius-xl);
+        padding: var(--spacing-lg);
+      }
+      .hero h3 {
+        font-size: var(--text-2xl);
+        font-weight: var(--weight-extrabold);
+        line-height: var(--leading-hero);
+        color: var(--color-primary-deep);
+      }
+      .hero p {
+        margin-top: var(--spacing-sm);
+        font-size: var(--text-sm);
+        color: var(--color-primary-deep);
+      }
+
+      .card {
+        display: grid; gap: var(--spacing-sm);
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-sm);
+      }
+      .card-head {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: var(--spacing-sm); flex-wrap: wrap;
+      }
+      .card-title { font-size: var(--text-lg); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+      .meta { font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .card-foot {
+        display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: var(--spacing-sm);
+        margin-top: var(--spacing-xs);
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--color-border);
+      }
+      .price { font-size: var(--text-xl); font-weight: var(--weight-bold); }
+
+      .field { display: grid; gap: var(--spacing-xs); }
+      .field label { font-size: var(--text-sm); font-weight: var(--weight-medium); color: var(--color-text-secondary); }
+      .input, .select {
+        width: 100%;
+        min-height: var(--control-height);
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: var(--color-bg);
+        color: var(--color-text);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+      }
+      .input:hover, .select:hover { border-color: var(--color-secondary); }
+      .input:focus, .select:focus {
+        outline: none;
+        border-color: var(--color-border-focus);
+        box-shadow: var(--shadow-focus);
+      }
+      .input[disabled], .select[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        cursor: not-allowed;
+      }
+      .help { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: var(--spacing-sm);
+        min-height: var(--control-height);
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font-size: var(--text-base);
+        font-weight: var(--weight-semibold);
+        text-align: center;
+        cursor: pointer;
+        transition: background-color var(--transition-fast), border-color var(--transition-fast),
+          color var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      .btn--primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+      .btn--primary:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+      .btn--secondary {
+        background: var(--color-bg); color: var(--color-primary);
+        border-color: var(--color-border-strong);
+      }
+      .btn--secondary:hover { background: var(--color-primary-light); border-color: var(--color-primary); }
+      .btn--ghost { background: transparent; color: var(--color-text-secondary); }
+      .btn--ghost:hover { background: var(--color-bg-tertiary); color: var(--color-text); }
+      .btn--danger { background: var(--color-danger); color: var(--color-primary-contrast); }
+      .btn--block { width: 100%; }
+      .btn--sm { min-height: var(--touch-target); padding: var(--spacing-xs) var(--spacing-md); font-size: var(--text-sm); }
+      .btn[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        border-color: var(--color-border);
+        cursor: not-allowed;
+      }
+
+      .badge {
+        display: inline-flex; align-items: center; gap: var(--spacing-xs);
+        padding: 2px var(--spacing-sm);
+        border: 1px solid transparent;
+        border-radius: var(--radius-full);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        white-space: nowrap;
+      }
+      .badge::before {
+        content: ""; width: 6px; height: 6px;
+        border-radius: var(--radius-full); background: currentColor;
+      }
+      .badge--plain::before { display: none; }
+      .badge--neutral {
+        background: var(--color-primary-light);
+        color: var(--color-primary-deep);
+        border-color: var(--color-primary-mid);
+      }
+      .badge--pending {
+        background: var(--color-warning-light);
+        color: var(--color-warning-text);
+        border-color: var(--color-warning);
+      }
+      .badge--confirmed {
+        background: var(--color-success-light);
+        color: var(--color-success-text);
+        border-color: var(--color-success);
+      }
+      .badge--cancelled {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-secondary);
+        border-color: var(--color-border-strong);
+      }
+
+      .alert {
+        display: flex; align-items: flex-start; gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        border: 1px solid transparent;
+        border-left-width: 4px;
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+      }
+      .alert strong { display: block; margin-bottom: 2px; font-weight: var(--weight-semibold); }
+      .alert__icon { flex: 0 0 auto; font-size: var(--text-lg); line-height: var(--leading-tight); }
+      .alert--danger {
+        background: var(--color-danger-light);
+        border-color: var(--color-danger);
+        color: var(--color-danger-text);
+      }
+      .alert--warning {
+        background: var(--color-warning-light);
+        border-color: var(--color-warning);
+        color: var(--color-warning-text);
+      }
+      .code {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        border: 1px solid currentColor;
+        border-radius: var(--radius-sm);
+        padding: 0 var(--spacing-xs);
+        white-space: nowrap;
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+        gap: var(--spacing-sm);
+      }
+      .slot {
+        display: flex; align-items: center; justify-content: center;
+        gap: var(--spacing-xs);
+        min-height: var(--touch-target);
+        padding: var(--spacing-xs);
+        background: var(--color-bg);
+        color: var(--color-text);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        cursor: pointer;
+      }
+      .slot:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+      .slot--selected {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-primary-contrast);
+        font-weight: var(--weight-semibold);
+      }
+      .slot[disabled] {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-muted);
+        border-color: var(--color-border);
+        text-decoration: line-through;
+        cursor: not-allowed;
+      }
+
+      .empty {
+        display: grid; justify-items: center; gap: var(--spacing-sm);
+        padding: var(--spacing-lg) var(--spacing-md);
+        text-align: center;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+      }
+      .empty-icon {
+        display: grid; place-items: center;
+        width: 56px; height: 56px;
+        border-radius: var(--radius-full);
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+        font-size: var(--text-2xl);
+      }
+      .empty h3, .empty h4 { font-size: var(--text-lg); }
+
+      /* ---------------- desktop 1440 ---------------- */
+      .mk-desktop-section {
+        margin-top: var(--spacing-3xl);
+        background: var(--color-bg);
+        border-top: 1px solid var(--color-border);
+      }
+      .mk-desktop-head {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-md);
+      }
+      .mk-desktop-head h2 { font-size: var(--text-2xl); }
+      .mk-desktop-head p {
+        max-width: var(--layout-prose);
+        margin-top: var(--spacing-xs);
+        font-size: var(--text-sm);
+        color: var(--color-text-secondary);
+      }
+      .mk-desktop-canvas {
+        min-height: 900px;
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .app-header--wide .app-header-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+      .desktop-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-3xl);
+      }
+      .desktop-grid {
+        display: grid;
+        grid-template-columns: 380px minmax(0, 1fr);
+        gap: var(--spacing-xl);
+        align-items: start;
+      }
+      .desktop-col { display: grid; gap: var(--spacing-md); }
+      .mk-desktop-note {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: 0 var(--spacing-lg) var(--spacing-lg);
+        font-size: var(--text-xs);
+        color: var(--color-text-secondary);
+      }
+
+      /* ------------------------------------------------------------------
+         Responsive: por debajo del ancho de escritorio (1100px) todo el
+         tablero y la seccion desktop colapsan a una columna. Ninguna
+         columna conserva min-width fijo por debajo de 390px.
+         ------------------------------------------------------------------ */
+      @media (max-width: 1100px) {
+        .mk-state-body { grid-template-columns: minmax(0, 1fr); }
+        .desktop-grid { grid-template-columns: minmax(0, 1fr); }
+        .desktop-col { min-width: 0; }
+        .desktop-col--sticky { position: static; }
+        .desktop-inner { padding: var(--spacing-lg) var(--spacing-md) var(--spacing-2xl); }
+        .mk-desktop-head { padding: var(--spacing-2xl) var(--spacing-md) var(--spacing-md); }
+        .mk-desktop-note { padding: 0 var(--spacing-md) var(--spacing-lg); }
+      }
+      @media (max-width: 860px) {
+        .actions--row { grid-template-columns: minmax(0, 1fr); }
+        .stepper--row { grid-template-columns: repeat(2, auto); }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mk-topbar">
+      <div class="mk-topbar-inner">
+        <p class="mk-mock-label">Mockup estático — C-06 · design system rev. 1</p>
+        <p class="mk-not-app">No es la app · maqueta para aprobación</p>
+      </div>
+    </header>
+
+    <main class="mk-shell">
+      <header class="mk-board-head">
+        <h1>Home — búsqueda de horarios</h1>
+        <p>
+          Pantalla pública <code>/</code> de <span data-brand-name>Turnos Odontología</span>. Cuatro estados
+          obligatorios en ancho mobile (390&nbsp;px) y el estado principal en layout desktop (1440&nbsp;px).
+        </p>
+        <div class="mk-legend">
+          <p>
+            <strong>Qué estás viendo.</strong> Maquetas HTML estáticas para aprobar el diseño antes de implementar
+            C-06. No son la aplicación: no cargan datos, no envían formularios y no tienen interactividad. Las
+            tarjetas de 390&nbsp;px no recortan la pantalla a 844&nbsp;px de alto, para que ningún estado quede
+            escondido. Los valores visuales salen de <code>design-system/tokens.css</code> (revisión 1).
+          </p>
+        </div>
+      </header>
+
+      <!-- ============================ ESTADO 01 ============================ -->
+      <section class="mk-state" id="estado-01" aria-labelledby="estado-01-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">01</span>
+          <h2 id="estado-01-titulo">Búsqueda inicial</h2>
+          <span class="mk-route">/</span>
+          <p class="mk-state-desc">
+            Visitante sin sesión: elige práctica y fecha, y pide los horarios. Sin registro y sin login.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+              </div>
+            </header>
+            <div class="screen">
+              <div class="hero">
+                <h3>Reservá tu turno</h3>
+                <p>Elegí la práctica y el día. No hace falta crear una cuenta.</p>
+              </div>
+              <div class="card">
+                <div class="field">
+                  <label for="home-practica">Práctica</label>
+                  <select class="select" id="home-practica">
+                    <option selected>Limpieza dental · 40 min</option>
+                    <option>Consulta / diagnóstico · 30 min</option>
+                    <option>Endodoncia · 60 min</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="home-fecha">Fecha</label>
+                  <input class="input" id="home-fecha" type="date" value="2026-11-12" />
+                  <span class="help">Los horarios se muestran en hora de Buenos Aires.</span>
+                </div>
+                <button class="btn btn--primary btn--block" type="button">Buscar horarios</button>
+              </div>
+              <p class="help">
+                ¿Ya reservaste? Usá el enlace de gestión que te enviamos por WhatsApp.
+              </p>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>La búsqueda dispara <code>GET /api/public/slots?fecha=YYYY-MM-DD&amp;practica=UUID</code>.</li>
+                <li>La fecha se envía como día local de la clínica (<code>America/Argentina/Buenos_Aires</code>).</li>
+                <li>Un visitante autenticado no llega acá: el guard lo manda a su panel (D10).</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  No existe endpoint público que liste las prácticas: el selector necesita un origen de datos
+                  (hoy <code>/api/public/slots</code> exige un <code>practica</code> que solo conoce el panel).
+                </li>
+                <li>
+                  La home no puede ofrecer “Gestionar mi turno”: la ruta es <code>/gestionar/:token</code> y no hay
+                  forma de pedir un enlace sin token (reenvío fuera de alcance, ver Open Questions de <code>design.md</code>).
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>Etiquetas asociadas con <code>for</code>; controles de 48&nbsp;px.</li>
+                <li>Un solo <code>h1</code> en el archivo (el del tablero); la pantalla usa <code>h3</code>.</li>
+                <li>Foco visible con el anillo del design system, sin <code>outline: none</code> sin reemplazo.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 02 ============================ -->
+      <section class="mk-state" id="estado-02" aria-labelledby="estado-02-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">02</span>
+          <h2 id="estado-02-titulo">Horarios cargados, uno seleccionado</h2>
+          <span class="mk-route">/</span>
+          <p class="mk-state-desc">
+            Resultado de la búsqueda: seis horarios libres, uno elegido. El slot elegido se marca con color,
+            borde, peso y tilde, nunca solo por color.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+              </div>
+            </header>
+            <div class="screen">
+              <div class="card-head">
+                <div>
+                  <h3 class="screen-title">Horarios libres</h3>
+                  <p class="meta">Jueves 12/11 · Limpieza dental · 40 min</p>
+                </div>
+                <button class="btn btn--ghost btn--sm" type="button">Cambiar</button>
+              </div>
+              <p class="help">6 horarios disponibles. Los tachados ya están tomados.</p>
+              <div class="slots" role="group" aria-label="Horarios disponibles del jueves 12 de noviembre">
+                <button class="slot" type="button">09:00</button>
+                <button class="slot slot--selected" type="button" aria-pressed="true">
+                  <span aria-hidden="true">✓</span> 09:30
+                </button>
+                <button class="slot" type="button">10:00</button>
+                <button class="slot" type="button" disabled>10:30</button>
+                <button class="slot" type="button">11:00</button>
+                <button class="slot" type="button" disabled>11:30</button>
+                <button class="slot" type="button">12:00</button>
+                <button class="slot" type="button">12:30</button>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Turno elegido</div>
+                    <p class="meta">Jueves 12/11 · 09:30</p>
+                  </div>
+                  <span class="badge badge--neutral">Limpieza dental</span>
+                </div>
+                <p class="help">Al reservar se pide una seña. El detalle aparece en el siguiente paso.</p>
+                <a class="btn btn--primary btn--block" href="reservar.html">Continuar</a>
+              </div>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li><code>SlotsResponse</code>: <code>fecha</code>, <code>practica_id</code>, <code>duracion_min</code> y <code>slots[]</code> con <code>inicio</code>, <code>fin</code> e ids de sillón/odontólogo.</li>
+                <li>Un día sin horarios llega como <code>slots: []</code>; un día cerrado también.</li>
+                <li>“6 disponibles” es un conteo del cliente sobre <code>slots[]</code>, no un campo de la API.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  El slot no trae precio ni porcentaje de seña, así que acá no se muestra el importe. El monto
+                  recién llega en la respuesta de la reserva (ver <code>reservar.html</code>).
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>Slots como botones de 44&nbsp;px mínimo, agrupados con <code>role="group"</code> y etiqueta.</li>
+                <li>Selección expuesta con <code>aria-pressed="true"</code>.</li>
+                <li>Botones deshabilitados con <code>disabled</code> real además del estilo.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ============================ ESTADO 03 ============================ -->
+      <section class="mk-state" id="estado-03" aria-labelledby="estado-03-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">03</span>
+          <h2 id="estado-03-titulo">Día sin horarios</h2>
+          <span class="mk-route">/</span>
+          <p class="mk-state-desc">
+            El día consultado no tiene huecos. La pantalla no queda en blanco: explica qué pasó y sugiere un día con
+            disponibilidad.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">Horarios libres</h3>
+              <div class="empty">
+                <div class="empty-icon" aria-hidden="true">▦</div>
+                <h4>No quedan horarios para el jueves 12/11</h4>
+                <p class="help">
+                  Ese día está completo para limpieza dental. El viernes 13/11 hay horarios desde las 10:00.
+                </p>
+                <button class="btn btn--secondary btn--block" type="button">Ver el viernes 13/11</button>
+              </div>
+              <button class="btn btn--ghost btn--block" type="button">Elegir otra fecha</button>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>No hay un flag de “día completo”: la pantalla decide con <code>slots.length === 0</code>.</li>
+                <li>La consulta sigue devolviendo 200; no es un error.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  La sugerencia “el viernes 13/11 hay horarios desde las 10:00” no viene en la respuesta: requiere
+                  consultar días siguientes o un endpoint de próxima disponibilidad. El texto del mockup es
+                  ilustrativo.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>El mensaje es texto real, no un ícono solo; el ícono va con <code>aria-hidden</code>.</li>
+                <li>Jerarquía: título de pantalla <code>h3</code>, título del vacío <code>h4</code>.</li>
+                <li>Las dos acciones son botones de ancho completo, ≥ 44&nbsp;px.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ ESTADO 04 ============================ -->
+      <section class="mk-state" id="estado-04" aria-labelledby="estado-04-titulo">
+        <div class="mk-state-head">
+          <span class="mk-state-num">04</span>
+          <h2 id="estado-04-titulo">Error de API con reintento</h2>
+          <span class="mk-route">/</span>
+          <p class="mk-state-desc">
+            La consulta de horarios falla. Se avisa en lenguaje claro, se conserva la búsqueda y se ofrece
+            reintentar, sin detalles técnicos.
+          </p>
+        </div>
+        <div class="mk-state-body">
+          <div class="mk-phone">
+            <header class="app-header">
+              <div class="app-header-inner">
+                <img
+                  class="logo"
+                  src="../../../../design-system/assets/logo.svg"
+                  alt="Turnos Odontología — logo provisorio"
+                  width="130"
+                  height="36"
+                />
+              </div>
+            </header>
+            <div class="screen">
+              <h3 class="screen-title">No pudimos cargar los horarios</h3>
+              <div class="alert alert--danger" role="status" aria-live="polite">
+                <span class="alert__icon" aria-hidden="true">⚠</span>
+                <div>
+                  <strong>No pudimos buscar horarios</strong>
+                  Revisá tu conexión e intentá de nuevo. Si el problema sigue, llamá a la clínica.
+                </div>
+              </div>
+              <div class="card">
+                <div class="field">
+                  <label for="home-practica-error">Práctica</label>
+                  <select class="select" id="home-practica-error">
+                    <option selected>Limpieza dental · 40 min</option>
+                    <option>Consulta / diagnóstico · 30 min</option>
+                    <option>Endodoncia · 60 min</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="home-fecha-error">Fecha</label>
+                  <input class="input" id="home-fecha-error" type="date" value="2026-11-12" />
+                </div>
+                <button class="btn btn--primary btn--block" type="button">Reintentar</button>
+                <button class="btn btn--ghost btn--block" type="button">Volver</button>
+              </div>
+            </div>
+          </div>
+          <div class="mk-side">
+            <div class="mk-side-block">
+              <h3>Contrato</h3>
+              <ul>
+                <li>El backend responde <code>application/problem+json</code> con <code>type</code>, <code>title</code>, <code>status</code>, <code>detail</code>, <code>instance</code> y, si aplica, <code>codigo</code>.</li>
+                <li>La pantalla no muestra <code>detail</code> ni <code>instance</code>: son texto técnico.</li>
+                <li>La búsqueda se conserva para reintentar sin volver a elegir práctica y fecha.</li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Pendientes <span class="mk-tbd">(TBD)</span></h3>
+              <ul>
+                <li>
+                  El mockup usa un único mensaje para error de red, 429 y 5xx. Falta definir si rate limit
+                  (<code>rate_limited</code>, 429) merece su propio copy con “esperá un minuto”.
+                </li>
+              </ul>
+            </div>
+            <div class="mk-side-block">
+              <h3>Accesibilidad</h3>
+              <ul>
+                <li>El aviso que aparece va en una región <code>role="status"</code> con <code>aria-live="polite"</code>.</li>
+                <li>“Reintentar” es la acción primaria y mantiene su tamaño táctil de 48&nbsp;px.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========================= DESKTOP 1440 ========================= -->
+    <section class="mk-desktop-section" aria-labelledby="desktop-titulo">
+      <div class="mk-desktop-head">
+        <h2 id="desktop-titulo">Desktop 1440</h2>
+        <p>
+          El mismo estado con horarios cargados, en layout ancho de dos columnas: búsqueda a la izquierda y
+          resultados a la derecha. El contenido respeta <code>--layout-max</code> (1200&nbsp;px) y no se estira a
+          los 1440&nbsp;px.
+        </p>
+      </div>
+      <div class="mk-desktop-canvas">
+        <header class="app-header app-header--wide">
+          <div class="app-header-inner">
+            <img
+              class="logo"
+              src="../../../../design-system/assets/logo.svg"
+              alt="Turnos Odontología — logo provisorio"
+              width="150"
+              height="42"
+            />
+            <span class="badge badge--neutral badge--plain">Reservá 24/7 sin registro</span>
+          </div>
+        </header>
+        <div class="desktop-inner">
+          <div class="desktop-grid">
+            <div class="desktop-col">
+              <div class="hero">
+                <h3>Reservá tu turno</h3>
+                <p>Elegí la práctica y el día. No hace falta crear una cuenta.</p>
+              </div>
+              <div class="card">
+                <div class="field">
+                  <label for="d-practica">Práctica</label>
+                  <select class="select" id="d-practica">
+                    <option selected>Limpieza dental · 40 min</option>
+                    <option>Consulta / diagnóstico · 30 min</option>
+                    <option>Endodoncia · 60 min</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="d-fecha">Fecha</label>
+                  <input class="input" id="d-fecha" type="date" value="2026-11-12" />
+                  <span class="help">Los horarios se muestran en hora de Buenos Aires.</span>
+                </div>
+                <button class="btn btn--primary btn--block" type="button">Buscar horarios</button>
+              </div>
+            </div>
+            <div class="desktop-col">
+              <div class="card-head">
+                <div>
+                  <h3 class="screen-title">Horarios libres</h3>
+                  <p class="meta">Jueves 12/11 · Limpieza dental · 40 min · 6 disponibles</p>
+                </div>
+                <button class="btn btn--ghost btn--sm" type="button">Cambiar</button>
+              </div>
+              <div class="slots" role="group" aria-label="Horarios disponibles del jueves 12 de noviembre">
+                <button class="slot" type="button">09:00</button>
+                <button class="slot slot--selected" type="button" aria-pressed="true">
+                  <span aria-hidden="true">✓</span> 09:30
+                </button>
+                <button class="slot" type="button">10:00</button>
+                <button class="slot" type="button" disabled>10:30</button>
+                <button class="slot" type="button">11:00</button>
+                <button class="slot" type="button" disabled>11:30</button>
+                <button class="slot" type="button">12:00</button>
+                <button class="slot" type="button">12:30</button>
+              </div>
+              <div class="card">
+                <div class="card-head">
+                  <div>
+                    <div class="card-title">Turno elegido</div>
+                    <p class="meta">Jueves 12/11 · 09:30 · Limpieza dental · 40 min</p>
+                  </div>
+                  <a class="btn btn--primary" href="reservar.html">Continuar</a>
+                </div>
+                <p class="help">Los horarios tachados ya están tomados o no alcanzan para la práctica.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mk-desktop-note">
+        Captura de referencia: 1440&nbsp;×&nbsp;900. El frame ocupa el ancho completo de la ventana; el contenido
+        queda centrado a 1200&nbsp;px, igual que en la app.
+      </p>
+    </section>
+
+    <script src="../../../../design-system/brand.js"></script>
+
+  </body>
+</html>

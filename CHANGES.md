@@ -219,12 +219,17 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ---
 
 ### [C-06] `reserva-publica-cancel-reprog`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado (2026-11-11). Suite backend 242 passed / 33 skipped, cobertura 83.94%; `ruff check`, `ruff format --check` y `mypy` limpios; frontend 66 tests, `npm run build` sin errores de tipos. Pendiente: verificación real de upgrade/downgrade de la migración 006 en Postgres (sin Docker ni credenciales en este entorno) y el archivado del change.
+- **Migración**: `006` (`006_gestion_turnos`) — agrega `turnos.sena_perdida BOOLEAN NOT NULL DEFAULT false` y `turnos.reprogramado_de_id UUID NULL` con FK a `turnos.id`. `alembic heads` reporta `006` como única cabeza.
+- **Desvíos respecto del plan original**:
+  - Las rutas públicas de gestión son **token-addressed**: `GET /api/public/gestion/{token}`, `POST /api/public/gestion/{token}/cancelar` y `/reprogramar`, con `manage_token` también en el body. Reemplazan a `POST /api/public/reservas/{id}/cancelar|reprogramar`: el paciente nunca conoce el `turno_id`, y un `{id}` en la URL filtraría la existencia del turno. Token inválido → 403 `token_invalido`; turno inexistente o inactivo → 404 `turno_no_encontrado`.
+  - Se agregó `GET /api/public/practicas` (solo `id`, `nombre`, `duracion_min`, `sena_pct`, sin `precio_base` ni `clinic_id`) porque el selector de la landing no podía construir UUIDs. El resumen de `/reservar` no puede mostrar el monto absoluto de la seña antes del 201: `monto_sena` se conoce recién en la respuesta de la reserva.
+  - `codigo` estable en los problem+json: `solape` en el 409 de `POST /api/public/reservas`, además de los códigos de gestión (`requiere_confirmacion`, `requiere_nueva_sena`, `estado_no_gestionable`, `slot_invalido`, `token_invalido`, `turno_no_encontrado`).
 - **Scope**: Reserva pública E2E + gestión con token + cancelar/reprogramar (US-001, US-002 parcial, US-003; RN-CANCEL-01–04)
-  - `POST /api/public/reservas/{id}/cancelar` y `/reprogramar` con `manage_token` + ventana ≥ 12hs (`inicio - now() >= 12h`); 1.ª repro migra seña (`reprogramaciones_count=1`, reprograma job WA); 2.ª/tardía exige nueva seña y libera slot; tardía = seña no reembolsable (política visible)
-  - Misma API para recepción (JWT) sin token; cancelar libera horario inmediatamente para re-reserva
-  - Frontend `features/booking/`: `/` landing + buscador slots, `/reservar` (slots + formulario nombre+teléfono E.164 AR + checkout MP), `/gestionar/:token` (ver/cancelar/reprogramar), mobile-first
-  - Tests: ventana 12hs, 1.ª repro migra seña, 2.ª pierde seña, token inválido 403, slot liberado re-reservable
+  - Gestión pública con `manage_token` + ventana ≥ 12hs (`inicio - now() >= 12h`); 1.ª repro migra seña (`reprogramaciones_count=1`, reprograma job WA); 2.ª/tardía exige nueva seña y libera slot; tardía = seña no reembolsable (política visible)
+  - Misma reglas para recepción vía API interna (JWT `recepcion|admin`, `motivo` obligatorio); cancelar libera horario inmediatamente para re-reserva
+  - Frontend `features/booking/`: `/` landing con catálogo + buscador de slots, `/reservar` (nombre + teléfono E.164 AR + entrega al checkout), `/gestionar/:token` (ver/cancelar/reprogramar con confirmación explícita de pérdida de seña), mobile-first
+  - Tests: ventana 12hs, 1.ª repro migra seña, 2.ª pierde seña, token inválido 403, slot liberado re-reservable, catálogo público sin datos internos, 409 por `codigo` en el frontend
 - **Dependencias**: C-05
 - **Governance**: MEDIO
 - **Leer antes**:
@@ -283,7 +288,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Webhook MP idempotente + conciliación diaria (US-008; RN-PAGO-03)
   - `POST /api/webhooks/mercadopago`: valida firma (`MP_WEBHOOK_SECRET`), busca `mp_payment_id` → si existe 200 sin efectos; solo `aprobado` mueve `pendiente_sena → confirmado` y dispara WA + job T-24hs (llama a C-10); guarda `raw_webhook jsonb`
   - Modelo `Pago`: `turno_id`, `mp_payment_id UNIQUE`, `mp_preference_id`, `monto`, `moneda="ARS"`, `estado`, `idempotency_key UNIQUE`
-  - Migración 006: tabla `pagos`; worker de reproceso de webhooks pendientes (idempotente)
+  - Migración 007: tabla `pagos` (006 ya la usa C-06 para `sena_perdida` y `reprogramado_de_id`); worker de reproceso de webhooks pendientes (idempotente)
   - `GET /api/admin/conciliacion?fecha=` — reporte turnos confirmados vs señas aprobadas; reembolsos solo según RN-CANCEL-02/03 (1.ª repro migra; tardía no reembolsa; manual solo Admin auditado)
   - Tests: webhook duplicado 200 sin doble confirmación, firma inválida 401, reproceso seguro, reporte cuadra
 - **Dependencias**: C-08
@@ -303,7 +308,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
   - Al confirmar (C-09): envío WA inmediato + job Redis `scheduled_for = inicio - 24h`; al cancelar/reprogramar (C-06) antes de T-24hs: cancela job (RN-NOTIF-03), repro reprograma job nuevo
   - Modelo `Notificacion`: `turno_id`, `canal`, `tipo`, `proveedor="twilio"`, `provider_sid`, `estado: encolado|enviado|entregado|fallido`, `scheduled_for`, `sent_at`; índice parcial UNIQUE un `recordatorio_24h` whatsapp por turno; fallo → backoff + email, turno no cambia de estado
   - `POST /api/webhooks/twilio` (opcional v1.0): estados de entrega; respaldo evento Google Calendar + email (US-009)
-  - Migración 007: tabla `notificaciones` + scheduler Redis
+  - Migración 008: tabla `notificaciones` + scheduler Redis (006 = C-06, 007 = C-09)
   - Tests: exactamente 1 recordatorio por turno, cancelación cancela job, fallo Twilio → `fallido` + reintento sin mutar turno
 - **Dependencias**: C-06, C-09
 - **Governance**: ALTO

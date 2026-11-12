@@ -1,0 +1,172 @@
+/*
+ * tokens.css — Turnos Odontología · design system v1
+ *
+ * Portable reference of the project's visual values.
+ * Source of truth for values: frontend/src/index.css (existing app identity).
+ * Additive tokens (status surfaces, layout widths, focus ring, easing) extend it
+ * without changing any value the app already uses.
+ *
+ * Do not hardcode colors or spacing in mockups: consume these variables.
+ */
+
+:root {
+  /* ------------------------------------------------------------------ Color */
+  /* Brand — source: frontend/src/index.css */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-light: #eff6ff;
+  --color-primary-mid: #dbeafe;
+  --color-primary-deep: #1e3a8a; /* hero headings, HomePage.css */
+  --color-primary-contrast: #ffffff;
+  --color-primary-ring: rgba(37, 99, 235, 0.25);
+  --gradient-hero: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+
+  --color-secondary: #64748b;
+
+  /* Status */
+  --color-success: #16a34a;
+  --color-success-light: #ecfdf5;
+  --color-success-text: #15803d;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fffbeb;
+  --color-warning-text: #b45309;
+  --color-danger: #dc2626;
+  --color-danger-light: #fef2f2;
+  --color-danger-text: #b91c1c;
+  --color-info: #0ea5e9;
+  --color-info-light: #f0f9ff;
+  --color-info-text: #0369a1;
+
+  /* Surfaces, borders, text */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-border-focus: #2563eb;
+  --color-text: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-text-placeholder: #6b7280;
+  /* text-muted (2.54:1 on white) is DECORATIVE ONLY: never for text that must be read. */
+  --color-text-muted: #9ca3af;
+  --color-text-inverse: #ffffff;
+  --color-overlay: rgba(17, 24, 39, 0.5);
+
+  /* ------------------------------------------------------------- Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.5rem;
+
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-hero: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* ---------------------------------------------------------------- Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  /* Layout widths */
+  --layout-max: 1200px;
+  --layout-narrow: 500px;
+  --layout-prose: 600px;
+
+  /* ----------------------------------------------------------------- Radii */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* --------------------------------------------------------------- Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-focus: 0 0 0 3px var(--color-primary-ring);
+
+  /* ---------------------------------------------------------------- Motion */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --easing-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-duration-fast: 150ms;
+  --motion-duration-normal: 250ms;
+
+  /* ---------------------------------------------------------- Accessibility */
+  --touch-target: 44px;
+  --control-height: 48px; /* inputs, MobileAppointmentPage.css */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ Dark UI */
+/* Mirrors frontend/src/index.css plus additive status/surface tints. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #111827;
+    --color-bg-secondary: #1f2937;
+    --color-bg-tertiary: #374151;
+    --color-border: #374151;
+    --color-border-strong: #4b5563;
+    --color-text: #f9fafb;
+    --color-text-secondary: #d1d5db;
+    --color-text-placeholder: #9ca3af;
+    --color-text-muted: #9ca3af;
+
+    --color-primary-light: #1e293b;
+    --color-primary-mid: #1e3a8a;
+    --color-primary-deep: #bfdbfe;
+    --color-primary-ring: rgba(96, 165, 250, 0.35);
+    --gradient-hero: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%);
+
+    --color-success-light: #052e16;
+    --color-success-text: #4ade80;
+    --color-warning-light: #2a1a02;
+    --color-warning-text: #fbbf24;
+    --color-danger-light: #2a0a0a;
+    --color-danger-text: #f87171;
+    --color-info-light: #082f49;
+    --color-info-text: #38bdf8;
+    --color-overlay: rgba(0, 0, 0, 0.65);
+  }
+}
+
+/* ------------------------------------------------------- Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-normal: 0ms;
+    --motion-duration-fast: 0ms;
+    --motion-duration-normal: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

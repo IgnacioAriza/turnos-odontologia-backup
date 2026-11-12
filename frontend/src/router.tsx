@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import Layout from '@/layouts/Layout';
 import PublicLayout from '@/layouts/PublicLayout';
@@ -15,6 +15,17 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+/**
+ * Home interno por rol. El canal público no es destino válido para un usuario
+ * autenticado: mandarlo a `/` lo devolvía al guard público y producía un ciclo
+ * de redirecciones (regresión cubierta en `router.public-guard.test.tsx`).
+ */
+const HOME_POR_ROL: Record<string, string> = {
+  admin: '/admin',
+  recepcion: '/panel',
+  odonto: '/agenda',
+};
+
 function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth();
 
@@ -27,7 +38,7 @@ function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={HOME_POR_ROL[user.role] ?? '/login'} replace />;
   }
 
   return <>{children}</>;
@@ -45,13 +56,18 @@ function PublicRoute({ children }: PublicRouteProps) {
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    const destino = HOME_POR_ROL[user.role];
+    // Rol desconocido: se renderiza la vista pública en lugar de redirigir a un
+    // destino inexistente, que dejaría al usuario en un ciclo.
+    if (destino) {
+      return <Navigate to={destino} replace />;
+    }
   }
 
   return <>{children}</>;
 }
 
-export const router = createBrowserRouter([
+export const rutas: RouteObject[] = [
   {
     path: '/',
     element: (
@@ -120,4 +136,6 @@ export const router = createBrowserRouter([
       </Layout>
     ),
   },
-]);
+];
+
+export const router = createBrowserRouter(rutas);

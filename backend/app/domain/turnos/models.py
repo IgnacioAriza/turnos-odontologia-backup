@@ -108,9 +108,23 @@ class Turno(Base, AuditMixin):
     reprogramaciones_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     monto_sena: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False, default=0)
     expira_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # C-06: gestión por token. `sena_perdida` marca la seña retenida por cancelar
+    # o reprogramar fuera de la ventana; `reprogramado_de_id` encadena las
+    # reprogramaciones que exigen una nueva seña.
+    sena_perdida: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    reprogramado_de_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("turnos.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
 
     clinic: Mapped["Clinic"] = relationship("Clinic")
     paciente: Mapped["Paciente"] = relationship("Paciente", back_populates="turnos")
     sillon: Mapped["Sillon"] = relationship("Sillon")
     odontologo: Mapped["User"] = relationship("User")
     tipo_practica: Mapped["TipoPractica"] = relationship("TipoPractica")
+    reprogramado_de: Mapped["Turno | None"] = relationship(
+        "Turno",
+        remote_side="Turno.id",
+        foreign_keys=[reprogramado_de_id],
+    )

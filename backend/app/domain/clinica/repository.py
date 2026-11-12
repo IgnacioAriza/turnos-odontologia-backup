@@ -81,6 +81,20 @@ class TipoPracticaRepository(BaseRepository[TipoPractica]):
         )
         return list(result.scalars().all())
 
+    async def list_activas_publicas(self) -> list[TipoPractica]:
+        """Prácticas reservables del despliegue, sin filtrar por clínica.
+
+        El canal público no tiene contexto de clínica: la instalación es de una
+        sola clínica (KB 01/02). Si el producto se vuelve multi-clínica, este
+        método debe recibir el tenant resuelto por dominio o subdominio.
+        """
+        result = await self.session.execute(
+            select(TipoPractica)
+            .where(TipoPractica.activa.is_(True), TipoPractica.is_active.is_(True))
+            .order_by(TipoPractica.nombre)
+        )
+        return list(result.scalars().all())
+
     async def get_by_clinic(self, clinic_id: UUID, tipo_practica_id: UUID) -> TipoPractica | None:
         result = await self.session.execute(
             select(TipoPractica).where(

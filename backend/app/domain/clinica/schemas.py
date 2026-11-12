@@ -91,6 +91,17 @@ class TipoPracticaOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class PracticaPublicaOut(BaseModel):
+    """Práctica expuesta en el catálogo público: sin precio ni datos internos."""
+
+    id: UUID
+    nombre: str
+    duracion_min: int
+    sena_pct: int
+
+    model_config = {"from_attributes": True}
+
+
 class ArancelAdminOut(BaseModel):
     tipo_practica_id: UUID
     nombre: str

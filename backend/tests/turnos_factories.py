@@ -162,6 +162,8 @@ async def crear_turno(
     estado: str = "confirmado",
     manage_token: str | None = None,
     expira_at: datetime | None = None,
+    monto_sena: Decimal = Decimal("0.00"),
+    reprogramaciones_count: int = 0,
 ) -> Turno:
     fin = inicio + timedelta(minutes=duracion_min or practica.duracion_min)
     turno = Turno(
@@ -174,8 +176,9 @@ async def crear_turno(
         fin=fin.astimezone(UTC),
         estado=estado,
         manage_token=manage_token,
-        monto_sena=Decimal("0.00"),
+        monto_sena=monto_sena,
         expira_at=expira_at,
+        reprogramaciones_count=reprogramaciones_count,
         is_active=True,
     )
     db.add(turno)

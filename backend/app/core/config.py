@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     log_level: str = Field(
         default="INFO", description="Logging level (DEBUG, INFO, WARNING, ERROR)"
     )
+    rate_limit_backend: str = Field(
+        default="redis",
+        description="Rate limiter backend: 'redis' (con fallback a memoria) o 'memory' (tests)",
+    )
 
     @property
     def JWT_SECRET(self) -> str:  # noqa: N802

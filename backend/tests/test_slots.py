@@ -248,3 +248,57 @@ def test_duracion_invalida_es_error() -> None:
             odontologos=[],
             tz=TZ,
         )
+
+
+def _alineado(inicio: datetime, duracion_min: int = 30) -> bool:
+    from app.domain.turnos.slots import esta_alineado
+
+    return esta_alineado(
+        inicio=inicio,
+        fecha=LUNES,
+        duracion_min=duracion_min,
+        horarios=[_horario(LUNES, time(8, 0), time(10, 0))],
+        tz=TZ,
+    )
+
+
+def test_alineado_en_la_grilla() -> None:
+    assert _alineado(_local(LUNES, time(8, 0))) is True
+    assert _alineado(_local(LUNES, time(9, 30))) is True
+
+
+def test_no_alineado_entre_slots() -> None:
+    assert _alineado(_local(LUNES, time(8, 15))) is False
+
+
+def test_no_alineado_fuera_de_franja() -> None:
+    assert _alineado(_local(LUNES, time(10, 0))) is False
+    assert _alineado(_local(LUNES, time(7, 30))) is False
+
+
+def test_no_alineado_otro_dia() -> None:
+    from app.domain.turnos.slots import esta_alineado
+
+    assert (
+        esta_alineado(
+            inicio=_local(SABADO, time(8, 0)),
+            fecha=SABADO,
+            duracion_min=30,
+            horarios=[_horario(LUNES, time(8, 0), time(10, 0))],
+            tz=TZ,
+        )
+        is False
+    )
+
+
+def test_alineado_duracion_invalida_es_error() -> None:
+    from app.domain.turnos.slots import esta_alineado
+
+    with pytest.raises(ValueError):
+        esta_alineado(
+            inicio=_local(LUNES, time(8, 0)),
+            fecha=LUNES,
+            duracion_min=0,
+            horarios=[],
+            tz=TZ,
+        )

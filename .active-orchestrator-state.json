@@ -101,7 +101,7 @@
   },
   "owner": "active-orchestrator",
   "step": "done",
-  "version": 4,
+  "version": 5,
   "kb": {
     "files": [
       "knowledge-base/01_vision_y_objetivos.md",
@@ -128,6 +128,13 @@
       "needs_infra": true,
       "scale": "team"
     }
+  },
+  "visual_design": {
+    "created_by": "design-system",
+    "mode": "system-and-mockups",
+    "status": "approved",
+    "revision": 1,
+    "path": "design-system/README.md"
   },
   "roadmap": {
     "created_by": "roadmap-generator",

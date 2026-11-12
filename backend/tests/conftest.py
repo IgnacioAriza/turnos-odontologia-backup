@@ -10,16 +10,25 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # setdefault: respeta un DATABASE_URL externo (p. ej. Postgres en CI) y cae a
 # SQLite en local cuando no se define.
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
+# Tests: rate limiter en memoria, sin intentar conectar a Redis.
+os.environ.setdefault("RATE_LIMIT_BACKEND", "memory")
 
 import app.domain.auth.models  # noqa: F401
 import app.domain.clinica.models  # noqa: F401
 import app.domain.personas.models  # noqa: F401
 import app.domain.turnos.models  # noqa: F401
+from app.core.rate_limit import reset_rate_limit_store
 from app.infrastructure.db.base import Base, get_async_session_factory, get_engine
 
 # Usar el MISMO engine que la app usa (get_engine está cacheado)
 test_engine = get_engine()
 TestAsyncSessionLocal = get_async_session_factory()
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limits() -> None:
+    """Aísla el rate limiter en memoria entre tests (evita 429 espurios)."""
+    reset_rate_limit_store()
 
 
 @pytest.fixture(scope="function")

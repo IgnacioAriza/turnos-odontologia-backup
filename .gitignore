@@ -21,3 +21,7 @@ venv/
 # Variables de entorno (usar .env.example como plantilla)
 .env
 !.env.example
+
+# Artefactos locales de herramientas (no versionar)
+.playwright-mcp/
+.active-orchestrator-state.json.bak-*

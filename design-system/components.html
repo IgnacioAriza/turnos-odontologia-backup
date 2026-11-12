@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="Sistema de diseño">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Sistema de diseño de Turnos Odontología — fundación visual provisoria" />
+    <title>Sistema de diseño</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      /* Base de la preview (los tokens viven en tokens.css) */
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; }
+
+      html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+      body {
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--color-text);
+        background: var(--color-bg-secondary);
+        min-height: 100vh;
+      }
+      h1, h2, h3, h4 { font-weight: var(--weight-semibold); line-height: var(--leading-tight); color: var(--color-text); }
+      h1 { font-size: var(--text-3xl); }
+      h2 { font-size: var(--text-2xl); }
+      h3 { font-size: var(--text-xl); }
+      h4 { font-size: var(--text-lg); }
+      p { margin: 0 0 var(--spacing-md); }
+      p:last-child { margin-bottom: 0; }
+      a { color: var(--color-primary); text-decoration: none; }
+      a:hover { color: var(--color-primary-hover); }
+      ul, ol { list-style: none; }
+      img, svg { display: block; max-width: 100%; }
+      :focus-visible { outline: var(--focus-ring-width) solid var(--color-border-focus); outline-offset: var(--focus-ring-offset); }
+
+      /* ---------------- layout de la preview ---------------- */
+      .ds-topbar {
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .ds-topbar-inner {
+        max-width: var(--layout-max);
+        margin: 0 auto;
+        padding: var(--spacing-sm) var(--spacing-md);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-md);
+        min-height: 64px;
+      }
+      .ds-logo { height: 40px; width: auto; }
+      .ds-topbar-meta {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .ds-wrap { max-width: var(--layout-max); margin: 0 auto; padding: var(--spacing-lg) var(--spacing-md) var(--spacing-3xl); }
+      .ds-section {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: var(--shadow-sm);
+      }
+      .ds-section > header { margin-bottom: var(--spacing-lg); }
+      .ds-section > header p { color: var(--color-text-secondary); font-size: var(--text-sm); margin-top: var(--spacing-xs); }
+      .ds-eyebrow {
+        font-size: var(--text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-secondary);
+        font-weight: var(--weight-semibold);
+        display: block;
+        margin-bottom: var(--spacing-xs);
+      }
+      .ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+      .ds-row:last-child { margin-bottom: 0; }
+      .ds-grid { display: grid; gap: var(--spacing-md); }
+      .ds-grid--2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+      .ds-grid--3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+      .ds-label { font-size: var(--text-xs); color: var(--color-text-secondary); font-family: var(--font-mono); }
+
+      /* ---------------- botones ---------------- */
+      .ds-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        min-height: var(--touch-target);
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: var(--radius-md);
+        border: 1px solid transparent;
+        font-size: var(--text-base);
+        font-weight: var(--weight-semibold);
+        cursor: pointer;
+        text-align: center;
+        transition: background-color var(--transition-fast), border-color var(--transition-fast),
+          color var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      .ds-btn--primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+      .ds-btn--primary:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+      .ds-btn--primary:active { background: var(--color-primary-active); }
+      .ds-btn--secondary {
+        background: var(--color-bg);
+        color: var(--color-primary);
+        border-color: var(--color-border-strong);
+      }
+      .ds-btn--secondary:hover { background: var(--color-primary-light); border-color: var(--color-primary); }
+      .ds-btn--ghost { background: transparent; color: var(--color-text-secondary); }
+      .ds-btn--ghost:hover { background: var(--color-bg-tertiary); color: var(--color-text); }
+      .ds-btn--danger { background: var(--color-danger); color: #fff; }
+      .ds-btn--danger:hover { background: var(--color-danger-text); }
+      .ds-btn--sm { min-height: 40px; padding: var(--spacing-xs) var(--spacing-md); font-size: var(--text-sm); }
+      .ds-btn--lg { min-height: 52px; padding: var(--spacing-md) var(--spacing-xl); font-size: var(--text-lg); }
+      .ds-btn--block { width: 100%; }
+      .ds-btn[disabled] { background: var(--color-bg-tertiary); color: var(--color-text-muted); border-color: var(--color-border); cursor: not-allowed; }
+      .ds-btn--loading { pointer-events: none; opacity: 0.85; }
+      .ds-spinner {
+        width: 16px; height: 16px; border-radius: var(--radius-full);
+        border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff;
+        animation: ds-spin 700ms linear infinite;
+      }
+      @keyframes ds-spin { to { transform: rotate(360deg); } }
+
+      /* ---------------- formularios ---------------- */
+      .ds-field { display: flex; flex-direction: column; gap: var(--spacing-xs); }
+      .ds-field label { font-weight: var(--weight-medium); color: var(--color-text-secondary); font-size: var(--text-sm); }
+      .ds-input, .ds-select, .ds-textarea {
+        width: 100%;
+        min-height: var(--control-height);
+        padding: var(--spacing-sm) var(--spacing-md);
+        font: inherit;
+        color: var(--color-text);
+        background: var(--color-bg);
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      .ds-textarea { min-height: 96px; padding-top: var(--spacing-sm); resize: vertical; }
+      .ds-input::placeholder, .ds-textarea::placeholder { color: var(--color-text-placeholder); }
+      .ds-input:hover, .ds-select:hover, .ds-textarea:hover { border-color: var(--color-secondary); }
+      .ds-input:focus, .ds-select:focus, .ds-textarea:focus { outline: none; border-color: var(--color-primary); box-shadow: var(--shadow-focus); }
+      .ds-input--error { border-color: var(--color-danger); }
+      .ds-input--error:focus { border-color: var(--color-danger); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2); }
+      .ds-input[disabled] { background: var(--color-bg-tertiary); color: var(--color-text-muted); cursor: not-allowed; }
+      .ds-help { font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .ds-error { font-size: var(--text-sm); color: var(--color-danger-text); font-weight: var(--weight-medium); }
+      .ds-check { display: flex; align-items: flex-start; gap: var(--spacing-sm); font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .ds-check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--color-primary); flex: 0 0 auto; }
+
+      /* ---------------- badges / chips de estado ---------------- */
+      .ds-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 2px var(--spacing-sm);
+        border-radius: var(--radius-full);
+        font-size: var(--text-xs);
+        font-weight: var(--weight-semibold);
+        letter-spacing: 0.01em;
+        border: 1px solid transparent;
+        white-space: nowrap;
+      }
+      .ds-badge::before { content: ""; width: 6px; height: 6px; border-radius: var(--radius-full); background: currentColor; }
+      .ds-badge--pending { background: var(--color-warning-light); color: var(--color-warning-text); border-color: var(--color-warning); }
+      .ds-badge--confirmed { background: var(--color-success-light); color: var(--color-success-text); border-color: var(--color-success); }
+      .ds-badge--cancelled { background: var(--color-bg-tertiary); color: var(--color-text-secondary); border-color: var(--color-border-strong); }
+      .ds-badge--no-show { background: var(--color-danger-light); color: var(--color-danger-text); border-color: var(--color-danger); }
+      .ds-badge--done { background: var(--color-info-light); color: var(--color-info-text); border-color: var(--color-info); }
+      .ds-badge--neutral { background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary); }
+
+      /* ---------------- slots / selector de horario ---------------- */
+      .ds-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--spacing-sm); }
+      .ds-slot {
+        min-height: var(--touch-target);
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-md);
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-size: var(--text-sm);
+        font-weight: var(--weight-medium);
+        cursor: pointer;
+        transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+      }
+      .ds-slot:hover { border-color: var(--color-primary); background: var(--color-primary-light); color: var(--color-primary-deep); }
+      .ds-slot--selected {
+        background: var(--color-primary); border-color: var(--color-primary);
+        color: var(--color-primary-contrast); font-weight: var(--weight-semibold);
+      }
+      .ds-slot--selected:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+      .ds-slot[disabled], .ds-slot--disabled {
+        background: var(--color-bg-tertiary); color: var(--color-text-muted);
+        border-color: var(--color-border); text-decoration: line-through; cursor: not-allowed;
+      }
+
+      /* ---------------- stepper ---------------- */
+      .ds-stepper { display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+      .ds-step { display: flex; align-items: center; gap: var(--spacing-sm); font-size: var(--text-sm); color: var(--color-text-secondary); }
+      .ds-step-num {
+        width: 28px; height: 28px; border-radius: var(--radius-full);
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-bg); font-size: var(--text-xs); font-weight: var(--weight-bold);
+      }
+      .ds-step--active { color: var(--color-text); font-weight: var(--weight-semibold); }
+      .ds-step--active .ds-step-num { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-contrast); }
+      .ds-step--done { color: var(--color-text-secondary); }
+      .ds-step--done .ds-step-num { background: var(--color-success); border-color: var(--color-success); color: #fff; }
+      .ds-step-sep { flex: 1 1 16px; min-width: 16px; height: 1px; background: var(--color-border); }
+
+      /* ---------------- tarjetas ---------------- */
+      .ds-card {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-sm);
+      }
+      .ds-card--hero {
+        background: var(--gradient-hero);
+        border-color: var(--color-primary-mid);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-xl);
+      }
+      .ds-card--hero h2 { color: var(--color-primary-deep); font-weight: var(--weight-extrabold); line-height: var(--leading-hero); }
+      .ds-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm); }
+      .ds-card__title { font-size: var(--text-lg); font-weight: var(--weight-semibold); }
+      .ds-card__meta { font-size: var(--text-sm); color: var(--color-text-secondary); display: grid; gap: 2px; }
+      .ds-card__footer {
+        margin-top: var(--spacing-md);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid var(--color-border);
+        display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); flex-wrap: wrap;
+      }
+      .ds-price { font-size: var(--text-2xl); font-weight: var(--weight-bold); color: var(--color-text); }
+      .ds-price small { font-size: var(--text-sm); font-weight: var(--weight-normal); color: var(--color-text-muted); }
+
+      /* ---------------- alertas (problem+json) ---------------- */
+      .ds-alert {
+        display: flex; gap: var(--spacing-sm); align-items: flex-start;
+        border: 1px solid transparent;
+        border-left-width: 4px;
+        border-radius: var(--radius-md);
+        padding: var(--spacing-md);
+        font-size: var(--text-sm);
+        margin-bottom: var(--spacing-sm);
+      }
+      .ds-alert:last-child { margin-bottom: 0; }
+      .ds-alert strong { display: block; font-weight: var(--weight-semibold); margin-bottom: 2px; }
+      .ds-alert__icon { font-size: var(--text-lg); line-height: 1.2; flex: 0 0 auto; }
+      .ds-alert--danger { background: var(--color-danger-light); border-color: var(--color-danger); color: var(--color-danger-text); }
+      .ds-alert--warning { background: var(--color-warning-light); border-color: var(--color-warning); color: var(--color-warning-text); }
+      .ds-alert--info { background: var(--color-info-light); border-color: var(--color-info); color: var(--color-info-text); }
+      .ds-alert--success { background: var(--color-success-light); border-color: var(--color-success); color: var(--color-success-text); }
+      .ds-code {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        background: var(--color-bg);
+        border: 1px solid currentColor;
+        border-radius: var(--radius-sm);
+        padding: 0 4px;
+        opacity: 0.9;
+      }
+
+      /* ---------------- tabla agenda ---------------- */
+      .ds-table-wrap { overflow-x: auto; }
+      table.ds-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); min-width: 520px; }
+      .ds-table th, .ds-table td { text-align: left; padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--color-border); }
+      .ds-table th { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); background: var(--color-bg-secondary); }
+      .ds-table tbody tr:hover { background: var(--color-bg-secondary); }
+      .ds-table td:last-child, .ds-table th:last-child { text-align: right; }
+
+      /* ---------------- diálogo / overlay ---------------- */
+      .ds-dialog-demo { position: relative; background: var(--color-bg-tertiary); border-radius: var(--radius-lg); padding: var(--spacing-lg); }
+      .ds-dialog {
+        background: var(--color-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        padding: var(--spacing-lg);
+        max-width: 420px;
+        margin: 0 auto;
+        border: 1px solid var(--color-border);
+      }
+      .ds-dialog__actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg); flex-wrap: wrap; }
+      .ds-dialog__actions .ds-btn { flex: 1 1 140px; }
+
+      /* ---------------- misc ---------------- */
+      .ds-toast {
+        display: flex; align-items: center; gap: var(--spacing-sm);
+        background: var(--color-text); color: var(--color-text-inverse);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-md);
+        font-size: var(--text-sm);
+        box-shadow: var(--shadow-lg);
+        max-width: 380px;
+      }
+      .ds-empty { text-align: center; padding: var(--spacing-xl) var(--spacing-md); color: var(--color-text-secondary); }
+      .ds-empty__icon {
+        width: 56px; height: 56px; margin: 0 auto var(--spacing-md);
+        display: flex; align-items: center; justify-content: center;
+        border-radius: var(--radius-full);
+        background: var(--color-primary-light); color: var(--color-primary);
+        font-size: var(--text-2xl);
+      }
+      .ds-skeleton {
+        background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+        background-size: 200% 100%;
+        animation: ds-shimmer 1.4s var(--easing-standard) infinite;
+        border-radius: var(--radius-sm);
+        height: 14px;
+      }
+      @keyframes ds-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+      .ds-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--spacing-sm); }
+      .ds-swatch { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-bg); }
+      .ds-swatch__chip { height: 56px; }
+      .ds-swatch__meta { padding: var(--spacing-sm); font-size: var(--text-xs); line-height: 1.35; }
+      .ds-swatch__meta b { display: block; font-weight: var(--weight-semibold); }
+      .ds-swatch__meta code { font-family: var(--font-mono); color: var(--color-text-secondary); }
+      .ds-touch-demo {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: var(--touch-target); min-height: var(--touch-target);
+        border: 1px dashed var(--color-primary); color: var(--color-primary);
+        border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--weight-semibold);
+      }
+      .ds-footer { max-width: var(--layout-max); margin: 0 auto; padding: 0 var(--spacing-md) var(--spacing-2xl); color: var(--color-text-secondary); font-size: var(--text-sm); }
+      .ds-footer code { font-family: var(--font-mono); }
+
+      @media (max-width: 640px) {
+        html { font-size: 14px; }
+        h1 { font-size: var(--text-2xl); }
+        h2 { font-size: var(--text-xl); }
+        .ds-topbar-inner { padding: var(--spacing-sm); }
+        .ds-logo { height: 32px; }
+        .ds-section { padding: var(--spacing-md); }
+        .ds-slots { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+        .ds-step-sep { display: none; }
+        .ds-stepper { gap: var(--spacing-md); }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="ds-topbar">
+      <div class="ds-topbar-inner">
+        <img class="ds-logo" src="assets/logo.svg" alt="Turnos Odontología — logo provisorio" width="260" height="72" />
+        <div class="ds-topbar-meta">
+          <span class="ds-badge ds-badge--neutral">Sistema de diseño · v1</span>
+          <span class="ds-badge ds-badge--pending">Aprobación pendiente</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="ds-wrap">
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">Fundación visual</span>
+          <h1><span data-brand-name>Turnos Odontología</span></h1>
+          <p>
+            Referencia portable de componentes y estados. Los valores se consumen desde
+            <code>tokens.css</code>; el nombre desde <code>brand.js</code>; el logo desde
+            <code>assets/logo.svg</code>. Todo lo marcado como provisorio puede aprobarse tal cual y
+            reemplazarse después sin editar los mockups.
+          </p>
+        </header>
+        <div class="ds-card">
+          <h4>Pendiente antes de un rebrand</h4>
+          <ul class="ds-card__meta">
+            <li>· Nombre comercial de la clínica — <code>(TBD)</code></li>
+            <li>· Logo definitivo (hoy: placeholder rotulado) y favicon — <code>(TBD)</code></li>
+            <li>· Versión del logo para fondo oscuro — <code>(TBD)</code></li>
+            <li>· Fotografía de la clínica / profesionales — <code>(TBD)</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">01 · Color</span>
+          <h2>Paleta</h2>
+          <p>Heredada de <code>frontend/src/index.css</code>. El azul es acción y foco; los estados usan sus propios colores.</p>
+        </header>
+
+        <h3>Marca</h3>
+        <div class="ds-swatches" style="margin-bottom: var(--spacing-lg)">
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary)"></div><div class="ds-swatch__meta"><b>Primary</b><code>#2563eb</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary-hover)"></div><div class="ds-swatch__meta"><b>Primary hover</b><code>#1d4ed8</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary-light)"></div><div class="ds-swatch__meta"><b>Primary light</b><code>#eff6ff</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary-deep)"></div><div class="ds-swatch__meta"><b>Primary deep</b><code>#1e3a8a</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-secondary)"></div><div class="ds-swatch__meta"><b>Secondary</b><code>#64748b</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--gradient-hero)"></div><div class="ds-swatch__meta"><b>Hero gradient</b><code>tokens.css</code></div></div>
+        </div>
+
+        <h3>Estado</h3>
+        <div class="ds-swatches" style="margin-bottom: var(--spacing-lg)">
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-success)"></div><div class="ds-swatch__meta"><b>Success</b><code>#16a34a</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-warning)"></div><div class="ds-swatch__meta"><b>Warning</b><code>#f59e0b</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-danger)"></div><div class="ds-swatch__meta"><b>Danger</b><code>#dc2626</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-info)"></div><div class="ds-swatch__meta"><b>Info</b><code>#0ea5e9</code></div></div>
+        </div>
+
+        <h3>Superficies y texto</h3>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-bg); border-bottom: 1px solid var(--color-border)"></div><div class="ds-swatch__meta"><b>Bg</b><code>#ffffff</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-bg-secondary)"></div><div class="ds-swatch__meta"><b>Bg secondary</b><code>#f9fafb</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-border)"></div><div class="ds-swatch__meta"><b>Border</b><code>#e5e7eb</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-text)"></div><div class="ds-swatch__meta"><b>Text</b><code>#1f2937</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-text-secondary)"></div><div class="ds-swatch__meta"><b>Text secondary</b><code>#4b5563</code></div></div>
+          <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-text-muted)"></div><div class="ds-swatch__meta"><b>Text muted</b><code>#9ca3af</code></div></div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">02 · Tipografía</span>
+          <h2>Escala y pesos</h2>
+          <p>System UI stack — sin fuentes remotas, sin FOUT, sin costo. Escala reducida en mobile.</p>
+        </header>
+        <div class="ds-grid">
+          <div><span class="ds-label">--text-3xl · 700</span><p style="font-size: var(--text-3xl); font-weight: var(--weight-bold); line-height: var(--leading-tight); margin: 0">Reservá tu turno</p></div>
+          <div><span class="ds-label">--text-2xl · 600</span><h2 style="font-size: var(--text-2xl)">Elegí día y horario</h2></div>
+          <div><span class="ds-label">--text-xl · 600</span><h3 style="font-size: var(--text-xl)">Confirmá tus datos</h3></div>
+          <div><span class="ds-label">--text-lg · 500</span><p style="font-size: var(--text-lg); margin: 0">Limpieza dental · 40 min</p></div>
+          <div><span class="ds-label">--text-base · 400</span><p style="margin: 0">Te enviamos el recordatorio por WhatsApp 24 horas antes del turno.</p></div>
+          <div><span class="ds-label">--text-sm · 400</span><p style="font-size: var(--text-sm); margin: 0; color: var(--color-text-secondary)">La seña se descuenta del total del tratamiento.</p></div>
+          <div><span class="ds-label">--text-xs · uppercase</span><span class="ds-eyebrow" style="margin: 0">Turno confirmado</span></div>
+          <div><span class="ds-label">--font-mono</span><p style="font-family: var(--font-mono); font-size: var(--text-sm); margin: 0">RN-CANCEL-12H</p></div>
+          <div><span class="ds-label">Enlace</span><p style="margin: 0"><a href="#cancelar">Cancelar el turno</a> · <a href="#reprogramar">Reprogramar</a></p></div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">03 · Botones</span>
+          <h2>Acciones</h2>
+          <p>Altura mínima táctil 44 px · controles de formulario 48 px. Primario único por pantalla.</p>
+        </header>
+
+        <div class="ds-row">
+          <button class="ds-btn ds-btn--primary" type="button">Confirmar turno</button>
+          <button class="ds-btn ds-btn--secondary" type="button">Elegir otro horario</button>
+          <button class="ds-btn ds-btn--ghost" type="button">Volver</button>
+          <button class="ds-btn ds-btn--danger" type="button">Cancelar turno</button>
+        </div>
+        <div class="ds-row">
+          <button class="ds-btn ds-btn--primary ds-btn--sm" type="button">Chico</button>
+          <button class="ds-btn ds-btn--primary" type="button">Medio</button>
+          <button class="ds-btn ds-btn--primary ds-btn--lg" type="button">Grande</button>
+          <button class="ds-btn ds-btn--primary" type="button" disabled>Deshabilitado</button>
+          <button class="ds-btn ds-btn--primary ds-btn--loading" type="button">
+            <span class="ds-spinner" aria-hidden="true"></span> Procesando…
+          </button>
+        </div>
+        <div class="ds-row" style="max-width: 420px">
+          <button class="ds-btn ds-btn--primary ds-btn--block" type="button">Continuar · ancho completo en mobile</button>
+        </div>
+        <div class="ds-row">
+          <span class="ds-touch-demo">44 × 44</span>
+          <span class="ds-label">área táctil mínima</span>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">04 · Formularios</span>
+          <h2>Campos y validación</h2>
+          <p>Etiqueta siempre visible. El error va debajo del campo, con texto, nunca solo borde rojo.</p>
+        </header>
+
+        <div class="ds-grid ds-grid--2">
+          <div class="ds-field">
+            <label for="ds-nombre">Nombre y apellido</label>
+            <input class="ds-input" id="ds-nombre" type="text" placeholder="Juana Pérez" autocomplete="name" />
+            <span class="ds-help">Como figura en tu documento.</span>
+          </div>
+
+          <div class="ds-field">
+            <label for="ds-tel">WhatsApp</label>
+            <input class="ds-input ds-input--error" id="ds-tel" type="tel" value="11 234" aria-invalid="true" aria-describedby="ds-tel-error" />
+            <span class="ds-error" id="ds-tel-error">Ingresá un número de 10 dígitos (ej. 11 2345 6789).</span>
+          </div>
+
+          <div class="ds-field">
+            <label for="ds-practica">Práctica</label>
+            <select class="ds-select" id="ds-practica">
+              <option>Limpieza dental · 40 min</option>
+              <option>Consulta / diagnóstico · 30 min</option>
+              <option>Endodoncia · 60 min</option>
+            </select>
+          </div>
+
+          <div class="ds-field">
+            <label for="ds-disabled">Sillón (solo recepción)</label>
+            <input class="ds-input" id="ds-disabled" type="text" value="Sillón 1" disabled />
+            <span class="ds-help">Lo asigna el sistema según disponibilidad.</span>
+          </div>
+
+          <div class="ds-field">
+            <label for="ds-motivo">Motivo de cancelación</label>
+            <textarea class="ds-textarea" id="ds-motivo" placeholder="Contanos brevemente por qué cancelás…"></textarea>
+            <span class="ds-help">Obligatorio para cancelar. No se muestra al paciente.</span>
+          </div>
+
+          <div class="ds-field" style="justify-content: center">
+            <label class="ds-check">
+              <input type="checkbox" checked />
+              <span>Acepto la política de cancelación: hasta 12 horas antes del turno.</span>
+            </label>
+            <label class="ds-check">
+              <input type="radio" name="ds-radio" checked />
+              <span>Transferencia</span>
+            </label>
+            <label class="ds-check">
+              <input type="radio" name="ds-radio" />
+              <span>Mercado Pago</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">05 · Estados del turno</span>
+          <h2>Badges</h2>
+          <p>El estado nunca se comunica solo por color: siempre color + etiqueta.</p>
+        </header>
+        <div class="ds-row">
+          <span class="ds-badge ds-badge--pending">Pendiente de seña</span>
+          <span class="ds-badge ds-badge--confirmed">Confirmado</span>
+          <span class="ds-badge ds-badge--done">Atendido</span>
+          <span class="ds-badge ds-badge--no-show">Ausente</span>
+          <span class="ds-badge ds-badge--cancelled">Cancelado</span>
+          <span class="ds-badge ds-badge--neutral">Reprogramado</span>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">06 · Selección de horario</span>
+          <h2>Slots</h2>
+          <p>Un slot por hora disponible del sillón. Seleccionado = azul pleno; ocupado = tachado y deshabilitado.</p>
+        </header>
+        <div class="ds-row">
+          <span class="ds-label">Jueves 12 de noviembre</span>
+        </div>
+        <div class="ds-slots" role="group" aria-label="Horarios disponibles">
+          <button class="ds-slot" type="button">09:00</button>
+          <button class="ds-slot ds-slot--selected" type="button" aria-pressed="true">09:30</button>
+          <button class="ds-slot" type="button">10:00</button>
+          <button class="ds-slot ds-slot--disabled" type="button" disabled>10:30</button>
+          <button class="ds-slot" type="button">11:00</button>
+          <button class="ds-slot ds-slot--disabled" type="button" disabled>11:30</button>
+          <button class="ds-slot" type="button">12:00</button>
+          <button class="ds-slot" type="button">12:30</button>
+        </div>
+        <p class="ds-help" style="margin-top: var(--spacing-md)">Los horarios tachados ya están tomados o no alcanzan para la duración de la práctica.</p>
+
+        <div class="ds-stepper" style="margin-top: var(--spacing-lg)">
+          <div class="ds-step ds-step--done"><span class="ds-step-num">✓</span> Práctica</div>
+          <div class="ds-step-sep"></div>
+          <div class="ds-step ds-step--active"><span class="ds-step-num">2</span> Horario</div>
+          <div class="ds-step-sep"></div>
+          <div class="ds-step"><span class="ds-step-num">3</span> Datos</div>
+          <div class="ds-step-sep"></div>
+          <div class="ds-step"><span class="ds-step-num">4</span> Seña</div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">07 · Tarjetas</span>
+          <h2>Turno, resumen y hero</h2>
+        </header>
+
+        <div class="ds-grid ds-grid--2">
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <div>
+                <div class="ds-card__title">Limpieza dental</div>
+                <div class="ds-card__meta">
+                  <span>Jueves 12/11 · 09:30</span>
+                  <span>Sillón 1 · Dra. Gómez</span>
+                </div>
+              </div>
+              <span class="ds-badge ds-badge--confirmed">Confirmado</span>
+            </div>
+            <div class="ds-card__footer">
+              <a href="#gestionar">Gestionar turno</a>
+              <span class="ds-label">#T-1042</span>
+            </div>
+          </div>
+
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <div>
+                <div class="ds-card__title">Seña requerida</div>
+                <div class="ds-card__meta"><span>30% del valor de la práctica</span></div>
+              </div>
+              <span class="ds-badge ds-badge--pending">Pendiente</span>
+            </div>
+            <div class="ds-card__footer" style="border-top: 0; padding-top: 0; margin-top: var(--spacing-md)">
+              <div class="ds-price">$ 9.000 <small>de $ 30.000</small></div>
+              <button class="ds-btn ds-btn--primary" type="button">Pagar seña</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-card--hero" style="margin-top: var(--spacing-md)">
+          <h2>Reservá 24/7, sin registro</h2>
+          <p style="color: var(--color-primary-deep); margin: var(--spacing-sm) 0 var(--spacing-md)">Elegí día y horario, pagá la seña y listo.</p>
+          <button class="ds-btn ds-btn--primary ds-btn--lg" type="button">Reservar turno</button>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">08 · Errores y avisos</span>
+          <h2>Problem+json en pantalla</h2>
+          <p>Toda API devuelve <code>{ type, title, status, detail, instance, codigo }</code>. El <code>codigo</code> estable permite traducir el mensaje sin parsear texto.</p>
+        </header>
+
+        <div class="ds-alert ds-alert--danger" role="alert">
+          <span class="ds-alert__icon" aria-hidden="true">⚠</span>
+          <div><strong>Este enlace no es válido</strong>Pedile a recepción un enlace nuevo. <span class="ds-code">token_invalido · 403</span></div>
+        </div>
+        <div class="ds-alert ds-alert--warning" role="alert">
+          <span class="ds-alert__icon" aria-hidden="true">⏱</span>
+          <div><strong>Ese horario se acaba de ocupar</strong>Elegí otro horario disponible. <span class="ds-code">slot_ocupado · 409</span></div>
+        </div>
+        <div class="ds-alert ds-alert--danger" role="alert">
+          <span class="ds-alert__icon" aria-hidden="true">!</span>
+          <div><strong>Revisá los datos</strong>El WhatsApp debe tener 10 dígitos. <span class="ds-code">validation_error · 422</span></div>
+        </div>
+        <div class="ds-alert ds-alert--danger" role="alert">
+          <span class="ds-alert__icon" aria-hidden="true">🔒</span>
+          <div><strong>No podés cancelar este turno</strong>Faltan menos de 12 horas. Llamá a la clínica. <span class="ds-code">fuera_de_ventana · 409</span></div>
+        </div>
+        <div class="ds-alert ds-alert--warning" role="alert">
+          <span class="ds-alert__icon" aria-hidden="true">…</span>
+          <div><strong>Demasiados intentos</strong>Esperá un minuto y volvé a intentar. <span class="ds-code">rate_limited · 429</span></div>
+        </div>
+        <div class="ds-alert ds-alert--info">
+          <span class="ds-alert__icon" aria-hidden="true">i</span>
+          <div><strong>Ya usaste tu reprogramación</strong>Una segunda reprogramación pierde la seña. <span class="ds-code">segunda_reprogramacion · 409</span></div>
+        </div>
+        <div class="ds-alert ds-alert--success">
+          <span class="ds-alert__icon" aria-hidden="true">✓</span>
+          <div><strong>Turno cancelado</strong>Te enviamos la confirmación por WhatsApp. El horario ya está libre.</div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">09 · Operación interna</span>
+          <h2>Agenda del día</h2>
+          <p>Tabla multi-sillón con scroll horizontal en mobile. Estados por badge, nunca por color de fila.</p>
+        </header>
+
+        <div class="ds-table-wrap">
+          <table class="ds-table">
+            <thead>
+              <tr><th>Hora</th><th>Paciente</th><th>Práctica</th><th>Sillón</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>09:00</td><td>Pérez, Juana</td><td>Limpieza</td><td>1</td><td><span class="ds-badge ds-badge--confirmed">Confirmado</span></td><td><button class="ds-btn ds-btn--ghost ds-btn--sm" type="button">Ver</button></td></tr>
+              <tr><td>09:30</td><td>Ruiz, Marcos</td><td>Endodoncia</td><td>2</td><td><span class="ds-badge ds-badge--pending">Pendiente de seña</span></td><td><button class="ds-btn ds-btn--ghost ds-btn--sm" type="button">Ver</button></td></tr>
+              <tr><td>10:15</td><td>Silva, Ana</td><td>Consulta</td><td>1</td><td><span class="ds-badge ds-badge--done">Atendido</span></td><td><button class="ds-btn ds-btn--ghost ds-btn--sm" type="button">Ver</button></td></tr>
+              <tr><td>11:00</td><td>—</td><td>—</td><td>2</td><td><span class="ds-badge ds-badge--cancelled">Libre</span></td><td><button class="ds-btn ds-btn--ghost ds-btn--sm" type="button">Reservar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ds-empty" style="margin-top: var(--spacing-lg); background: var(--color-bg-secondary); border-radius: var(--radius-lg)">
+          <div class="ds-empty__icon" aria-hidden="true">▦</div>
+          <h4>No hay turnos para este día</h4>
+          <p class="ds-help" style="margin-top: var(--spacing-xs)">Cuando un paciente reserve, el turno aparece acá.</p>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">10 · Confirmaciones</span>
+          <h2>Diálogo y toast</h2>
+          <p>La acción destructiva (cancelar) pide confirmación explícita. La reprogramación muestra qué cambia.</p>
+        </header>
+
+        <div class="ds-dialog-demo">
+          <div class="ds-dialog" role="dialog" aria-modal="true" aria-labelledby="ds-dialog-title">
+            <h3 id="ds-dialog-title" style="margin-bottom: var(--spacing-sm)">¿Cancelar el turno?</h3>
+            <p style="color: var(--color-text-secondary); font-size: var(--text-sm)">
+              Jueves 12/11 a las 09:30 · Limpieza dental. Si la seña ya fue pagada, no se reintegra.
+            </p>
+            <div class="ds-dialog__actions">
+              <button class="ds-btn ds-btn--secondary" type="button">Volver</button>
+              <button class="ds-btn ds-btn--danger" type="button">Sí, cancelar</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--spacing-lg)">
+          <div class="ds-toast"><span aria-hidden="true">✓</span> Turno reprogramado para el viernes 13/11 a las 10:00.</div>
+        </div>
+      </section>
+
+      <section class="ds-section">
+        <header>
+          <span class="ds-eyebrow">11 · Carga</span>
+          <h2>Skeleton</h2>
+          <p>Se usa al pedir slots o la agenda. Sin spinner de pantalla completa.</p>
+        </header>
+        <div style="display: grid; gap: var(--spacing-sm); max-width: 420px">
+          <div class="ds-skeleton" style="width: 60%"></div>
+          <div class="ds-skeleton"></div>
+          <div class="ds-skeleton" style="width: 85%"></div>
+          <div class="ds-skeleton" style="height: 44px; border-radius: var(--radius-md)"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="ds-footer">
+      <p>
+        Fundación visual provisoria de <span data-brand-name>Turnos Odontología</span> · <code>design-system/</code> ·
+        Revisión 1 · Reemplazos: <code>assets/logo.svg</code>, <code>brand.js</code>, <code>tokens.css</code>.
+        Si cambia un token compartido, subí la revisión y volvé a pedir aprobación.
+      </p>
+    </footer>
+
+    <script src="brand.js"></script>
+  </body>
+</html>
