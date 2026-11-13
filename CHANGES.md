@@ -245,10 +245,10 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ### [C-07] `agenda-panel-dia`
 - **Estado**: `[ ]` pendiente
 - **Scope**: Agenda multi-sillón + panel del día + vista odontólogo + bloqueos 30d (US-004, US-005, US-006; RN-AUS-01–03)
-  - `GET /api/agenda?vista=dia|semana&sillon=&odontologo=&estado=` — multi-sillón día/semana, filtros por sillón/odontólogo/estado; crear turno interno usa motor C-05 (solape → 409 claro)
-  - `GET /api/panel/dia?fecha=` — lista por hora con estado de seña + contacto WA; `PATCH /api/panel/turnos/{id}` marcar `completado`/`ausente`; 2.ª falta → `Bloqueo(desde, hasta=now()+30d, motivo="2_faltas", created_by)` automático (DD-04)
+  - `GET /api/internal/agenda?vista=dia|semana&sillon=&odontologo=&estado=` — multi-sillón día/semana, filtros por sillón/odontólogo/estado; crear turno interno usa motor C-05 (solape → 409 claro)
+  - `GET /api/internal/panel/dia?fecha=` — lista por hora con estado de seña + contacto WA; `PATCH /api/internal/panel/turnos/{id}` marcar `completado`/`ausente`; 2.ª falta → `Bloqueo(desde, hasta=now()+30d, motivo="2_faltas", created_by)` automático (DD-04)
   - Excepción a bloqueo por recepción con motivo obligatorio auditado (RN-AUS-02); falta la marca recepción/odontólogo, nunca automática
-  - Migración 007: tabla `excepciones_bloqueo` para la excepción auditada (006 = C-06)
+  - Migración 007: tabla `excepciones_bloqueo` para la excepción auditada (006 = C-06, 007 = C-07)
   - Frontend `features/agenda/` (día/semana multi-sillón) + `features/panel-dia/` (llegadas, señas, faltas) + vista `odonto` filtrada por `odontologo_id = yo` sin ABM
   - Tests: agenda sin solape, `ausente` x2 dispara bloqueo 30d, bloqueado → 403 con `bloqueado_hasta`, excepción auditada
 - **Dependencias**: C-05, C-03
@@ -331,7 +331,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Login paciente OPCIONAL + historial (US-010; reserva sigue sin login)
   - Extiende `User` rol `paciente` + link `Paciente.user_id nullable`; `POST /api/auth/paciente/registro|login`; JWT rol `paciente` con RBAC (solo su historial)
   - `GET /api/paciente/mis-turnos` — historial + próximos + links gestionar con token; reserva pública intacta (login solo añade historial)
-  - Migración 008: `pacientes.user_id`, rol `paciente`; vinculación por teléfono+DNI al registrarse
+  - Migración 010: `pacientes.user_id`, rol `paciente`; vinculación por teléfono+DNI al registrarse
   - Frontend: `/login-paciente` + `/mis-turnos` (mobile-first)
   - Tests: reserva sin login sigue funcionando, paciente A no ve turnos de B, vinculación por teléfono
 - **Dependencias**: C-03, C-05
@@ -349,7 +349,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: Odontograma + historia clínica básica con auditoría (US-011)
   - Modelos: `OdontogramaPieza` (paciente, pieza FDI, estado, notas) + `HistoriaEvento` (turno/paciente, tipo, detalle, `created_by`, `created_at` inmutable); lectura + carga básica por turno/paciente desde panel odontólogo
   - Endpoints (JWT `odonto|admin`): `GET /api/pacientes/{id}/odontograma`, `PUT /api/pacientes/{id}/odontograma`, `GET/POST /api/pacientes/{id}/historia`; auditoría de cambios (quien/cuando/antes/después)
-  - Migración 009: tablas odontograma + historia
+  - Migración 011: tablas odontograma + historia
   - Frontend: visor/editor odontograma en ficha paciente (dentro de agenda/panel C-07)
   - Tests: odonto solo edita sus pacientes, auditoría registra cambios, lectura no filtra datos sensibles cruzados
 - **Dependencias**: C-07
@@ -367,7 +367,7 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 - **Scope**: ABM de aranceles/nomenclador por Admin con vigencia y auditoría (US-012; RN-ADMIN-01/02)
   - CRUD `POST/PATCH/DELETE /api/admin/aranceles` + `POST /api/admin/tipos-practica` (solo `admin`); `vigente_desde`, auditoría completa; **no altera turnos existentes** (foto `monto_sena` intacta, RN-PAGO-02)
   - Frontend `features/admin/`: tabla aranceles + editor `% seña` por práctica + historial de vigencia
-  - Migración 010: auditoría aranceles (`arancel_historial`)
+  - Migración 012: auditoría aranceles (`arancel_historial`)
   - Tests: cambio de precio no muta turnos pasados, no-admin 403, vigencia futura no afecta reservas actuales
 - **Dependencias**: C-04
 - **Governance**: ALTO

@@ -2,13 +2,16 @@
 
 from datetime import UTC, datetime, time, timedelta
 from decimal import Decimal
+from uuid import uuid4
 
 import pytest
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError
-from app.domain.personas.models import Paciente
+from app.core.exceptions import ConflictError, ForbiddenError, NotFoundError, UnprocessableError
+from app.domain.clinica.models import ExcepcionBloqueo
+from app.domain.personas.models import Paciente, User
 from app.domain.personas.repository import PacienteRepository
 from app.domain.turnos import service
 from app.domain.turnos.models import Turno
@@ -388,3 +391,154 @@ async def test_turno_guardado_pertenece_a_la_clinica_de_la_practica(
     guardado = result.scalar_one()
     assert guardado.clinic_id == base["clinic"].id  # type: ignore[attr-defined]
     assert guardado.paciente_id is not None
+
+
+# --- C-07: bloqueo con contrato estable y excepción auditada (tareas 3.1 / 3.2 / 3.3)
+
+
+async def _usuario_recepcion(db_session: AsyncSession, clinic_id: object) -> User:
+    usuario = User(
+        clinic_id=clinic_id,  # type: ignore[arg-type]
+        email=f"recepcion-{uuid4().hex[:8]}@clinica.com",
+        password_hash="x",
+        rol="recepcion",
+        activo=True,
+        is_active=True,
+    )
+    db_session.add(usuario)
+    await db_session.flush()
+    return usuario
+
+
+async def _escenario_interno(db_session: AsyncSession) -> dict[str, object]:
+    clinic = await crear_clinica(db_session)
+    practica = await crear_practica(db_session, clinic)
+    sillon = await crear_sillon(db_session, clinic)
+    odonto = await crear_odontologo(db_session, clinic)
+    paciente = await crear_paciente(db_session, clinic)
+    usuario = await _usuario_recepcion(db_session, clinic.id)
+    return {
+        "clinic": clinic,
+        "practica": practica,
+        "sillon": sillon,
+        "odonto": odonto,
+        "paciente": paciente,
+        "usuario": usuario,
+    }
+
+
+async def _crear_interno(
+    db_session: AsyncSession,
+    base: dict[str, object],
+    *,
+    motivo_excepcion: str | None = None,
+    hora: time = time(10, 0),
+) -> Turno:
+    return await service.crear_turno_interno(
+        db_session,
+        clinic_id=base["clinic"].id,  # type: ignore[attr-defined]
+        paciente_id=base["paciente"].id,  # type: ignore[attr-defined]
+        sillon_id=base["sillon"].id,  # type: ignore[attr-defined]
+        odontologo_id=base["odonto"].id,  # type: ignore[attr-defined]
+        tipo_practica_id=base["practica"].id,  # type: ignore[attr-defined]
+        inicio=local(LUNES, hora),
+        motivo_excepcion=motivo_excepcion,
+        usuario_id=base["usuario"].id,  # type: ignore[attr-defined]
+    )
+
+
+@pytest.mark.asyncio
+async def test_bloqueo_publico_expone_codigo_y_hasta(db_session: AsyncSession) -> None:
+    base = await _escenario_publico(db_session)
+    hasta = datetime.now(UTC) + timedelta(days=20)
+    await crear_paciente(
+        db_session, base["clinic"], telefono="+5491112345678", bloqueado_hasta=hasta
+    )
+
+    with pytest.raises(ForbiddenError) as exc:
+        await service.crear_turno_publico(
+            db_session,
+            nombre="Ana",
+            telefono="+5491112345678",
+            dni=None,
+            practica_id=base["practica"].id,  # type: ignore[attr-defined]
+            inicio=local(LUNES, time(10, 0)),
+        )
+
+    assert exc.value.code == "bloqueado"
+    assert exc.value.extra == {"bloqueado_hasta": hasta.isoformat()}
+
+
+@pytest.mark.asyncio
+async def test_alta_interna_bloqueada_sin_motivo_403(db_session: AsyncSession) -> None:
+    base = await _escenario_interno(db_session)
+    hasta = datetime.now(UTC) + timedelta(days=20)
+    base["paciente"].bloqueado_hasta = hasta  # type: ignore[attr-defined]
+    await db_session.flush()
+
+    with pytest.raises(ForbiddenError) as exc:
+        await _crear_interno(db_session, base)
+
+    assert exc.value.code == "bloqueado"
+    assert exc.value.extra == {"bloqueado_hasta": hasta.isoformat()}
+    assert (await db_session.execute(select(Turno))).scalars().all() == []
+
+
+@pytest.mark.asyncio
+async def test_alta_interna_bloqueada_con_motivo_registra_excepcion(
+    db_session: AsyncSession,
+) -> None:
+    base = await _escenario_interno(db_session)
+    base["paciente"].bloqueado_hasta = datetime.now(UTC) + timedelta(days=20)  # type: ignore[attr-defined]
+    await db_session.flush()
+
+    turno = await _crear_interno(db_session, base, motivo_excepcion="Urgencia odontológica")
+
+    assert turno.estado == "confirmado"
+    excepciones = (await db_session.execute(select(ExcepcionBloqueo))).scalars().all()
+    assert len(excepciones) == 1
+    excepcion = excepciones[0]
+    assert excepcion.turno_id == turno.id
+    assert excepcion.paciente_id == base["paciente"].id  # type: ignore[attr-defined]
+    assert excepcion.clinic_id == base["clinic"].id  # type: ignore[attr-defined]
+    assert excepcion.usuario_id == base["usuario"].id  # type: ignore[attr-defined]
+    assert excepcion.motivo == "Urgencia odontológica"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("motivo", ["", "   "])
+async def test_alta_interna_motivo_vacio_422(db_session: AsyncSession, motivo: str) -> None:
+    base = await _escenario_interno(db_session)
+    base["paciente"].bloqueado_hasta = datetime.now(UTC) + timedelta(days=20)  # type: ignore[attr-defined]
+    await db_session.flush()
+
+    with pytest.raises(UnprocessableError) as exc:
+        await _crear_interno(db_session, base, motivo_excepcion=motivo)
+
+    assert exc.value.code == "motivo_requerido"
+    assert (await db_session.execute(select(Turno))).scalars().all() == []
+    assert (await db_session.execute(select(ExcepcionBloqueo))).scalars().all() == []
+
+
+@pytest.mark.asyncio
+async def test_excepcion_no_queda_huerfana_si_falla_el_turno(
+    db_session: AsyncSession, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base = await _escenario_interno(db_session)
+    base["paciente"].bloqueado_hasta = datetime.now(UTC) + timedelta(days=20)  # type: ignore[attr-defined]
+    await db_session.flush()
+
+    flush_original = db_session.flush
+
+    async def _flush_falla(*args: object, **kwargs: object) -> None:
+        if any(isinstance(obj, Turno) for obj in db_session.new):
+            raise IntegrityError("fallo simulado", None, Exception("fallo simulado"))
+        await flush_original(*args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(db_session, "flush", _flush_falla)
+
+    with pytest.raises(ConflictError):
+        await _crear_interno(db_session, base, motivo_excepcion="Urgencia")
+
+    assert (await db_session.execute(select(Turno))).scalars().all() == []
+    assert (await db_session.execute(select(ExcepcionBloqueo))).scalars().all() == []

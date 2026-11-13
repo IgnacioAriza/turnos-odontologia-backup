@@ -69,8 +69,14 @@ CHECK (fin > inicio); EXCLUDE por rango si Postgres range (recomendado).
 - Constraints: un solo `recordatorio_24h` whatsapp por turno (índice parcial UNIQUE).
 
 ### Bloqueo
-- Atributos: `id`, `paciente_id`, `motivo="2_faltas"`, `desde`, `hasta (+30 días)`, `created_by`.
-- Relaciones: *──1 Paciente.
+- Atributos: `id`, `clinic_id`, `paciente_id`, `motivo="2_faltas"`, `desde`, `hasta (+30 días)`, `created_by`, `is_active`.
+- Relaciones: *──1 Paciente, *──1 Clinic.
+- Regla (C-07): al crear el bloqueo, `Paciente.faltas_count` vuelve a `0` para que "2 faltas" signifique "2 faltas desde el último bloqueo". Si el paciente vuelve a acumular dos faltas estando bloqueado, se registra un nuevo `Bloqueo` y `bloqueado_hasta` se extiende a `now + 30 días` desde esa última falta.
+
+### ExcepcionBloqueo
+- Atributos: `id`, `clinic_id`, `paciente_id`, `turno_id (UNIQUE)`, `usuario_id`, `motivo`, `created_at`, `is_active`.
+- Relaciones: *──1 Clinic, *──1 Paciente, *──1 Turno, *──1 User.
+- Regla (C-07, RN-AUS-02): una fila por turno creado con `motivo_excepcion`; registra quién autorizó reservar a un paciente bloqueado y por qué. Se escribe en la misma transacción que el turno (migración 007).
 
 ## Seed data inicial
 

@@ -74,6 +74,17 @@ class PacienteRepository(BaseRepository[Paciente]):
         )
         return result.scalar_one_or_none()
 
+    async def get_for_update(self, paciente_id: UUID) -> Paciente | None:
+        """Bloquear la fila del paciente para serializar faltas concurrentes.
+
+        SQLite ignora `FOR UPDATE`; en Postgres evita que dos marcados
+        simultáneos lean el mismo `faltas_count` y creen dos bloqueos (C-07 D6).
+        """
+        result = await self.session.execute(
+            select(Paciente).where(Paciente.id == paciente_id).with_for_update()
+        )
+        return result.scalar_one_or_none()
+
     async def get_or_create_by_telefono(
         self,
         *,

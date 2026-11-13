@@ -8,9 +8,11 @@ from uuid import UUID, uuid4
 import pytest
 from httpx import ASGITransport, AsyncClient
 from jose import jwt
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.domain.clinica.models import ExcepcionBloqueo
 from app.infrastructure.db.session import get_session
 from app.main import create_app
 from tests.turnos_factories import (
@@ -182,6 +184,56 @@ async def test_paciente_bloqueado_403(client: AsyncClient, db_session: AsyncSess
     )
 
     assert response.status_code == 403
+    assert response.json()["codigo"] == "bloqueado"
+
+
+@pytest.mark.asyncio
+async def test_alta_interna_con_motivo_excepcion_201(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    base = await _escenario(db_session)
+    base["paciente"].bloqueado_hasta = datetime.now(UTC) + timedelta(days=10)  # type: ignore[attr-defined]
+    await db_session.flush()
+    usuario_id = uuid4()
+    token = _token(base["clinic"].id, "recepcion", sub=usuario_id)  # type: ignore[attr-defined]
+    payload = _payload(base)
+    payload["motivo_excepcion"] = "  Paciente con dolor agudo  "
+
+    response = await client.post("/api/internal/turnos", json=payload, headers=_headers(token))
+
+    assert response.status_code == 201
+    turno_id = response.json()["id"]
+    excepciones = (await db_session.execute(select(ExcepcionBloqueo))).scalars().all()
+    assert len(excepciones) == 1
+    assert str(excepciones[0].turno_id) == turno_id
+    assert excepciones[0].usuario_id == usuario_id
+    assert excepciones[0].motivo == "Paciente con dolor agudo"
+
+
+@pytest.mark.asyncio
+async def test_alta_interna_motivo_vacio_422_codigo(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    base = await _escenario(db_session)
+    base["paciente"].bloqueado_hasta = datetime.now(UTC) + timedelta(days=10)  # type: ignore[attr-defined]
+    await db_session.flush()
+    token = _token(base["clinic"].id, "recepcion")  # type: ignore[attr-defined]
+    payload = _payload(base)
+    payload["motivo_excepcion"] = "   "
+
+    response = await client.post("/api/internal/turnos", json=payload, headers=_headers(token))
+
+    assert response.status_code == 422
+    assert response.json()["codigo"] == "motivo_requerido"
+
+
+@pytest.mark.asyncio
+async def test_openapi_expone_motivo_excepcion(client: AsyncClient) -> None:
+    response = await client.get("/openapi.json")
+
+    esquema = response.json()["components"]["schemas"]["TurnoInternoIn"]
+    assert "motivo_excepcion" in esquema["properties"]
+    assert "motivo_excepcion" not in esquema.get("required", [])
 
 
 @pytest.mark.asyncio

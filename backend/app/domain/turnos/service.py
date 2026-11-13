@@ -20,7 +20,9 @@ from app.domain.clinica.catalogo_service import precio_efectivo
 from app.domain.clinica.models import Clinic, Sillon, TipoPractica
 from app.domain.clinica.repository import (
     ArancelRepository,
+    BloqueoRepository,
     ClinicRepository,
+    ExcepcionBloqueoRepository,
     SillonRepository,
     TipoPracticaRepository,
 )
@@ -28,13 +30,17 @@ from app.domain.notificaciones import NoOpRecordatorio, RecordatorioPort
 from app.domain.personas.models import Paciente, User
 from app.domain.personas.repository import PacienteRepository, UserRepository
 from app.domain.turnos.gestion import (
+    CODIGO_BLOQUEADO,
+    CODIGO_ESTADO_NO_ACTUALIZABLE,
     CODIGO_ESTADO_NO_GESTIONABLE,
+    CODIGO_MOTIVO_REQUERIDO,
     CODIGO_REQUIERE_CONFIRMACION,
     CODIGO_REQUIERE_NUEVA_SENA,
     CODIGO_SLOT_INVALIDO,
     CODIGO_SOLAPE,
     CODIGO_TOKEN_INVALIDO,
     CODIGO_TURNO_NO_ENCONTRADO,
+    ESTADOS_MARCADOS,
     dentro_de_ventana,
     es_gestionable,
 )
@@ -88,6 +94,204 @@ def _rango_dia_utc(fecha: date, zona: ZoneInfo) -> tuple[datetime, datetime]:
     return inicio, fin
 
 
+def calcular_rango_agenda(vista: str, fecha: date, zona: ZoneInfo) -> tuple[datetime, datetime]:
+    """Rango `[desde, hasta)` en UTC para una vista día o semana (C-07 D2).
+
+    La semana va de lunes a domingo (ISO), siempre en la zona de la clínica.
+    """
+    if vista == "semana":
+        lunes = fecha - timedelta(days=fecha.weekday())
+        return _rango_dia_utc(lunes, zona)[0], _rango_dia_utc(lunes + timedelta(days=7), zona)[0]
+    return _rango_dia_utc(fecha, zona)
+
+
+@dataclass
+class AgendaResultado:
+    """Turnos de la agenda más el rango resuelto, listos para serializar."""
+
+    vista: str
+    desde: datetime
+    hasta: datetime
+    zona: ZoneInfo
+    turnos: list[Turno]
+
+
+class AgendaService:
+    """Lectura de la agenda operativa multi-sillón (C-07 D2/D3)."""
+
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def listar(
+        self,
+        *,
+        clinic_id: UUID,
+        vista: str,
+        fecha: date | None = None,
+        sillon_id: UUID | None = None,
+        odontologo_id: UUID | None = None,
+        estado: str | None = None,
+        odontologo_confinado: UUID | None = None,
+        now: datetime | None = None,
+    ) -> AgendaResultado:
+        """Resolver rango y turnos de la clínica, confinando al odontólogo.
+
+        `odontologo_confinado` gana sobre `odontologo_id`: un usuario `odonto`
+        nunca puede pedir la agenda de otro, y no se le responde 403 para no
+        confirmar la existencia de agendas ajenas (C-07 D3).
+        """
+        clinic = await ClinicRepository(self.session).get(clinic_id)
+        if clinic is None or not clinic.is_active:
+            raise NotFoundError("Clínica no encontrada")
+        zona = _zona(clinic)
+        hoy = _aware_utc(now if now is not None else datetime.now(UTC)).astimezone(zona).date()
+        desde, hasta = calcular_rango_agenda(vista, fecha or hoy, zona)
+
+        filtro_odontologo = (
+            odontologo_confinado if odontologo_confinado is not None else odontologo_id
+        )
+        turnos = await TurnoRepository(self.session).list_agenda(
+            clinic_id,
+            desde=desde,
+            hasta=hasta,
+            sillon_id=sillon_id,
+            odontologo_id=filtro_odontologo,
+            estado=estado,
+        )
+        return AgendaResultado(vista=vista, desde=desde, hasta=hasta, zona=zona, turnos=turnos)
+
+
+@dataclass(frozen=True)
+class ResumenPanel:
+    """Contadores de la jornada que consume el panel (C-07 D4)."""
+
+    total: int
+    pendientes_sena: int
+    confirmados: int
+    completados: int
+    ausentes: int
+
+
+@dataclass
+class PanelDiaResultado:
+    """Turnos operables de la fecha más su resumen."""
+
+    fecha: date
+    zona: ZoneInfo
+    turnos: list[Turno]
+    resumen: ResumenPanel
+
+
+class PanelService:
+    """Panel operativo de la jornada (C-07 D4/D5)."""
+
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def listar(
+        self,
+        *,
+        clinic_id: UUID,
+        fecha: date | None = None,
+        odontologo_confinado: UUID | None = None,
+        now: datetime | None = None,
+    ) -> PanelDiaResultado:
+        clinic = await ClinicRepository(self.session).get(clinic_id)
+        if clinic is None or not clinic.is_active:
+            raise NotFoundError("Clínica no encontrada")
+        zona = _zona(clinic)
+        hoy = _aware_utc(now if now is not None else datetime.now(UTC)).astimezone(zona).date()
+        fecha_local = fecha or hoy
+        desde, hasta = _rango_dia_utc(fecha_local, zona)
+        turnos = await TurnoRepository(self.session).list_panel_dia(
+            clinic_id,
+            desde=desde,
+            hasta=hasta,
+            odontologo_id=odontologo_confinado,
+        )
+        resumen = ResumenPanel(
+            total=len(turnos),
+            pendientes_sena=sum(1 for turno in turnos if turno.estado == "pendiente_sena"),
+            confirmados=sum(1 for turno in turnos if turno.estado == "confirmado"),
+            completados=sum(1 for turno in turnos if turno.estado == "completado"),
+            ausentes=sum(1 for turno in turnos if turno.estado == "ausente"),
+        )
+        return PanelDiaResultado(fecha=fecha_local, zona=zona, turnos=turnos, resumen=resumen)
+
+
+BLOQUEO_DIAS = 30
+MOTIVO_BLOQUEO = "2_faltas"
+
+
+async def marcar_turno_panel(
+    session: AsyncSession,
+    *,
+    clinic_id: UUID,
+    turno_id: UUID,
+    destino: str,
+    usuario_id: UUID,
+    odontologo_confinado: UUID | None = None,
+    now: datetime | None = None,
+) -> Turno:
+    """Marcar un turno como `completado` o `ausente` desde el panel (C-07 D5/D6).
+
+    La transición es idempotente para el mismo destino. `ausente` incrementa
+    `faltas_count` dentro de la misma transacción y, al llegar a 2, crea el
+    `Bloqueo` de 30 días y reinicia el contador. Un fallo al registrar el
+    bloqueo revierte todo el marcado.
+    """
+    if destino not in ESTADOS_MARCADOS:
+        raise UnprocessableError("Estado destino no permitido", code=CODIGO_ESTADO_NO_ACTUALIZABLE)
+    ahora = _aware_utc(now if now is not None else datetime.now(UTC))
+    turno = await TurnoRepository(session).get_panel_turno(clinic_id, turno_id)
+    if turno is None or (
+        odontologo_confinado is not None and turno.odontologo_id != odontologo_confinado
+    ):
+        raise NotFoundError("Turno no encontrado", code=CODIGO_TURNO_NO_ENCONTRADO)
+    if turno.estado == destino:
+        return turno
+    if turno.estado != "confirmado":
+        raise ConflictError("El turno no admite este marcado", code=CODIGO_ESTADO_NO_ACTUALIZABLE)
+
+    if destino == "completado":
+        turno.estado = "completado"
+        await session.commit()
+        return turno
+
+    paciente = await PacienteRepository(session).get_for_update(turno.paciente_id)
+    if paciente is None or paciente.clinic_id != clinic_id:
+        raise NotFoundError("Paciente no encontrado", code=CODIGO_TURNO_NO_ENCONTRADO)
+    turno.estado = "ausente"
+    paciente.faltas_count = (paciente.faltas_count or 0) + 1
+    if paciente.faltas_count >= 2:
+        hasta = ahora + timedelta(days=BLOQUEO_DIAS)
+        try:
+            await BloqueoRepository(session).crear(
+                clinic_id=clinic_id,
+                paciente_id=paciente.id,
+                desde=ahora,
+                hasta=hasta,
+                motivo=MOTIVO_BLOQUEO,
+                created_by=str(usuario_id),
+            )
+        except Exception:
+            await session.rollback()
+            raise
+        paciente.bloqueado_hasta = hasta
+        paciente.faltas_count = 0
+        logger.info(
+            "bloqueo_automatico",
+            clinic_id=str(clinic_id),
+            paciente_id=str(paciente.id),
+            turno_id=str(turno.id),
+            usuario_id=str(usuario_id),
+            bloqueado_hasta=hasta.isoformat(),
+            motivo=MOTIVO_BLOQUEO,
+        )
+    await session.commit()
+    return turno
+
+
 async def _cargar_practica(session: AsyncSession, practica_id: UUID) -> tuple[TipoPractica, Clinic]:
     practica = await TipoPracticaRepository(session).get(practica_id)
     if practica is None or not practica.activa or not practica.is_active:
@@ -130,9 +334,36 @@ async def _slots_del_dia(
 
 
 def _verificar_bloqueo(paciente: Paciente, ahora: datetime) -> None:
+    """Rechazar el alta de un paciente con bloqueo por ausentismo vigente.
+
+    El contrato es problem+json con `codigo=bloqueado` y `bloqueado_hasta` en
+    ISO-8601 (C-07 D9): el frontend decide por el `codigo`, nunca por el texto.
+    """
     bloqueado_hasta = paciente.bloqueado_hasta
     if bloqueado_hasta is not None and _aware_utc(bloqueado_hasta) > ahora:
-        raise ForbiddenError(f"Paciente bloqueado hasta {_aware_utc(bloqueado_hasta).isoformat()}")
+        iso = _aware_utc(bloqueado_hasta).isoformat()
+        raise ForbiddenError(
+            f"Paciente bloqueado hasta {iso}",
+            code=CODIGO_BLOQUEADO,
+            extra={"bloqueado_hasta": iso},
+        )
+
+
+def _normalizar_motivo_excepcion(motivo: str | None) -> str | None:
+    """Validar el motivo de la excepción de recepción (C-07 D8).
+
+    `None` significa que no se pidió excepción. Un string vacío o de solo
+    espacios es una excepción mal formada y responde 422 `motivo_requerido`.
+    """
+    if motivo is None:
+        return None
+    limpio = motivo.strip()
+    if not limpio:
+        raise UnprocessableError(
+            "El motivo de excepción no puede estar vacío",
+            code=CODIGO_MOTIVO_REQUERIDO,
+        )
+    return limpio
 
 
 async def calcular_monto_sena(
@@ -292,9 +523,16 @@ async def crear_turno_interno(
     odontologo_id: UUID,
     tipo_practica_id: UUID,
     inicio: datetime,
+    usuario_id: UUID,
+    motivo_excepcion: str | None = None,
     now: datetime | None = None,
 ) -> Turno:
-    """Crear una reserva interna (recepción/admin) sin token público."""
+    """Crear una reserva interna (recepción/admin) sin token público.
+
+    Si el paciente está bloqueado, la excepción exige `motivo_excepcion` no
+    vacío y deja una fila de `excepciones_bloqueo` en la misma transacción que
+    el turno (C-07 D8). Sin motivo, el alta responde 403 `bloqueado`.
+    """
     ahora = _aware_utc(now) if now is not None else datetime.now(UTC)
     await expirar_pendientes(session, now=ahora)
 
@@ -330,11 +568,17 @@ async def crear_turno_interno(
 
     turnos = TurnoRepository(session)
     if await turnos.get_solape_sillon(sillon.id, inicio_utc, fin_utc) is not None:
-        raise ConflictError("El sillón ya está ocupado en ese horario")
+        raise ConflictError("El sillón ya está ocupado en ese horario", code=CODIGO_SOLAPE)
     if await turnos.get_solape_odontologo(odontologo.id, inicio_utc, fin_utc) is not None:
-        raise ConflictError("El odontólogo ya está ocupado en ese horario")
+        raise ConflictError("El odontólogo ya está ocupado en ese horario", code=CODIGO_SOLAPE)
 
-    _verificar_bloqueo(paciente, ahora)
+    motivo = _normalizar_motivo_excepcion(motivo_excepcion)
+    bloqueado = paciente.bloqueado_hasta is not None and (
+        _aware_utc(paciente.bloqueado_hasta) > ahora
+    )
+    if bloqueado and motivo is None:
+        _verificar_bloqueo(paciente, ahora)
+
     monto_sena = await calcular_monto_sena(
         session, practica=practica, fecha=inicio_utc.astimezone(zona).date()
     )
@@ -359,7 +603,27 @@ async def crear_turno_interno(
         await session.flush()
     except IntegrityError as exc:
         await session.rollback()
-        raise ConflictError("El horario seleccionado ya no está disponible") from exc
+        raise ConflictError(
+            "El horario seleccionado ya no está disponible", code=CODIGO_SOLAPE
+        ) from exc
+
+    if bloqueado and motivo is not None:
+        await ExcepcionBloqueoRepository(session).crear(
+            clinic_id=clinic_id,
+            paciente_id=paciente.id,
+            turno_id=turno.id,
+            usuario_id=usuario_id,
+            motivo=motivo,
+        )
+        logger.info(
+            "excepcion_bloqueo",
+            clinic_id=str(clinic_id),
+            paciente_id=str(paciente.id),
+            turno_id=str(turno.id),
+            usuario_id=str(usuario_id),
+            motivo=motivo,
+        )
+
     await session.commit()
     return turno
 

@@ -10,6 +10,9 @@ from app.domain.auth.dependencies import require_role
 from app.domain.clinica.models import Sillon, TipoPractica
 from app.domain.clinica.repository import SillonRepository, TipoPracticaRepository
 from app.domain.clinica.schemas import SillonOut, TipoPracticaOut
+from app.domain.personas.models import User
+from app.domain.personas.repository import UserRepository
+from app.domain.personas.schemas import OdontologoOut
 from app.infrastructure.db.session import get_session
 
 router = APIRouter(tags=["catalogo"])
@@ -48,3 +51,13 @@ async def listar_sillones(
     """Listar los sillones activos de la clínica del token."""
     clinic_id = clinic_id_from_token(current_user)
     return await SillonRepository(session).list_activos(clinic_id)
+
+
+@router.get("/odontologos", response_model=list[OdontologoOut])
+async def listar_odontologos(
+    current_user: Annotated[dict[str, Any], Depends(require_role(ROLES_LECTURA))],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> list[User]:
+    """Listar los odontólogos activos de la clínica para los filtros (C-07 D11)."""
+    clinic_id = clinic_id_from_token(current_user)
+    return await UserRepository(session).list_odontologos(clinic_id)

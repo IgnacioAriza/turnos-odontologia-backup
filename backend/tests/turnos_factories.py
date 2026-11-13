@@ -97,6 +97,7 @@ async def crear_paciente(
     nombre: str = "Ana Paciente",
     dni: str | None = None,
     bloqueado_hasta: datetime | None = None,
+    faltas_count: int = 0,
 ) -> Paciente:
     paciente = Paciente(
         clinic_id=clinic.id,
@@ -104,6 +105,7 @@ async def crear_paciente(
         telefono=telefono or f"+54911{uuid4().hex[:8]}",
         dni=dni,
         bloqueado_hasta=bloqueado_hasta,
+        faltas_count=faltas_count,
         is_active=True,
     )
     db.add(paciente)
@@ -164,6 +166,7 @@ async def crear_turno(
     expira_at: datetime | None = None,
     monto_sena: Decimal = Decimal("0.00"),
     reprogramaciones_count: int = 0,
+    sena_perdida: bool = False,
 ) -> Turno:
     fin = inicio + timedelta(minutes=duracion_min or practica.duracion_min)
     turno = Turno(
@@ -179,6 +182,7 @@ async def crear_turno(
         monto_sena=monto_sena,
         expira_at=expira_at,
         reprogramaciones_count=reprogramaciones_count,
+        sena_perdida=sena_perdida,
         is_active=True,
     )
     db.add(turno)

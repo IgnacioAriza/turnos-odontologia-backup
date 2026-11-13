@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, StringConstraints
@@ -81,6 +81,9 @@ class TurnoInternoIn(BaseModel):
     odontologo_id: UUID
     tipo_practica_id: UUID
     inicio: datetime
+    # C-07: excepción auditada al bloqueo por ausentismo. Opcional; el dominio
+    # valida que no sea vacío y la registra en `excepciones_bloqueo`.
+    motivo_excepcion: str | None = Field(default=None, max_length=500)
 
 
 class TurnoInternoOut(BaseModel):
@@ -128,11 +131,107 @@ class TurnoGestionInternaOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class AgendaPacienteOut(BaseModel):
+    """Paciente en la agenda: solo identidad, sin datos de contacto."""
+
+    id: UUID
+    nombre: str
+
+
+class AgendaPracticaOut(BaseModel):
+    id: UUID
+    nombre: str
+
+
+class AgendaSillonOut(BaseModel):
+    id: UUID
+    nombre: str
+
+
+class AgendaOdontologoOut(BaseModel):
+    id: UUID
+    email: str
+
+
+class AgendaTurnoOut(BaseModel):
+    """Turno de la agenda con hora local de la clínica (C-07 D2)."""
+
+    id: UUID
+    inicio: datetime
+    fin: datetime
+    estado: str
+    paciente: AgendaPacienteOut
+    practica: AgendaPracticaOut
+    sillon: AgendaSillonOut
+    odontologo: AgendaOdontologoOut
+
+
+class AgendaOut(BaseModel):
+    vista: str
+    desde: datetime
+    hasta: datetime
+    turnos: list[AgendaTurnoOut]
+
+
+class PanelPacienteOut(BaseModel):
+    """Paciente en el panel: incluye el teléfono para el contacto por WhatsApp."""
+
+    id: UUID
+    nombre: str
+    telefono: str
+
+
+class PanelTurnoOut(BaseModel):
+    """Turno operable de la jornada con el estado de seña derivado (C-07 D4)."""
+
+    id: UUID
+    inicio: datetime
+    fin: datetime
+    estado: str
+    estado_sena: str
+    monto_sena: Decimal
+    paciente: PanelPacienteOut
+    practica: AgendaPracticaOut
+    sillon: AgendaSillonOut
+    odontologo: AgendaOdontologoOut
+
+
+class ResumenPanelOut(BaseModel):
+    total: int
+    pendientes_sena: int
+    confirmados: int
+    completados: int
+    ausentes: int
+
+
+class PanelDiaOut(BaseModel):
+    fecha: date
+    turnos: list[PanelTurnoOut]
+    resumen: ResumenPanelOut
+
+
+class MarcarTurnoIn(BaseModel):
+    """Único contrato de marcado del panel: llegada o ausencia."""
+
+    estado: Literal["completado", "ausente"]
+
+
 __all__ = [
+    "AgendaOdontologoOut",
+    "AgendaOut",
+    "AgendaPacienteOut",
+    "AgendaPracticaOut",
+    "AgendaSillonOut",
+    "AgendaTurnoOut",
     "CancelarTurnoInternoIn",
+    "MarcarTurnoIn",
+    "PanelDiaOut",
+    "PanelPacienteOut",
+    "PanelTurnoOut",
     "ReprogramarTurnoInternoIn",
     "ReservaOut",
     "ReservaPublicaIn",
+    "ResumenPanelOut",
     "SlotOut",
     "SlotsResponse",
     "TurnoGestionInternaOut",

@@ -25,6 +25,7 @@ from app.infrastructure.db.base import Base
 
 if TYPE_CHECKING:
     from app.domain.personas.models import Paciente, User
+    from app.domain.turnos.models import Turno
 
 
 class Clinic(Base, AuditMixin):
@@ -92,6 +93,40 @@ class Bloqueo(Base, AuditMixin):
 
     clinic: Mapped["Clinic"] = relationship("Clinic", back_populates="bloqueos")
     paciente: Mapped["Paciente"] = relationship("Paciente", back_populates="bloqueos")
+
+
+class ExcepcionBloqueo(Base, AuditMixin):
+    """Excepción auditada al bloqueo por ausentismo (C-07, RN-AUS-02).
+
+    Una fila por turno creado con `motivo_excepcion`: expresa quién autorizó
+    reservar a un paciente bloqueado y por qué. `UNIQUE(turno_id)` evita
+    duplicados si el alta se reintenta.
+    """
+
+    __tablename__ = "excepciones_bloqueo"
+    __table_args__ = (
+        UniqueConstraint("turno_id", name="uq_excepciones_bloqueo_turno_id"),
+        Index("ix_excepciones_bloqueo_clinic_created", "clinic_id", "created_at"),
+        Index("ix_excepciones_bloqueo_paciente", "paciente_id"),
+    )
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    clinic_id: Mapped[UUID] = mapped_column(
+        ForeignKey("clinic.id", ondelete="CASCADE"), nullable=False
+    )
+    paciente_id: Mapped[UUID] = mapped_column(
+        ForeignKey("pacientes.id", ondelete="CASCADE"), nullable=False
+    )
+    turno_id: Mapped[UUID] = mapped_column(
+        ForeignKey("turnos.id", ondelete="CASCADE"), nullable=False
+    )
+    usuario_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    motivo: Mapped[str] = mapped_column(Text, nullable=False)
+
+    clinic: Mapped["Clinic"] = relationship("Clinic")
+    paciente: Mapped["Paciente"] = relationship("Paciente")
+    turno: Mapped["Turno"] = relationship("Turno")
+    usuario: Mapped["User"] = relationship("User")
 
 
 class TipoPractica(Base, AuditMixin):

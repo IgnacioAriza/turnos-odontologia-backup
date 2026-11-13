@@ -4,44 +4,44 @@
 
 ## 1. Preparación y gates
 
-- [ ] 1.1 Revisión humana de governance ALTO: confirmar con el responsable la regla de bloqueo por 2 faltas (30 días, reinicio de `faltas_count`, extensión si falta estando bloqueado) y la excepción de recepción (roles, motivo obligatorio, sin tope). Verificación: decisión registrada en `design.md` §Open Questions con fecha y responsable; sin esto no se escribe código.
-- [ ] 1.2 Verificar el estado real de partida: `alembic heads` = `006`, existen `Paciente.faltas_count`, `Paciente.bloqueado_hasta`, tabla `bloqueos`, `Turno` con `sena_perdida` y `require_odonto_confinement`. Verificación: `pytest backend/tests/test_turnos_models.py backend/tests/test_gestion_interna.py` pasa antes de tocar nada.
-- [ ] 1.3 Escribir un test de contrato que falle si el 403 de bloqueo no trae `codigo=bloqueado` ni `bloqueado_hasta`. Verificación: el test falla hoy contra `_verificar_bloqueo` y queda en `backend/tests/test_bloqueo_contrato.py`.
+- [x] 1.1 Revisión humana de governance ALTO: confirmar con el responsable la regla de bloqueo por 2 faltas (30 días, reinicio de `faltas_count`, extensión si falta estando bloqueado) y la excepción de recepción (roles, motivo obligatorio, sin tope). Verificación: decisión registrada en `design.md` §Open Questions con fecha y responsable; sin esto no se escribe código.
+- [x] 1.2 Verificar el estado real de partida: `alembic heads` = `006`, existen `Paciente.faltas_count`, `Paciente.bloqueado_hasta`, tabla `bloqueos`, `Turno` con `sena_perdida` y `require_odonto_confinement`. Verificación: `pytest backend/tests/test_turnos_models.py backend/tests/test_gestion_interna.py` pasa antes de tocar nada.
+- [x] 1.3 Escribir un test de contrato que falle si el 403 de bloqueo no trae `codigo=bloqueado` ni `bloqueado_hasta`. Verificación: el test falla hoy contra `_verificar_bloqueo` y queda en `backend/tests/test_bloqueo_contrato.py`.
 
 ## 2. Migración 007 y modelo de excepción
 
-- [ ] 2.1 Escribir `backend/tests/test_migration_007.py` (`skipif` Postgres): upgrade crea `excepciones_bloqueo` con columnas, FK e índices; downgrade la elimina. Verificación: el test falla porque la migración no existe.
-- [ ] 2.2 Crear `backend/app/infrastructure/db/migrations/versions/007_excepciones_bloqueo.py` (`down_revision="006"`). Verificación: `test_migration_007.py` pasa y `alembic upgrade head` deja `heads = 007`.
-- [ ] 2.3 Escribir `backend/tests/test_excepciones_bloqueo.py`: modelo con `clinic_id`, `paciente_id`, `turno_id` único, `usuario_id`, `motivo`, `created_at`, `is_active`; `clinic_id` NOT NULL. Verificación: el test falla porque el modelo no existe.
-- [ ] 2.4 Crear `ExcepcionBloqueo` en `backend/app/domain/clinica/models.py` y `ExcepcionBloqueoRepository` en `repository.py`. Verificación: `test_excepciones_bloqueo.py` pasa.
+- [x] 2.1 Escribir `backend/tests/test_migration_007.py` (`skipif` Postgres): upgrade crea `excepciones_bloqueo` con columnas, FK e índices; downgrade la elimina. Verificación: el test falla porque la migración no existe.
+- [x] 2.2 Crear `backend/app/infrastructure/db/migrations/versions/007_excepciones_bloqueo.py` (`down_revision="006"`). Verificación: `test_migration_007.py` pasa y `alembic upgrade head` deja `heads = 007`.
+- [x] 2.3 Escribir `backend/tests/test_excepciones_bloqueo.py`: modelo con `clinic_id`, `paciente_id`, `turno_id` único, `usuario_id`, `motivo`, `created_at`, `is_active`; `clinic_id` NOT NULL. Verificación: el test falla porque el modelo no existe.
+- [x] 2.4 Crear `ExcepcionBloqueo` en `backend/app/domain/clinica/models.py` y `ExcepcionBloqueoRepository` en `repository.py`. Verificación: `test_excepciones_bloqueo.py` pasa.
 
 ## 3. Bloqueo en el alta y excepción auditada
 
-- [ ] 3.1 Escribir en `backend/tests/test_turnos_service.py` los casos: público bloqueado → 403 `bloqueado` con `bloqueado_hasta`; interno sin motivo → 403; interno con motivo → turno creado + fila de excepción; motivo vacío → 422 `motivo_requerido`; motivo en el cuerpo público → ignorado. Verificación: los casos fallan por el contrato actual.
-- [ ] 3.2 Agregar `CODIGO_BLOQUEADO` y `CODIGO_MOTIVO_REQUERIDO` en `backend/app/domain/turnos/gestion.py` y cambiar `_verificar_bloqueo` para lanzar `ForbiddenError(code=..., extra={"bloqueado_hasta": iso})`. Verificación: los casos públicos e internos sin motivo pasan.
-- [ ] 3.3 Extender `crear_turno_interno` con `motivo_excepcion` y `usuario_id`: validar motivo, crear el turno y la `ExcepcionBloqueo` en la misma transacción, y loguear `excepcion_bloqueo`. Verificación: los casos con motivo y motivo vacío pasan; un test fuerza el fallo del turno y comprueba que no queda excepción huérfana.
-- [ ] 3.4 Extender `TurnoInternoIn` con `motivo_excepcion` opcional y `POST /api/internal/turnos` para pasar `usuario_id` y el motivo. Verificación: `backend/tests/test_turnos_api.py` cubre 201 con motivo, 403 sin motivo y 422 con motivo vacío; OpenAPI muestra el campo.
+- [x] 3.1 Escribir en `backend/tests/test_turnos_service.py` los casos: público bloqueado → 403 `bloqueado` con `bloqueado_hasta`; interno sin motivo → 403; interno con motivo → turno creado + fila de excepción; motivo vacío → 422 `motivo_requerido`; motivo en el cuerpo público → ignorado. Verificación: los casos fallan por el contrato actual.
+- [x] 3.2 Agregar `CODIGO_BLOQUEADO` y `CODIGO_MOTIVO_REQUERIDO` en `backend/app/domain/turnos/gestion.py` y cambiar `_verificar_bloqueo` para lanzar `ForbiddenError(code=..., extra={"bloqueado_hasta": iso})`. Verificación: los casos públicos e internos sin motivo pasan.
+- [x] 3.3 Extender `crear_turno_interno` con `motivo_excepcion` y `usuario_id`: validar motivo, crear el turno y la `ExcepcionBloqueo` en la misma transacción, y loguear `excepcion_bloqueo`. Verificación: los casos con motivo y motivo vacío pasan; un test fuerza el fallo del turno y comprueba que no queda excepción huérfana.
+- [x] 3.4 Extender `TurnoInternoIn` con `motivo_excepcion` opcional y `POST /api/internal/turnos` para pasar `usuario_id` y el motivo. Verificación: `backend/tests/test_turnos_api.py` cubre 201 con motivo, 403 sin motivo y 422 con motivo vacío; OpenAPI muestra el campo.
 
 ## 4. Agenda backend
 
-- [ ] 4.1 Escribir `backend/tests/test_agenda.py`: vista día, vista semana (lunes a domingo), rango por zona de la clínica, filtros por sillón/odontólogo/estado, `cancelado` excluido por defecto e incluido con `estado=cancelado`, orden estable, día vacío. Verificación: los tests fallan porque el endpoint no existe.
-- [ ] 4.2 Agregar `list_agenda` al `TurnoRepository` con filtros y orden, y `AgendaService` en `backend/app/domain/turnos/service.py` con el cálculo de rango día/semana. Verificación: los tests de rango, filtros y orden pasan.
-- [ ] 4.3 Escribir los tests de aislamiento y confinamiento: turnos de otra clínica nunca aparecen, filtro con sillón ajeno devuelve lista vacía, `odonto` solo ve su `sub` aunque envíe otro `odontologo`, `recepcion`/`admin` ven todo. Verificación: fallan antes de implementar el confinamiento.
-- [ ] 4.4 Crear `backend/app/api/internal/agenda.py` con `GET /api/internal/agenda`, `response_model` y `require_odonto_confinement`, y registrarlo en `app/main.py` bajo `/api/internal`. Verificación: los tests de agenda y confinamiento pasan; `/openapi.json` lista el endpoint con sus query params.
-- [ ] 4.5 Escribir el test de `GET /api/internal/odontologos` (roles, aislamiento por clínica, solo activos) y crear el endpoint en `backend/app/api/internal/catalogo.py`. Verificación: el test pasa y el filtro del frontend tiene fuente real.
-- [ ] 4.6 Escribir un test Postgres `skipif` que corre `EXPLAIN (ANALYZE, BUFFERS)` sobre la consulta de agenda de una semana y falla si aparece un `Seq Scan` sobre `turnos`. Verificación: el test documenta el plan antes/después en el mensaje y pasa en Postgres.
+- [x] 4.1 Escribir `backend/tests/test_agenda.py`: vista día, vista semana (lunes a domingo), rango por zona de la clínica, filtros por sillón/odontólogo/estado, `cancelado` excluido por defecto e incluido con `estado=cancelado`, orden estable, día vacío. Verificación: los tests fallan porque el endpoint no existe.
+- [x] 4.2 Agregar `list_agenda` al `TurnoRepository` con filtros y orden, y `AgendaService` en `backend/app/domain/turnos/service.py` con el cálculo de rango día/semana. Verificación: los tests de rango, filtros y orden pasan.
+- [x] 4.3 Escribir los tests de aislamiento y confinamiento: turnos de otra clínica nunca aparecen, filtro con sillón ajeno devuelve lista vacía, `odonto` solo ve su `sub` aunque envíe otro `odontologo`, `recepcion`/`admin` ven todo. Verificación: fallan antes de implementar el confinamiento.
+- [x] 4.4 Crear `backend/app/api/internal/agenda.py` con `GET /api/internal/agenda`, `response_model` y `require_odonto_confinement`, y registrarlo en `app/main.py` bajo `/api/internal`. Verificación: los tests de agenda y confinamiento pasan; `/openapi.json` lista el endpoint con sus query params.
+- [x] 4.5 Escribir el test de `GET /api/internal/odontologos` (roles, aislamiento por clínica, solo activos) y crear el endpoint en `backend/app/api/internal/catalogo.py`. Verificación: el test pasa y el filtro del frontend tiene fuente real.
+- [x] 4.6 Escribir un test Postgres `skipif` que corre `EXPLAIN (ANALYZE, BUFFERS)` sobre la consulta de agenda de una semana y falla si aparece un `Seq Scan` sobre `turnos`. Verificación: el test documenta el plan antes/después en el mensaje y pasa en Postgres.
 
 ## 5. Panel del día backend
 
-- [ ] 5.1 Escribir `backend/tests/test_panel_dia.py`: lista ordenada por hora, estados `cancelado`/`reprogramado` fuera, resumen de la jornada, día vacío. Verificación: fallan porque el endpoint no existe.
-- [ ] 5.2 Implementar `GET /api/internal/panel/dia` en `backend/app/api/internal/panel.py` con el servicio de panel, `response_model` y RBAC `recepcion|admin|odonto` confinado. Verificación: los tests de listado y confinamiento pasan.
-- [ ] 5.3 Escribir los tests de `estado_sena` (`pendiente`, `aprobada`, `perdida`, `no_requerida`) y de teléfono visible solo para turnos operables. Verificación: fallan antes del helper.
-- [ ] 5.4 Implementar el helper único de `estado_sena` en el dominio de turnos, documentado como contrato reemplazable por C-09. Verificación: los cuatro casos pasan y el frontend recibe un enum estable.
-- [ ] 5.5 Escribir los tests de `PATCH /api/internal/panel/turnos/{id}`: `confirmado→completado`, `confirmado→ausente`, destino inválido 422, `pendiente_sena`/`cancelado`/`reprogramado` → 409 `estado_no_actualizable`, otra clínica 404, turno de otro odontólogo 404. Verificación: fallan porque el endpoint no existe.
-- [ ] 5.6 Implementar el marcado con la máquina de estados de `design.md` D5, idempotente para el mismo destino y sin efectos en el reintento. Verificación: los tests de estado e idempotencia pasan (`ausente` repetido no vuelve a sumar falta).
-- [ ] 5.7 Escribir los tests de ausentismo: 1.ª falta no bloquea; 2.ª falta crea `Bloqueo` con `motivo="2_faltas"`, `hasta=now+30d`, `created_by` y reinicia `faltas_count`; fallo del bloqueo revierte el `ausente`; falta estando bloqueado extiende `bloqueado_hasta`; expiración de seña no suma falta. Verificación: fallan antes de implementar el conteo.
-- [ ] 5.8 Implementar el conteo de faltas y el bloqueo transaccional con `SELECT ... FOR UPDATE` sobre el paciente y log `bloqueo_automatico`. Verificación: los tests de ausentismo pasan.
-- [ ] 5.9 Escribir un test Postgres `skipif` de dos marcados `ausente` concurrentes del mismo paciente y verificar que se crea un solo `Bloqueo`. Verificación: pasa en Postgres y queda `skipif` documentado para SQLite.
+- [x] 5.1 Escribir `backend/tests/test_panel_dia.py`: lista ordenada por hora, estados `cancelado`/`reprogramado` fuera, resumen de la jornada, día vacío. Verificación: fallan porque el endpoint no existe.
+- [x] 5.2 Implementar `GET /api/internal/panel/dia` en `backend/app/api/internal/panel.py` con el servicio de panel, `response_model` y RBAC `recepcion|admin|odonto` confinado. Verificación: los tests de listado y confinamiento pasan.
+- [x] 5.3 Escribir los tests de `estado_sena` (`pendiente`, `aprobada`, `perdida`, `no_requerida`) y de teléfono visible solo para turnos operables. Verificación: fallan antes del helper.
+- [x] 5.4 Implementar el helper único de `estado_sena` en el dominio de turnos, documentado como contrato reemplazable por C-09. Verificación: los cuatro casos pasan y el frontend recibe un enum estable.
+- [x] 5.5 Escribir los tests de `PATCH /api/internal/panel/turnos/{id}`: `confirmado→completado`, `confirmado→ausente`, destino inválido 422, `pendiente_sena`/`cancelado`/`reprogramado` → 409 `estado_no_actualizable`, otra clínica 404, turno de otro odontólogo 404. Verificación: fallan porque el endpoint no existe.
+- [x] 5.6 Implementar el marcado con la máquina de estados de `design.md` D5, idempotente para el mismo destino y sin efectos en el reintento. Verificación: los tests de estado e idempotencia pasan (`ausente` repetido no vuelve a sumar falta).
+- [x] 5.7 Escribir los tests de ausentismo: 1.ª falta no bloquea; 2.ª falta crea `Bloqueo` con `motivo="2_faltas"`, `hasta=now+30d`, `created_by` y reinicia `faltas_count`; fallo del bloqueo revierte el `ausente`; falta estando bloqueado extiende `bloqueado_hasta`; expiración de seña no suma falta. Verificación: fallan antes de implementar el conteo.
+- [x] 5.8 Implementar el conteo de faltas y el bloqueo transaccional con `SELECT ... FOR UPDATE` sobre el paciente y log `bloqueo_automatico`. Verificación: los tests de ausentismo pasan.
+- [x] 5.9 Escribir un test Postgres `skipif` de dos marcados `ausente` concurrentes del mismo paciente y verificar que se crea un solo `Bloqueo`. Verificación: pasa en Postgres y queda `skipif` documentado para SQLite.
 
 ## 6. Gate de diseño UI (bloquea 7.x y 8.x)
 
@@ -70,9 +70,9 @@
 
 ## 9. Documentación y roadmap
 
-- [ ] 9.1 Verificar la renumeración en `CHANGES.md`: C-07 usa la migración `007`, C-09 `008`, C-10 `009`, y la nota de migraciones está corregida. Verificación: `Select-String "Migración 00" CHANGES.md` muestra la secuencia 005, 006, 007, 008, 009 sin duplicados.
-- [ ] 9.2 Documentar en `knowledge-base/04_modelo_de_datos.md` §Bloqueo la tabla `excepciones_bloqueo` y la regla de reinicio de `faltas_count`. Verificación: el documento menciona ambas y coincide con `design.md` D6/D7.
-- [ ] 9.3 Actualizar `AGENTS.md`/`CLAUDE.md` solo si cambia una regla dura o una convención de error; si no cambia, dejar constancia en `design.md`. Verificación: revisión manual de que no hay reglas desactualizadas.
+- [x] 9.1 Verificar la renumeración en `CHANGES.md`: C-07 usa la migración `007`, C-09 `008`, C-10 `009`, y la nota de migraciones está corregida. Verificación: `Select-String "Migración 00" CHANGES.md` muestra la secuencia 005, 006, 007, 008, 009 sin duplicados.
+- [x] 9.2 Documentar en `knowledge-base/04_modelo_de_datos.md` §Bloqueo la tabla `excepciones_bloqueo` y la regla de reinicio de `faltas_count`. Verificación: el documento menciona ambas y coincide con `design.md` D6/D7.
+- [x] 9.3 Actualizar `AGENTS.md`/`CLAUDE.md` solo si cambia una regla dura o una convención de error; si no cambia, dejar constancia en `design.md`. Verificación: revisión manual de que no hay reglas desactualizadas.
 
 ## 10. Integración y calidad
 

@@ -238,8 +238,14 @@ Los mockups deberán importar `design-system/tokens.css` y `brand.js`, usar `des
 
 ## Open Questions
 
-- ¿El tope de excepciones por mes o la doble aprobación (pregunta Media de `10_preguntas_abiertas.md`) se implementa en C-07 o queda como política operativa sin enforcement?
-- ¿`faltas_count` debe reiniciarse al bloquear (propuesto) o acumular de por vida?
+**Resueltas por el usuario el 2026-11-12 (gate de governance ALTO, tarea 1.1):**
+
+- **Tope de excepciones / doble aprobación**: no se implementa tope. `recepcion|admin` pueden exceptuar con `motivo_excepcion` obligatorio; una excepción equivale a un turno y queda auditada en `excepciones_bloqueo`. La política de doble aprobación queda como decisión operativa sin enforcement.
+- **`faltas_count`**: se reinicia a `0` al crear el `Bloqueo`. Si el paciente vuelve a llegar a 2 faltas estando bloqueado, se extiende `bloqueado_hasta` a `now + 30d` (cada bloqueo dura 30 días desde la última falta).
+- **Contrato del 403**: se acepta el cambio a problem+json con `codigo=bloqueado` y `bloqueado_hasta`. Implica ajustar el manejo de errores del canal público de C-06 para reconocer ese código (tarea del grupo 3).
+
+**Siguen abiertas (no bloquean la implementación):**
+
 - ¿Se agrega `User.nombre` para mostrar al odontólogo por nombre y apellido en lugar de `email`? ¿En qué change?
-- ¿La agenda debe incluir turnos `cancelado` por defecto para que recepción vea los huecos liberados del día, o alcanza con pedirlos por filtro?
+- ¿La agenda debe incluir turnos `cancelado` por defecto para que recepción vea los huecos liberados del día, o alcanza con pedirlos por filtro? (El diseño actual los excluye por defecto y los incluye con `estado=cancelado`.)
 - ¿El odontólogo debe poder marcar `ausente` desde su vista o solo recepción? RN-AUS-03 dice "recepción/odontólogo"; este diseño lo habilita confinado a sus turnos.

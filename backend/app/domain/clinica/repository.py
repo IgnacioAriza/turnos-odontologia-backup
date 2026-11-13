@@ -1,12 +1,21 @@
 """Repositorios del dominio clínica."""
 
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.repository import BaseRepository, UnitOfWork
-from app.domain.clinica.models import Arancel, AuditoriaSena, Bloqueo, Clinic, Sillon, TipoPractica
+from app.domain.clinica.models import (
+    Arancel,
+    AuditoriaSena,
+    Bloqueo,
+    Clinic,
+    ExcepcionBloqueo,
+    Sillon,
+    TipoPractica,
+)
 
 
 class ClinicRepository(BaseRepository[Clinic]):
@@ -52,6 +61,73 @@ class BloqueoRepository(BaseRepository[Bloqueo]):
         if is_active is not None:
             query = query.where(Bloqueo.is_active == is_active)
         result = await self.session.execute(query)
+        return list(result.scalars().all())
+
+    async def crear(
+        self,
+        *,
+        clinic_id: UUID,
+        paciente_id: UUID,
+        desde: datetime,
+        hasta: datetime,
+        motivo: str,
+        created_by: str | None,
+    ) -> Bloqueo:
+        """Registrar un bloqueo en la transacción abierta del marcado (C-07 D6)."""
+        bloqueo = Bloqueo(
+            clinic_id=clinic_id,
+            paciente_id=paciente_id,
+            desde=desde,
+            hasta=hasta,
+            motivo=motivo,
+            created_by=created_by,
+            is_active=True,
+        )
+        self.session.add(bloqueo)
+        await self.session.flush()
+        return bloqueo
+
+
+class ExcepcionBloqueoRepository(BaseRepository[ExcepcionBloqueo]):
+    """Excepciones auditadas al bloqueo por ausentismo (C-07)."""
+
+    def __init__(self, session: AsyncSession):
+        super().__init__(session, ExcepcionBloqueo)
+
+    async def crear(
+        self,
+        *,
+        clinic_id: UUID,
+        paciente_id: UUID,
+        turno_id: UUID,
+        usuario_id: UUID,
+        motivo: str,
+    ) -> ExcepcionBloqueo:
+        """Registrar la excepción en la transacción abierta del alta del turno."""
+        excepcion = ExcepcionBloqueo(
+            clinic_id=clinic_id,
+            paciente_id=paciente_id,
+            turno_id=turno_id,
+            usuario_id=usuario_id,
+            motivo=motivo,
+            is_active=True,
+        )
+        self.session.add(excepcion)
+        await self.session.flush()
+        return excepcion
+
+    async def get_by_turno(self, turno_id: UUID) -> ExcepcionBloqueo | None:
+        result = await self.session.execute(
+            select(ExcepcionBloqueo).where(ExcepcionBloqueo.turno_id == turno_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def list_by_clinic(self, clinic_id: UUID) -> list[ExcepcionBloqueo]:
+        result = await self.session.execute(
+            select(ExcepcionBloqueo)
+            .where(ExcepcionBloqueo.clinic_id == clinic_id)
+            .order_by(ExcepcionBloqueo.created_at)
+        )
         return list(result.scalars().all())
 
 
@@ -148,6 +224,7 @@ __all__ = [
     "ClinicRepository",
     "SillonRepository",
     "BloqueoRepository",
+    "ExcepcionBloqueoRepository",
     "TipoPracticaRepository",
     "ArancelRepository",
     "AuditoriaSenaRepository",

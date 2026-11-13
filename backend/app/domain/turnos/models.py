@@ -36,6 +36,9 @@ ESTADOS_TURNO = (
     "ausente",
 )
 ESTADOS_VIGENTES = ("pendiente_sena", "confirmado", "reprogramado")
+# C-07: estados que ve el panel del día; `cancelado` y `reprogramado` quedan
+# fuera porque ya no forman parte de la operación de la jornada.
+ESTADOS_PANEL = ("pendiente_sena", "confirmado", "completado", "ausente")
 
 _ESTADOS_SQL = ", ".join(f"'{estado}'" for estado in ESTADOS_TURNO)
 _VIGENTES_SQL = ", ".join(f"'{estado}'" for estado in ESTADOS_VIGENTES)

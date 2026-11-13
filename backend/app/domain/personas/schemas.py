@@ -60,3 +60,12 @@ class PacienteOut(PacienteBase):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class OdontologoOut(BaseModel):
+    """Odontólogo activo para poblar los filtros de la agenda (C-07 D11)."""
+
+    id: UUID
+    email: EmailStr
+
+    model_config = {"from_attributes": True}

@@ -104,7 +104,7 @@ Son contrato; romperlas es un defecto. Formato `NUNCA X → hacer Y`:
 5. Calidad Python — NUNCA merge sin ruff/black + mypy + pytest >80% + OpenAPI completa
 6. Frontend — NUNCA any → PascalCase, tsconfig estricto, mobile-first, sin barrel files
 7. Pagos/Notif — NUNCA confiar en callback front MP → webhook idempotente + conciliación; WA Twilio un envío 24hs con log/backoff
-8. Negocio — NUNCA solape ni cancel <12hs ni 2da repro misma seña → bloqueo 30d, seña % por práctica, ABM NUNCA muta turnos
+8. Negocio — NUNCA solape ni cancel <12hs ni 2da repro misma seña → bloqueo 30d (al bloquear, `faltas_count` vuelve a 0), excepción al bloqueo solo recepción/admin con motivo obligatorio auditado en `excepciones_bloqueo`, seña % por práctica, ABM NUNCA muta turnos
 9. Secrets/Infra — NUNCA hardcodear → Pydantic settings, 12 env vars, compose api+postgres+redis+worker
 10. Commits — conventional commits (feat:/fix:/docs:/chore: etc.)
 

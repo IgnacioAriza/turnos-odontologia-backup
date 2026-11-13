@@ -44,6 +44,7 @@ async def crear_turno(
 ) -> TurnoInternoOut:
     """Crear un turno interno para un paciente existente, sin token público."""
     clinic_id = clinic_id_from_token(current_user)
+    usuario_id = usuario_id_from_token(current_user)
     turno = await service.crear_turno_interno(
         session,
         clinic_id=clinic_id,
@@ -52,6 +53,8 @@ async def crear_turno(
         odontologo_id=payload.odontologo_id,
         tipo_practica_id=payload.tipo_practica_id,
         inicio=payload.inicio,
+        usuario_id=usuario_id,
+        motivo_excepcion=payload.motivo_excepcion,
     )
     return TurnoInternoOut.model_validate(turno)
 
