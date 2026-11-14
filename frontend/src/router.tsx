@@ -110,7 +110,7 @@ export const rutas: RouteObject[] = [
     path: '/agenda',
     element: (
       <Layout>
-        <ProtectedRoute allowedRoles={['odonto', 'admin']}>
+        <ProtectedRoute allowedRoles={['recepcion', 'odonto', 'admin']}>
           <AgendaPage />
         </ProtectedRoute>
       </Layout>

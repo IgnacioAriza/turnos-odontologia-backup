@@ -73,6 +73,12 @@ def _turno_out(turno: Turno, zona: ZoneInfo) -> PanelTurnoOut:
             id=turno.paciente.id,
             nombre=turno.paciente.nombre,
             telefono=turno.paciente.telefono,
+            faltas_count=turno.paciente.faltas_count,
+            bloqueado_hasta=(
+                _a_zona(turno.paciente.bloqueado_hasta, zona)
+                if turno.paciente.bloqueado_hasta is not None
+                else None
+            ),
         ),
         practica=AgendaPracticaOut(id=turno.tipo_practica.id, nombre=turno.tipo_practica.nombre),
         sillon=AgendaSillonOut(id=turno.sillon.id, nombre=turno.sillon.nombre),

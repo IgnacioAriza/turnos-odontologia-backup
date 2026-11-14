@@ -255,6 +255,9 @@ async def test_panel_incluye_paciente_practica_sillon_y_odontologo(
         "id": str(base["paciente_1"].id),  # type: ignore[attr-defined]
         "nombre": "Ana Paciente",
         "telefono": "+5491100000001",
+        # El panel avisa antes de marcar la segunda falta (C-07 tarea 8.4).
+        "faltas_count": 0,
+        "bloqueado_hasta": None,
     }
     assert turno["practica"]["nombre"] == "Limpieza"
     assert turno["sillon"]["nombre"] == "Sillón 1"

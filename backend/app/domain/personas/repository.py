@@ -2,7 +2,7 @@
 
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -73,6 +73,30 @@ class PacienteRepository(BaseRepository[Paciente]):
             )
         )
         return result.scalar_one_or_none()
+
+    async def buscar(self, clinic_id: UUID, q: str, limit: int = 20) -> list[Paciente]:
+        """Buscar pacientes de la clínica por nombre, teléfono o DNI (C-07).
+
+        El alta interna necesita elegir un paciente existente; la búsqueda queda
+        confinada a la clínica del JWT y ordenada por nombre para un selector
+        estable. `q` ya viene validado (>= 2 caracteres) desde el router.
+        """
+        patron = f"%{q.strip()}%"
+        result = await self.session.execute(
+            select(Paciente)
+            .where(
+                Paciente.clinic_id == clinic_id,
+                Paciente.is_active.is_(True),
+                or_(
+                    Paciente.nombre.ilike(patron),
+                    Paciente.telefono.ilike(patron),
+                    Paciente.dni.ilike(patron),
+                ),
+            )
+            .order_by(Paciente.nombre, Paciente.id)
+            .limit(limit)
+        )
+        return list(result.scalars().all())
 
     async def get_for_update(self, paciente_id: UUID) -> Paciente | None:
         """Bloquear la fila del paciente para serializar faltas concurrentes.

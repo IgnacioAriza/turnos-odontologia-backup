@@ -62,6 +62,17 @@ class PacienteOut(PacienteBase):
     model_config = {"from_attributes": True}
 
 
+class PacienteBusquedaOut(BaseModel):
+    """Paciente acotado para el selector del alta interna (C-07)."""
+
+    id: UUID
+    nombre: str
+    telefono: str
+    dni: str | None = None
+
+    model_config = {"from_attributes": True}
+
+
 class OdontologoOut(BaseModel):
     """Odontólogo activo para poblar los filtros de la agenda (C-07 D11)."""
 

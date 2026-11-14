@@ -83,6 +83,7 @@ def create_app() -> FastAPI:
     from app.api.auth import router as auth_router
     from app.api.internal.agenda import router as internal_agenda_router
     from app.api.internal.catalogo import router as internal_catalogo_router
+    from app.api.internal.pacientes import router as internal_pacientes_router
     from app.api.internal.panel import router as internal_panel_router
     from app.api.internal.turnos import router as internal_turnos_router
     from app.api.public import router as public_router
@@ -94,6 +95,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
     app.include_router(public_router, prefix="/api/public", tags=["public"])
     app.include_router(internal_catalogo_router, prefix="/api/internal")
+    app.include_router(internal_pacientes_router, prefix="/api/internal")
     app.include_router(internal_agenda_router, prefix="/api/internal")
     app.include_router(internal_panel_router, prefix="/api/internal")
     app.include_router(internal_turnos_router, prefix="/api/internal")

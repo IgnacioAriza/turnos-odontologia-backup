@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import './Layout.css';
 
 interface LayoutProps {
@@ -7,12 +8,13 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const { user } = useAuth();
 
   const navigation = [
-    { path: '/agenda', label: 'Agenda', roles: ['odonto', 'admin'] },
+    { path: '/agenda', label: 'Agenda', roles: ['recepcion', 'odonto', 'admin'] },
     { path: '/panel', label: 'Panel', roles: ['recepcion', 'admin'] },
     { path: '/admin', label: 'Admin', roles: ['admin'] },
-  ];
+  ].filter((item) => (user ? item.roles.includes(user.role) : false));
 
   return (
     <div className="layout" data-testid="app-root">

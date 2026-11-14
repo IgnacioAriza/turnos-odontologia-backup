@@ -174,11 +174,13 @@ class AgendaOut(BaseModel):
 
 
 class PanelPacienteOut(BaseModel):
-    """Paciente en el panel: incluye el teléfono para el contacto por WhatsApp."""
+    """Paciente en el panel: contacto y contador de faltas para el aviso de bloqueo."""
 
     id: UUID
     nombre: str
     telefono: str
+    faltas_count: int
+    bloqueado_hasta: datetime | None = None
 
 
 class PanelTurnoOut(BaseModel):

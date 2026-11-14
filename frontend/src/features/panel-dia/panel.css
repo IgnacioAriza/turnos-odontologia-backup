@@ -1,0 +1,311 @@
+/* Panel del día (C-07). Mobile-first, tokens de `index.css`. */
+
+.panel-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+.panel-estado {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+/* Resumen ------------------------------------------------------------------ */
+
+.panel-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.panel-resumen strong {
+  color: var(--color-text);
+}
+
+.panel-resumen span {
+  padding-left: var(--spacing-sm);
+  border-left: 1px solid var(--color-border);
+}
+
+/* Tabla -------------------------------------------------------------------- */
+
+.panel-tabla {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.panel-fila {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  align-items: start;
+}
+
+.panel-fila:last-child {
+  border-bottom: 0;
+}
+
+.panel-fila--head {
+  display: none;
+  background: var(--color-bg-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-secondary);
+}
+
+.panel-fila--ausente,
+.panel-fila--cancelado {
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-bg));
+}
+
+.panel-hora {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.panel-paciente,
+.panel-practica,
+.panel-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.panel-meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.panel-paciente {
+  grid-column: 2;
+}
+
+.panel-practica {
+  grid-column: 2;
+}
+
+.panel-badge {
+  grid-column: 2;
+  justify-self: start;
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.panel-badge--pendiente {
+  background: color-mix(in srgb, var(--color-warning) 26%, var(--color-bg));
+  color: var(--color-text);
+}
+
+.panel-badge--aprobada {
+  background: color-mix(in srgb, var(--color-success) 22%, var(--color-bg));
+  color: var(--color-text);
+}
+
+.panel-badge--perdida {
+  background: color-mix(in srgb, var(--color-danger) 22%, var(--color-bg));
+  color: var(--color-text);
+}
+
+.panel-acciones {
+  grid-column: 2;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.panel-btn {
+  min-height: var(--touch-target, 44px);
+  padding: 0 var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.panel-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.panel-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.panel-btn--ok {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: #fff;
+}
+
+.panel-btn--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.panel-wa {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target, 44px);
+  padding: 0 var(--spacing-sm);
+  border-radius: var(--radius-md);
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.panel-aviso-falta {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-light);
+  color: var(--color-warning-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.panel-vacio {
+  padding: var(--spacing-2xl) var(--spacing-md);
+  text-align: center;
+  color: var(--color-text-secondary);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.panel-vacio h3 {
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Alertas ------------------------------------------------------------------ */
+
+.panel-alerta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.panel-alerta--danger {
+  border-color: color-mix(in srgb, var(--color-danger) 30%, var(--color-bg));
+  background: var(--color-danger-light);
+  color: var(--color-danger-text);
+}
+
+.panel-alerta--warning {
+  border-color: color-mix(in srgb, var(--color-warning) 30%, var(--color-bg));
+  background: var(--color-warning-light);
+  color: var(--color-warning-text);
+}
+
+.panel-ayuda {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* Diálogo ------------------------------------------------------------------ */
+
+.panel-dialog-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: rgb(15 23 42 / 0.55);
+  overflow-y: auto;
+}
+
+.panel-dialog {
+  width: 100%;
+  max-width: 480px;
+  margin: var(--spacing-md) auto;
+  padding: var(--spacing-lg);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.panel-dialog h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.panel-dialog__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* Breakpoints -------------------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .panel-page {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 900px) {
+  .panel-fila {
+    grid-template-columns: 72px minmax(0, 1.4fr) minmax(0, 1fr) 120px minmax(0, 1.2fr);
+    align-items: center;
+  }
+
+  .panel-fila--head {
+    display: grid;
+  }
+
+  .panel-paciente,
+  .panel-practica,
+  .panel-badge,
+  .panel-acciones {
+    grid-column: auto;
+  }
+
+  .panel-badge {
+    justify-self: start;
+  }
+
+  .panel-acciones {
+    flex-direction: row;
+  }
+}
