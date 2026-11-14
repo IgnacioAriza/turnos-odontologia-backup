@@ -39,7 +39,7 @@ jobs:
         run: mypy app/
 
       - name: Run tests with coverage
-        run: pytest tests/ -v --cov=app --cov-fail-under=50
+        run: python -m pytest tests/ -v --cov=app --cov-fail-under=50
 
       - name: Docker Compose smoke test
         run: bash ../scripts/ci/smoke-test.sh 180
