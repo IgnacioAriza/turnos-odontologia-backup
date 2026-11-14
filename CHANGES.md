@@ -243,10 +243,11 @@ Paso │ Agente A (Backend Core)              │ Agente B (Backend Aux)        
 ## FASE 3 — Operación diaria
 
 ### [C-07] `agenda-panel-dia`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado 2026-11-13. Suite backend 312 passed / 40 skipped, cobertura 86.50 %; `ruff check`, `ruff format --check` y `mypy` limpios; frontend 120 tests, `npx tsc --noEmit` y `npm run build` sin errores. Verificación visual en `openspec/changes/c-07-agenda-panel-dia/mockups/verify/` (14 capturas claro/oscuro a 390 y 1440 px, 0 overflow, contraste AA, diferencias resueltas en `resumen.md`). Pendiente: migración 007, `EXPLAIN` y concurrencia reales en Postgres (sin Docker ni credenciales en este entorno).
 - **Scope**: Agenda multi-sillón + panel del día + vista odontólogo + bloqueos 30d (US-004, US-005, US-006; RN-AUS-01–03)
   - `GET /api/internal/agenda?vista=dia|semana&sillon=&odontologo=&estado=` — multi-sillón día/semana, filtros por sillón/odontólogo/estado; crear turno interno usa motor C-05 (solape → 409 claro)
   - `GET /api/internal/panel/dia?fecha=` — lista por hora con estado de seña + contacto WA; `PATCH /api/internal/panel/turnos/{id}` marcar `completado`/`ausente`; 2.ª falta → `Bloqueo(desde, hasta=now()+30d, motivo="2_faltas", created_by)` automático (DD-04)
+  - `GET /api/internal/pacientes?q=` — búsqueda de pacientes existentes (nombre/teléfono/DNI parcial, límite 20, `recepcion|admin`) para el alta interna
   - Excepción a bloqueo por recepción con motivo obligatorio auditado (RN-AUS-02); falta la marca recepción/odontólogo, nunca automática
   - Migración 007: tabla `excepciones_bloqueo` para la excepción auditada (006 = C-06, 007 = C-07)
   - Frontend `features/agenda/` (día/semana multi-sillón) + `features/panel-dia/` (llegadas, señas, faltas) + vista `odonto` filtrada por `odontologo_id = yo` sin ABM

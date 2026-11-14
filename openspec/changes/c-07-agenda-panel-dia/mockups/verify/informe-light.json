@@ -1,0 +1,758 @@
+[
+  {
+    "archivo": "agenda-recepcion-390.png",
+    "ruta": "/agenda",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "390x844",
+    "overflow": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "altoPagina": 1904,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 164,
+        "alto": 26
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 34,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "21px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13.125px"
+      },
+      {
+        "selector": ".agenda-turno strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)",
+        "tamano": "10.5px"
+      },
+      {
+        "selector": ".agenda-turno__meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)",
+        "tamano": "9.625px"
+      },
+      {
+        "selector": ".agenda-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "8.75px"
+      }
+    ],
+    "titulo": "Agenda",
+    "subtitulo": "Turnos por sillón, con alta interna y control de ausentismo",
+    "turnos": 0,
+    "filasDia": 9,
+    "turnosDia": 8,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "21px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "13.125px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".agenda-turno strong",
+        "tamano": "10.5px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)"
+      },
+      {
+        "selector": ".agenda-turno__meta",
+        "tamano": "9.625px",
+        "ratio": 2.76,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)"
+      },
+      {
+        "selector": ".agenda-badge",
+        "tamano": "8.75px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "agenda-recepcion-1440.png",
+    "ruta": "/agenda",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "1440x900",
+    "overflow": 0,
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "altoPagina": 1500,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 188,
+        "alto": 30
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 39,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "28px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "15px"
+      },
+      {
+        "selector": ".agenda-turno strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)",
+        "tamano": "12px"
+      },
+      {
+        "selector": ".agenda-turno__meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)",
+        "tamano": "11px"
+      },
+      {
+        "selector": ".agenda-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "10px"
+      }
+    ],
+    "titulo": "Agenda",
+    "subtitulo": "Turnos por sillón, con alta interna y control de ausentismo",
+    "turnos": 0,
+    "filasDia": 9,
+    "turnosDia": 8,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "28px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "15px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".agenda-turno strong",
+        "tamano": "12px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)"
+      },
+      {
+        "selector": ".agenda-turno__meta",
+        "tamano": "11px",
+        "ratio": 2.76,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "color(srgb 0.872078 0.94949 0.900627)"
+      },
+      {
+        "selector": ".agenda-badge",
+        "tamano": "10px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "panel-recepcion-390.png",
+    "ruta": "/panel",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "390x844",
+    "overflow": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "altoPagina": 2539,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 164,
+        "alto": 26
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 34,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "21px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13.125px"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "14px"
+      },
+      {
+        "selector": ".panel-meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "11.375px"
+      },
+      {
+        "selector": ".panel-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "9.625px"
+      },
+      {
+        "selector": ".panel-resumen",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)",
+        "tamano": "12.25px"
+      }
+    ],
+    "titulo": "Panel del día",
+    "subtitulo": "Llegadas, ausencias y contacto por WhatsApp",
+    "turnos": 8,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "21px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "13.125px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "tamano": "14px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-meta",
+        "tamano": "11.375px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-badge",
+        "tamano": "9.625px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      },
+      {
+        "selector": ".panel-resumen",
+        "tamano": "12.25px",
+        "ratio": 7.23,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "panel-recepcion-1440.png",
+    "ruta": "/panel",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "1440x900",
+    "overflow": 0,
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "altoPagina": 1438,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 188,
+        "alto": 30
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 39,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "30px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "15px"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "16px"
+      },
+      {
+        "selector": ".panel-meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13px"
+      },
+      {
+        "selector": ".panel-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "11px"
+      },
+      {
+        "selector": ".panel-resumen",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)",
+        "tamano": "14px"
+      }
+    ],
+    "titulo": "Panel del día",
+    "subtitulo": "Llegadas, ausencias y contacto por WhatsApp",
+    "turnos": 8,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "30px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "15px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "tamano": "16px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-meta",
+        "tamano": "13px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-badge",
+        "tamano": "11px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      },
+      {
+        "selector": ".panel-resumen",
+        "tamano": "14px",
+        "ratio": 7.23,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "agenda-odonto-390.png",
+    "ruta": "/agenda",
+    "rol": "odonto",
+    "esquema": "light",
+    "viewport": "390x844",
+    "overflow": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "altoPagina": 1537,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 164,
+        "alto": 26
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "21px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13.125px"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "14px"
+      },
+      {
+        "selector": ".panel-meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "11.375px"
+      },
+      {
+        "selector": ".panel-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "9.625px"
+      },
+      {
+        "selector": ".panel-resumen",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)",
+        "tamano": "12.25px"
+      }
+    ],
+    "titulo": "Mi agenda",
+    "subtitulo": "Tus turnos de hoy: marcá llegadas y ausencias propias",
+    "turnos": 4,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "21px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "13.125px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "tamano": "14px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-meta",
+        "tamano": "11.375px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-badge",
+        "tamano": "9.625px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      },
+      {
+        "selector": ".panel-resumen",
+        "tamano": "12.25px",
+        "ratio": 7.23,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "agenda-odonto-1440.png",
+    "ruta": "/agenda",
+    "rol": "odonto",
+    "esquema": "light",
+    "viewport": "1440x900",
+    "overflow": 0,
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "altoPagina": 931,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 188,
+        "alto": 30
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "30px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "15px"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "16px"
+      },
+      {
+        "selector": ".panel-meta",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13px"
+      },
+      {
+        "selector": ".panel-badge",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)",
+        "tamano": "11px"
+      },
+      {
+        "selector": ".panel-resumen",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)",
+        "tamano": "14px"
+      }
+    ],
+    "titulo": "Mi agenda",
+    "subtitulo": "Tus turnos de hoy: marcá llegadas y ausencias propias",
+    "turnos": 4,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "30px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "15px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-paciente strong",
+        "tamano": "16px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-meta",
+        "tamano": "13px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".panel-badge",
+        "tamano": "11px",
+        "ratio": 1.42,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "color(srgb 0.79898 0.920627 0.843843)"
+      },
+      {
+        "selector": ".panel-resumen",
+        "tamano": "14px",
+        "ratio": 7.23,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(249, 250, 251)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "agenda-semana-recepcion-390.png",
+    "ruta": "/agenda",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "390x844",
+    "overflow": 0,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "altoPagina": 1898,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 164,
+        "alto": 26
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 34,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "21px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "13.125px"
+      }
+    ],
+    "titulo": "Agenda",
+    "subtitulo": "Turnos por sillón, con alta interna y control de ausentismo",
+    "turnos": 0,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "21px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "13.125px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      }
+    ],
+    "problemas": []
+  },
+  {
+    "archivo": "agenda-semana-recepcion-1440.png",
+    "ruta": "/agenda",
+    "rol": "recepcion",
+    "esquema": "light",
+    "viewport": "1440x900",
+    "overflow": 0,
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "altoPagina": 1334,
+    "chicos": [
+      {
+        "etiqueta": "Turnos Odontología",
+        "ancho": 188,
+        "alto": 30
+      },
+      {
+        "etiqueta": "Panel",
+        "ancho": 39,
+        "alto": 44
+      }
+    ],
+    "muestras": [
+      {
+        "selector": ".page-header h1",
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "28px"
+      },
+      {
+        "selector": ".page-subtitle",
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)",
+        "tamano": "15px"
+      }
+    ],
+    "titulo": "Agenda",
+    "subtitulo": "Turnos por sillón, con alta interna y control de ausentismo",
+    "turnos": 0,
+    "filasDia": 0,
+    "turnosDia": 0,
+    "vacio": false,
+    "contrastes": [
+      {
+        "selector": ".page-header h1",
+        "tamano": "28px",
+        "ratio": 14.68,
+        "color": "rgb(31, 41, 55)",
+        "fondo": "rgb(255, 255, 255)"
+      },
+      {
+        "selector": ".page-subtitle",
+        "tamano": "15px",
+        "ratio": 7.56,
+        "color": "rgb(75, 85, 99)",
+        "fondo": "rgb(255, 255, 255)"
+      }
+    ],
+    "problemas": []
+  }
+]

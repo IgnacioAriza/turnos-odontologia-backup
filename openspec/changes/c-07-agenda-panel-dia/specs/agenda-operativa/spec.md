@@ -111,6 +111,30 @@ La agenda SHALL reutilizar `POST /api/internal/turnos` para crear turnos presenc
 - **WHEN** un usuario con rol `odonto` intenta crear un turno interno
 - **THEN** la respuesta es 403 y no se crea nada
 
+### Requirement: Búsqueda interna de pacientes para el alta
+
+La agenda SHALL exponer `GET /api/internal/pacientes?q=` para que recepción y admin elijan un paciente existente sin conocer su UUID; la búsqueda SHALL aceptar nombre, teléfono o DNI parciales, devolver como máximo 20 pacientes activos ordenados por nombre y quedar confinada a la clínica del JWT.
+
+#### Scenario: Recepción busca por nombre
+
+- **WHEN** recepción busca `juana` en una clínica con una paciente llamada `Juana Pérez`
+- **THEN** recibe solo ese paciente con `id`, `nombre`, `telefono` y `dni`
+
+#### Scenario: Aislamiento por clínica
+
+- **WHEN** la búsqueda coincide con pacientes de otra clínica
+- **THEN** esos pacientes no aparecen en la respuesta
+
+#### Scenario: Odontólogo sin búsqueda
+
+- **WHEN** un usuario con rol `odonto` llama a `GET /api/internal/pacientes`
+- **THEN** la respuesta es 403
+
+#### Scenario: Consulta demasiado corta
+
+- **WHEN** `q` tiene menos de 2 caracteres
+- **THEN** la respuesta es 422
+
 ### Requirement: Excepción auditada al bloqueo de recepción
 
 El alta de turno interno SHALL aceptar un `motivo_excepcion` opcional; si el paciente está bloqueado y el motivo está presente, SHALL crear el turno y registrar la excepción, y si falta el motivo SHALL rechazar con 403 `codigo=bloqueado`.

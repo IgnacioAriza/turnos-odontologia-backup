@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harness de revisión — mockups C-07</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #e5e7eb;
+        color: #1f2937;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      h1 { margin: 0 0 8px; font-size: 20px; }
+      p { margin: 0 0 24px; font-size: 14px; color: #4b5563; }
+      section {
+        margin-bottom: 40px;
+        padding: 16px;
+        background: #f9fafb;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+      }
+      section > header {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      section h2 { margin: 0; font-size: 16px; }
+      section header span { font-size: 13px; color: #4b5563; }
+      .frames { display: flex; align-items: flex-start; gap: 24px; }
+      .frame { flex: 0 0 auto; }
+      .frame > span {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4b5563;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      iframe {
+        display: block;
+        border: 1px solid #9ca3af;
+        border-radius: 8px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Harness de revisión — C-07</h1>
+    <p>
+      Cada pantalla se renderiza en un iframe de 390 px y otro de 1440 px de ancho. La altura se ajusta al
+      contenido para que la captura muestre la pantalla completa. No es parte del entregable.
+    </p>
+
+    <section id="sec-agenda">
+      <header><h2>agenda.html</h2><span>día multi-sillón · semana · filtros · alta · bloqueo</span></header>
+      <div class="frames">
+        <div class="frame"><span>Mobile · 390</span><iframe data-mock="agenda" src="agenda.html" width="390" height="900"></iframe></div>
+        <div class="frame"><span>Desktop · 1440</span><iframe data-mock="agenda" src="agenda.html" width="1440" height="900"></iframe></div>
+      </div>
+    </section>
+
+    <section id="sec-panel">
+      <header><h2>panel-dia.html</h2><span>resumen · seña · WhatsApp · marcado · bloqueo</span></header>
+      <div class="frames">
+        <div class="frame"><span>Mobile · 390</span><iframe data-mock="panel" src="panel-dia.html" width="390" height="900"></iframe></div>
+        <div class="frame"><span>Desktop · 1440</span><iframe data-mock="panel" src="panel-dia.html" width="1440" height="900"></iframe></div>
+      </div>
+    </section>
+
+    <section id="sec-odonto">
+      <header><h2>odonto.html</h2><span>solo sus turnos · marcado propio · sin alta</span></header>
+      <div class="frames">
+        <div class="frame"><span>Mobile · 390</span><iframe data-mock="odonto" src="odonto.html" width="390" height="900"></iframe></div>
+        <div class="frame"><span>Desktop · 1440</span><iframe data-mock="odonto" src="odonto.html" width="1440" height="900"></iframe></div>
+      </div>
+    </section>
+
+    <script>
+      function fit(frame) {
+        try {
+          var doc = frame.contentDocument;
+          if (!doc || !doc.documentElement) return;
+          frame.style.height = doc.documentElement.scrollHeight + "px";
+        } catch (error) {
+          /* file:// bloquea el acceso; el harness se sirve por HTTP. */
+        }
+      }
+
+      function fitAll() {
+        document.querySelectorAll("iframe").forEach(fit);
+      }
+
+      document.querySelectorAll("iframe").forEach(function (frame) {
+        frame.addEventListener("load", function () {
+          fit(frame);
+          window.setTimeout(function () {
+            fit(frame);
+          }, 400);
+        });
+      });
+
+      window.addEventListener("load", function () {
+        fitAll();
+        window.setTimeout(fitAll, 800);
+      });
+    </script>
+  </body>
+</html>

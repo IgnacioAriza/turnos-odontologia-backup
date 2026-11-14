@@ -221,12 +221,26 @@ Se agrega `GET /api/internal/odontologos` (roles `recepcion|odonto|admin`) devol
 
 - Design system revision: 1 — `design-system/README.md`, `Approval: approved (2026-11-10, by user)`.
 - Decision: yes (política de proyecto `system-and-mockups`), 2026-11-11.
-- Mockups: `openspec/changes/c-07-agenda-panel-dia/mockups/` (a producir en la etapa de diseño; gate bloqueante antes de implementar UI).
-- Approval: pending.
-- Preview: pending (no renderizado todavía).
-- Visual verify: pending (se completa en verify contra la implementación).
+- Mockups: `openspec/changes/c-07-agenda-panel-dia/mockups/` (`agenda.html`, `panel-dia.html`, `odonto.html`, `mockups.css`, `README.md`).
+- Approval: approved (2026-11-12, by user).
+- Preview: rendered (2026-11-12, Chrome headless a 390 y 1440 px de ancho; capturas en `mockups/previews/`).
+- Visual verify: passed (2026-11-13) — 8 capturas de página y 6 de diálogo a 390×844 y 1440×900, en claro y oscuro: 0 px de overflow horizontal, 0 errores de consola/red, contraste AA en todas las muestras. Evidencia y diferencias resueltas: `mockups/verify/resumen.md`.
 
-**Alcance previsto**: tres pantallas con los estados que introduce el change.
+**Diferencias encontradas en verify y corregidas** (todas alinean la implementación con el design system o con el mockup; no cambian el diseño aprobado):
+
+| Prioridad | Diferencia | Corrección |
+|:--|:--|:--|
+| blocker | En ≤720 px la matriz del día tenía scroll horizontal y celdas recortadas | Se apila por hora: cabecera oculta y celdas a ancho completo |
+| blocker | En oscuro, los resultados de búsqueda de paciente usaban el negro del navegador (1.44:1) | `color: var(--color-text)` en `.agenda-resultado` |
+| major | En oscuro el `h1` heredaba un color oscuro sobre fondo oscuro | `.page-header` movido a `index.css`; reglas de `AdminPage.css` scopearon a `.admin-page` |
+| major | Las superficies de alerta y el aviso de falta usaban colores claros fijos | Tokens `--color-*-light/text` con variante oscura en `index.css`, igual que `design-system/tokens.css` |
+| major | En oscuro «Paciente: …» usaba `--color-primary` (≈3:1) y el resultado elegido fondo claro fijo | `--color-primary-deep` y `--color-primary-light` con variante oscura (12.48:1 y 14:1) |
+| minor | La cabecera de la matriz seguía visible por orden de reglas | `display: none` después de `display: block` |
+| minor | «CONFIRMADO» se partía en dos líneas | `overflow-wrap: break-word` |
+
+No verificado visualmente: el diálogo de confirmación de llegada (mismo componente que el de ausencia, sin el aviso de segunda falta) y el 409 `estado_no_actualizable` dentro del diálogo (cubierto por API end-to-end y por tests).
+
+**Alcance maquetado**: tres pantallas con los estados que introduce el change.
 
 | Pantalla | Ruta | Estados a maquetar |
 |---|---|---|
@@ -234,7 +248,19 @@ Se agrega `GET /api/internal/odontologos` (roles `recepcion|odonto|admin`) devol
 | `panel-dia.html` | `/panel` | lista por hora con seña y WhatsApp, marcar `completado`, confirmar `ausente`, aviso de segunda falta/bloqueo 30 d, 409 `estado_no_actualizable` |
 | `odonto.html` | `/agenda` (rol odonto) | solo lectura del propio día, marcar llegada/ausencia propia, sin alta ni cancelar |
 
-Los mockups deberán importar `design-system/tokens.css` y `brand.js`, usar `design-system/assets/logo.svg` y copiar los `codigo` reales del backend.
+Los mockups importan `design-system/tokens.css` y `brand.js`, usan `design-system/assets/logo.svg` y copian los `codigo` reales del backend.
+
+**Capturas de revisión** (ancho de viewport exacto, alto completo):
+
+| Pantalla | Mobile 390 | Desktop 1440 |
+|---|---|---|
+| Agenda | `mockups/previews/agenda-390.png` (390×6498) | `mockups/previews/agenda-1440.png` (1440×3500) |
+| Panel del día | `mockups/previews/panel-dia-390.png` (390×4415) | `mockups/previews/panel-dia-1440.png` (1440×2436) |
+| Odontólogo | `mockups/previews/odonto-390.png` (390×2649) | `mockups/previews/odonto-1440.png` (1440×1694) |
+
+**Verificación de render** (2026-11-12): sin overflow horizontal en ninguna pantalla (`scrollWidth == ancho del body` en 390 y 1440), grilla día en 3 columnas de sillón en desktop y colapsada a bloques por hora en mobile, semana en 7 columnas en desktop y lista apilada en mobile, filas del panel reordenadas sin scroll horizontal, logo cargado (`naturalWidth = 260`), tokens aplicados (`--color-primary = #2563eb`), consola sin errores.
+
+**Gate**: las tareas 7.x y 8.x no empiezan hasta que el usuario apruebe explícitamente esta revisión. Cualquier cambio visual posterior vuelve a `Approval: pending`.
 
 ## Open Questions
 

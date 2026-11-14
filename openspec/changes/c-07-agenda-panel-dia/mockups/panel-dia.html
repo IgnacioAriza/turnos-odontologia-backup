@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="Panel del día · Mockup C-07">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Mockup del panel del día de C-07: resumen, estado de seña, contacto por WhatsApp, marcado de llegada/ausencia y bloqueo por segunda falta."
+    />
+    <title>Panel del día — mockup</title>
+    <link rel="icon" type="image/svg+xml" href="../../../../design-system/assets/logo.svg" />
+    <link rel="stylesheet" href="../../../../design-system/tokens.css" />
+    <link rel="stylesheet" href="mockups.css" />
+  </head>
+  <body>
+    <div class="mk-shell">
+      <header class="mk-topbar">
+        <div class="mk-topbar__inner">
+          <div class="mk-brand">
+            <img
+              class="mk-logo"
+              src="../../../../design-system/assets/logo.svg"
+              alt="Logo provisorio de la clínica"
+              width="260"
+              height="72"
+            />
+            <span class="mk-role">Recepción</span>
+          </div>
+          <nav class="mk-nav" aria-label="Navegación principal">
+            <a href="agenda.html">Agenda</a>
+            <a href="panel-dia.html" aria-current="page">Panel del día</a>
+          </nav>
+          <div class="mk-user">
+            <span>recepcion@clinica.com</span>
+            <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Cerrar sesión</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="mk-main">
+        <div class="mk-page-head">
+          <div>
+            <h1>Panel del día</h1>
+            <p class="mk-subtitle">Jueves 12/11/2026 · operación de la jornada</p>
+          </div>
+          <div class="mk-actions">
+            <div class="mk-field" style="min-width: 180px">
+              <label for="panel-fecha">Fecha</label>
+              <input class="mk-input" id="panel-fecha" type="date" value="2026-11-12" />
+            </div>
+            <button class="mk-btn mk-btn--secondary" type="button">Hoy</button>
+          </div>
+        </div>
+
+        <div class="mk-stats" aria-label="Resumen de la jornada">
+          <div class="mk-stat">
+            <div class="mk-stat__value">8</div>
+            <div class="mk-stat__label">Turnos</div>
+          </div>
+          <div class="mk-stat">
+            <div class="mk-stat__value">2</div>
+            <div class="mk-stat__label">Pendientes de seña</div>
+          </div>
+          <div class="mk-stat">
+            <div class="mk-stat__value">4</div>
+            <div class="mk-stat__label">Confirmados</div>
+          </div>
+          <div class="mk-stat">
+            <div class="mk-stat__value">1</div>
+            <div class="mk-stat__label">Atendidos</div>
+          </div>
+          <div class="mk-stat">
+            <div class="mk-stat__value">1</div>
+            <div class="mk-stat__label">Ausentes</div>
+          </div>
+        </div>
+
+        <div class="mk-note">
+          El teléfono se muestra solo acá, porque el panel es la pantalla de contacto. La agenda no lo expone.
+          Solo los turnos <strong>confirmados</strong> admiten marcado; el resto responde
+          <span class="mk-code">estado_no_actualizable · 409</span>.
+        </div>
+
+        <section aria-labelledby="panel-lista-titulo">
+          <div class="mk-section" style="margin-top: 0">
+            <header>
+              <h2 id="panel-lista-titulo">Turnos por hora</h2>
+              <p>Cancelados y reprogramados no aparecen. Orden ascendente por inicio.</p>
+            </header>
+          </div>
+
+          <div class="mk-list">
+            <div class="mk-list__head" aria-hidden="true">
+              <span>Hora</span><span>Paciente</span><span>Práctica · sillón · odontólogo</span><span>Turno</span><span>Seña</span><span>Acciones</span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">08:00</span>
+              <span class="mk-row__patient"><strong>Juana Pérez</strong><span>+54 9 11 4000 0001</span></span>
+              <span class="mk-row__meta"><span>Limpieza dental · 40 min</span><span>Sillón 1 · dra.gomez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000001">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">09:00</span>
+              <span class="mk-row__patient"><strong>Beto Sosa</strong><span>+54 9 11 4000 0002</span></span>
+              <span class="mk-row__meta"><span>Extracción · 45 min</span><span>Sillón 2 · dr.perez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000002">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">09:00</span>
+              <span class="mk-row__patient"><strong>Dora Ferreyra</strong><span>+54 9 11 4000 0003</span></span>
+              <span class="mk-row__meta"><span>Ortodoncia control · 30 min</span><span>Sillón 3 · dra.gomez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000003">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">10:00</span>
+              <span class="mk-row__patient"><strong>Marcos Ruiz</strong><span>+54 9 11 4000 0004</span></span>
+              <span class="mk-row__meta"><span>Endodoncia · 60 min</span><span>Sillón 1 · dr.perez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--pending">Pendiente de seña</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--pending">Seña pendiente</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000004">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button" disabled title="Solo turnos confirmados">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button" disabled title="Solo turnos confirmados">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">10:00</span>
+              <span class="mk-row__patient"><strong>Carla Díaz</strong><span>+54 9 11 4000 0005</span></span>
+              <span class="mk-row__meta"><span>Limpieza dental · 40 min</span><span>Sillón 2 · dra.gomez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--no-show">Ausente</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000005">WhatsApp</a>
+                <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Ver detalle</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">11:00</span>
+              <span class="mk-row__patient"><strong>Ezequiel Ramos</strong><span>+54 9 11 4000 0006</span></span>
+              <span class="mk-row__meta"><span>Limpieza dental · 40 min</span><span>Sillón 3 · dr.perez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000006">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">12:00</span>
+              <span class="mk-row__patient"><strong>Ana Silva</strong><span>+54 9 11 4000 0007</span></span>
+              <span class="mk-row__meta"><span>Consulta · 30 min</span><span>Sillón 1 · dra.gomez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--done">Atendido</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000007">WhatsApp</a>
+                <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Ver detalle</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">12:30</span>
+              <span class="mk-row__patient"><strong>Lucía Medina</strong><span>+54 9 11 4000 0008</span></span>
+              <span class="mk-row__meta"><span>Consulta · 30 min</span><span>Sillón 2 · dr.perez@clinica.com</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--pending">Pendiente de seña</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--pending">Seña pendiente</span></span>
+              <span class="mk-row__actions">
+                <a class="mk-wa" href="https://wa.me/5491140000008">WhatsApp</a>
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button" disabled title="Solo turnos confirmados">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button" disabled title="Solo turnos confirmados">Ausente</button>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="panel-ausente-titulo">
+          <header>
+            <h2 id="panel-ausente-titulo">Confirmar ausencia · segunda falta</h2>
+            <p>La ausencia no se infiere por la hora: la marca una persona. La segunda falta crea el bloqueo de 30 días.</p>
+          </header>
+
+          <div class="mk-dialog-demo">
+            <div class="mk-dialog" role="dialog" aria-modal="true" aria-labelledby="panel-ausente-dialog">
+              <h3 id="panel-ausente-dialog">¿Marcar a Carla Díaz como ausente?</h3>
+              <p>Limpieza dental · 10:00 · Sillón 2. La seña no se reintegra.</p>
+
+              <div class="mk-alert mk-alert--warning" role="alert" style="margin-top: var(--spacing-md)">
+                <span class="mk-alert__icon" aria-hidden="true">⚠</span>
+                <div>
+                  <strong>Esta es la 2.ª falta</strong>
+                  El paciente queda bloqueado 30 días (hasta el 12/12/2026) y el contador de faltas vuelve a 0.
+                </div>
+              </div>
+
+              <div class="mk-dialog__actions">
+                <button class="mk-btn mk-btn--secondary" type="button">Volver</button>
+                <button class="mk-btn mk-btn--danger" type="button">Sí, marcar ausente</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="panel-resultados-titulo">
+          <header>
+            <h2 id="panel-resultados-titulo">Resultados del marcado</h2>
+            <p>Idempotente por destino: repetir el mismo marcado no duplica faltas ni bloqueos.</p>
+          </header>
+
+          <div style="display: grid; gap: var(--spacing-sm)">
+            <div class="mk-alert mk-alert--success" role="status">
+              <span class="mk-alert__icon" aria-hidden="true">✓</span>
+              <div><strong>Turno marcado como atendido</strong>Juana Pérez · 08:00 · Sillón 1.</div>
+            </div>
+
+            <div class="mk-alert mk-alert--success" role="status">
+              <span class="mk-alert__icon" aria-hidden="true">✓</span>
+              <div>
+                <strong>Ausencia registrada y bloqueo automático creado</strong>
+                Carla Díaz queda bloqueada hasta el 12/12/2026. El evento quedó en el log como
+                <span class="mk-code">bloqueo_automatico</span>.
+              </div>
+            </div>
+
+            <div class="mk-alert mk-alert--danger" role="alert">
+              <span class="mk-alert__icon" aria-hidden="true">⚠</span>
+              <div>
+                <strong>El turno no admite este marcado</strong>
+                Marcos Ruiz está pendiente de seña; primero hay que confirmarlo.
+                <span class="mk-code">estado_no_actualizable · 409</span>
+              </div>
+            </div>
+
+            <div class="mk-alert mk-alert--danger" role="alert">
+              <span class="mk-alert__icon" aria-hidden="true">🔒</span>
+              <div>
+                <strong>Turno de otra clínica o de otro odontólogo</strong>
+                No se revela si existe: la API responde igual.
+                <span class="mk-code">turno_no_encontrado · 404</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--spacing-lg)">
+            <div class="mk-toast"><span aria-hidden="true">✓</span> Panel actualizado. Quedan 3 turnos por marcar.</div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="panel-vacio-titulo">
+          <header>
+            <h2 id="panel-vacio-titulo">Día sin turnos operables</h2>
+            <p>El resumen muestra todo en cero, sin spinner de pantalla completa.</p>
+          </header>
+
+          <div class="mk-stats" aria-label="Resumen vacío">
+            <div class="mk-stat"><div class="mk-stat__value">0</div><div class="mk-stat__label">Turnos</div></div>
+            <div class="mk-stat"><div class="mk-stat__value">0</div><div class="mk-stat__label">Pendientes de seña</div></div>
+            <div class="mk-stat"><div class="mk-stat__value">0</div><div class="mk-stat__label">Confirmados</div></div>
+            <div class="mk-stat"><div class="mk-stat__value">0</div><div class="mk-stat__label">Atendidos</div></div>
+            <div class="mk-stat"><div class="mk-stat__value">0</div><div class="mk-stat__label">Ausentes</div></div>
+          </div>
+
+          <div class="mk-empty">
+            <div class="mk-empty__icon" aria-hidden="true">☀</div>
+            <h3>No hay turnos para operar</h3>
+            <p>Cuando un paciente reserve, el turno aparece acá con su estado de seña.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../../../design-system/brand.js"></script>
+  </body>
+</html>

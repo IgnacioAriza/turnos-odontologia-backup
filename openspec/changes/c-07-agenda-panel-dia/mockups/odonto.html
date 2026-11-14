@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="Mi agenda · Mockup C-07">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Mockup de la vista del odontólogo de C-07: solo sus turnos, marcado de llegada/ausencia y sin alta ni cancelación."
+    />
+    <title>Mi agenda — mockup</title>
+    <link rel="icon" type="image/svg+xml" href="../../../../design-system/assets/logo.svg" />
+    <link rel="stylesheet" href="../../../../design-system/tokens.css" />
+    <link rel="stylesheet" href="mockups.css" />
+  </head>
+  <body>
+    <div class="mk-shell">
+      <header class="mk-topbar">
+        <div class="mk-topbar__inner">
+          <div class="mk-brand">
+            <img
+              class="mk-logo"
+              src="../../../../design-system/assets/logo.svg"
+              alt="Logo provisorio de la clínica"
+              width="260"
+              height="72"
+            />
+            <span class="mk-role">Odontólogo</span>
+          </div>
+          <nav class="mk-nav" aria-label="Navegación principal">
+            <a href="odonto.html" aria-current="page">Mi agenda</a>
+          </nav>
+          <div class="mk-user">
+            <span>dra.gomez@clinica.com</span>
+            <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Cerrar sesión</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="mk-main">
+        <div class="mk-page-head">
+          <div>
+            <h1>Mi agenda</h1>
+            <p class="mk-subtitle">Jueves 12/11/2026 · Dra. Gómez · 4 turnos</p>
+          </div>
+          <div class="mk-actions">
+            <div class="mk-field" style="min-width: 180px">
+              <label for="od-fecha">Fecha</label>
+              <input class="mk-input" id="od-fecha" type="date" value="2026-11-12" />
+            </div>
+            <div class="mk-segmented" role="group" aria-label="Vista de mi agenda">
+              <button type="button" aria-pressed="true">Día</button>
+              <button type="button" aria-pressed="false">Semana</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mk-alert mk-alert--info" role="note" style="margin-bottom: var(--spacing-lg)">
+          <span class="mk-alert__icon" aria-hidden="true">i</span>
+          <div>
+            <strong>Solo ves tus turnos</strong>
+            El backend confina la agenda y el marcado a tu usuario; el filtro por odontólogo se ignora.
+            No hay alta, cancelación ni reprogramación en esta vista.
+          </div>
+        </div>
+
+        <section aria-labelledby="od-lista-titulo">
+          <div class="mk-section" style="margin-top: 0">
+            <header>
+              <h2 id="od-lista-titulo">Turnos de hoy</h2>
+              <p>Ordenados por hora. El contacto del paciente está en el panel de recepción.</p>
+            </header>
+          </div>
+
+          <div class="mk-list">
+            <div class="mk-list__head" aria-hidden="true">
+              <span>Hora</span><span>Paciente</span><span>Práctica · sillón</span><span>Turno</span><span>Seña</span><span>Acciones</span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">08:00</span>
+              <span class="mk-row__patient"><strong>Juana Pérez</strong><span>Limpieza dental · 40 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 1</span><span>Confirmado por recepción</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">09:00</span>
+              <span class="mk-row__patient"><strong>Dora Ferreyra</strong><span>Ortodoncia control · 30 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 3</span><span>Confirmado por recepción</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <button class="mk-btn mk-btn--primary mk-btn--sm" type="button">Llegó</button>
+                <button class="mk-btn mk-btn--secondary mk-btn--sm" type="button">Ausente</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">10:00</span>
+              <span class="mk-row__patient"><strong>Carla Díaz</strong><span>Limpieza dental · 40 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 2</span><span>Marcado por recepción</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--no-show">Ausente</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Ver detalle</button>
+              </span>
+            </div>
+
+            <div class="mk-row">
+              <span class="mk-row__time">12:00</span>
+              <span class="mk-row__patient"><strong>Ana Silva</strong><span>Consulta · 30 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 1</span><span>Atendido</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--done">Atendido</span></span>
+              <span class="mk-row__sena"><span class="mk-badge mk-badge--confirmed">Seña aprobada</span></span>
+              <span class="mk-row__actions">
+                <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Ver detalle</button>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="od-marcar-titulo">
+          <header>
+            <h2 id="od-marcar-titulo">Marcar llegada o ausencia propia</h2>
+            <p>El odontólogo solo puede marcar turnos confirmados y suyos. La acción pide confirmación.</p>
+          </header>
+
+          <div class="mk-dialog-demo">
+            <div class="mk-dialog" role="dialog" aria-modal="true" aria-labelledby="od-marcar-dialog">
+              <h3 id="od-marcar-dialog">¿Marcar llegada de Juana Pérez?</h3>
+              <p>Limpieza dental · 08:00 · Sillón 1.</p>
+
+              <div class="mk-alert mk-alert--info" role="note" style="margin-top: var(--spacing-md)">
+                <span class="mk-alert__icon" aria-hidden="true">i</span>
+                <div>
+                  Si marcas <strong>ausente</strong> por error, no se puede deshacer desde acá: pedile a recepción
+                  que lo corrija. La segunda falta bloquea al paciente 30 días.
+                </div>
+              </div>
+
+              <div class="mk-dialog__actions">
+                <button class="mk-btn mk-btn--secondary" type="button">Volver</button>
+                <button class="mk-btn mk-btn--primary" type="button">Sí, llegó</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="od-errores-titulo">
+          <header>
+            <h2 id="od-errores-titulo">Límites de la vista</h2>
+            <p>El backend es la autoridad; la UI solo evita ofrecer acciones imposibles.</p>
+          </header>
+
+          <div style="display: grid; gap: var(--spacing-sm)">
+            <div class="mk-alert mk-alert--danger" role="alert">
+              <span class="mk-alert__icon" aria-hidden="true">🔒</span>
+              <div>
+                <strong>Turno de otro odontólogo</strong>
+                No se revela si existe: la respuesta es la misma que para un turno inexistente.
+                <span class="mk-code">turno_no_encontrado · 404</span>
+              </div>
+            </div>
+
+            <div class="mk-alert mk-alert--danger" role="alert">
+              <span class="mk-alert__icon" aria-hidden="true">⚠</span>
+              <div>
+                <strong>El turno ya no está confirmado</strong>
+                Si recepción lo canceló o reprogramó, el marcado se rechaza.
+                <span class="mk-code">estado_no_actualizable · 409</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="od-vacio-titulo">
+          <header>
+            <h2 id="od-vacio-titulo">Día sin turnos propios</h2>
+            <p>No se muestran los turnos de otros odontólogos ni un estado vacío engañoso.</p>
+          </header>
+
+          <div class="mk-empty">
+            <div class="mk-empty__icon" aria-hidden="true">☀</div>
+            <h3>No tenés turnos este día</h3>
+            <p>Probá con otra fecha o revisá la vista semanal.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../../../design-system/brand.js"></script>
+  </body>
+</html>

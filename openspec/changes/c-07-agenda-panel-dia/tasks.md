@@ -45,28 +45,28 @@
 
 ## 6. Gate de diseño UI (bloquea 7.x y 8.x)
 
-- [ ] 6.1 Crear `openspec/changes/c-07-agenda-panel-dia/mockups/` con `agenda.html`, `panel-dia.html`, `odonto.html` y `README.md`, importando `design-system/tokens.css`, `brand.js` y `assets/logo.svg`, con los estados listados en `design.md` §UI Mockups. Verificación: los cuatro archivos existen y no tienen colores ni espaciados hardcodeados.
-- [ ] 6.2 Renderizar cada mockup a 390×844 y 1440×900 y guardar las capturas en `mockups/previews/`. Verificación: las imágenes existen, fueron inspeccionadas y no hay scroll horizontal ni controles táctiles menores a 44 px.
-- [ ] 6.3 Presentar los mockups al usuario y registrar la aprobación. Verificación: `mockups/README.md` y `design.md` §UI Mockups pasan a `Approval: approved (<fecha>, by user)`; sin esto no se implementa 7.x ni 8.x.
+- [x] 6.1 Crear `openspec/changes/c-07-agenda-panel-dia/mockups/` con `agenda.html`, `panel-dia.html`, `odonto.html` y `README.md`, importando `design-system/tokens.css`, `brand.js` y `assets/logo.svg`, con los estados listados en `design.md` §UI Mockups. Verificación: los cuatro archivos existen y no tienen colores ni espaciados hardcodeados.
+- [x] 6.2 Renderizar cada mockup a 390×844 y 1440×900 y guardar las capturas en `mockups/previews/`. Verificación: las imágenes existen, fueron inspeccionadas y no hay scroll horizontal ni controles táctiles menores a 44 px.
+- [x] 6.3 Presentar los mockups al usuario y registrar la aprobación. Verificación: `mockups/README.md` y `design.md` §UI Mockups pasan a `Approval: approved (<fecha>, by user)`; sin esto no se implementa 7.x ni 8.x.
 
 ## 7. Frontend — agenda
 
-- [ ] 7.1 Crear `frontend/src/features/agenda/types.ts` y `api.ts` con los contratos de agenda, odontólogos y alta interna, sin `any`. Verificación: `npx tsc --noEmit` pasa y los tipos cubren `solape`, `bloqueado` y `motivo_requerido`.
-- [ ] 7.2 Escribir tests vitest de `AgendaDia` y `AgendaSemana`: render por hora y sillón, cambio día/semana, filtros, día vacío y error de red con reintento. Verificación: fallan porque los componentes no existen.
-- [ ] 7.3 Implementar `AgendaDia`, `AgendaSemana` y `FiltrosAgenda` mobile-first consumiendo la API real, con estados de carga, vacío y error. Verificación: los tests de 7.2 pasan.
-- [ ] 7.4 Escribir tests de `AltaTurnoDialog` y `ExcepcionBloqueoDialog`: 201 cierra y refresca, 409 `solape` conserva datos, 403 `bloqueado` muestra `bloqueado_hasta` y pide motivo solo a `recepcion|admin`. Verificación: fallan antes de los componentes.
-- [ ] 7.5 Implementar el alta de turno interno y el diálogo de excepción con confirmación accesible. Verificación: los tests de 7.4 pasan.
-- [ ] 7.6 Actualizar `frontend/src/pages/AgendaPage.tsx` para componer la feature según el rol y `router.tsx` para admitir `recepcion` en `/agenda`, conservando `ProtectedRoute`/`PublicRoute`. Verificación: test de router confirma que `recepcion` entra a `/agenda` y `odonto` no ve acciones de alta.
+- [x] 7.1 Crear `frontend/src/features/agenda/types.ts` y `api.ts` con los contratos de agenda, odontólogos y alta interna, sin `any`. Verificación: `npx tsc --noEmit` pasa y los tipos cubren `solape`, `bloqueado` y `motivo_requerido`.
+- [x] 7.2 Escribir tests vitest de `AgendaDia` y `AgendaSemana`: render por hora y sillón, cambio día/semana, filtros, día vacío y error de red con reintento. Verificación: fallan porque los componentes no existen.
+- [x] 7.3 Implementar `AgendaDia`, `AgendaSemana` y `FiltrosAgenda` mobile-first consumiendo la API real, con estados de carga, vacío y error. Verificación: los tests de 7.2 pasan.
+- [x] 7.4 Escribir tests de `AltaTurnoDialog` y `ExcepcionBloqueoDialog`: 201 cierra y refresca, 409 `solape` conserva datos, 403 `bloqueado` muestra `bloqueado_hasta` y pide motivo solo a `recepcion|admin`. Verificación: fallan antes de los componentes.
+- [x] 7.5 Implementar el alta de turno interno y el diálogo de excepción con confirmación accesible. Verificación: los tests de 7.4 pasan.
+- [x] 7.6 Actualizar `frontend/src/pages/AgendaPage.tsx` para componer la feature según el rol y `router.tsx` para admitir `recepcion` en `/agenda`, conservando `ProtectedRoute`/`PublicRoute`. Verificación: test de router confirma que `recepcion` entra a `/agenda` y `odonto` no ve acciones de alta.
 
 ## 8. Frontend — panel del día y vista odontólogo
 
-- [ ] 8.1 Crear `frontend/src/features/panel-dia/types.ts` y `api.ts` con panel, marcado y `estado_sena`, sin `any`. Verificación: `npx tsc --noEmit` pasa.
-- [ ] 8.2 Escribir tests vitest de `PanelLista` y `ContactoWhatsApp`: orden por hora, badge de seña con texto (no solo color), link `wa.me` con el teléfono, resumen de jornada. Verificación: fallan porque los componentes no existen.
-- [ ] 8.3 Implementar `PanelLista`, `ContactoWhatsApp` y el resumen mobile-first. Verificación: los tests de 8.2 pasan.
-- [ ] 8.4 Escribir tests de `MarcarEstadoDialog`: confirmación de `ausente`, aviso de bloqueo de 30 días cuando corresponde, idempotencia visible y 409 `estado_no_actualizable` que refresca el turno. Verificación: fallan antes del diálogo.
-- [ ] 8.5 Implementar `MarcarEstadoDialog` y conectar `frontend/src/pages/PanelPage.tsx` a la API real. Verificación: los tests de 8.4 pasan.
-- [ ] 8.6 Escribir el test de la vista odontólogo: solo su día, sin alta, sin cancelar/reprogramar, con acciones de llegada/ausencia sobre sus turnos. Verificación: falla contra la página actual.
-- [ ] 8.7 Ajustar `AgendaPage`/`PanelPage` y `OdontoShell` para el modo odontólogo sin ABM. Verificación: el test de 8.6 pasa y no aparece ningún botón de alta/cancelar/reprogramar con rol `odonto`.
+- [x] 8.1 Crear `frontend/src/features/panel-dia/types.ts` y `api.ts` con panel, marcado y `estado_sena`, sin `any`. Verificación: `npx tsc --noEmit` pasa.
+- [x] 8.2 Escribir tests vitest de `PanelLista` y `ContactoWhatsApp`: orden por hora, badge de seña con texto (no solo color), link `wa.me` con el teléfono, resumen de jornada. Verificación: fallan porque los componentes no existen.
+- [x] 8.3 Implementar `PanelLista`, `ContactoWhatsApp` y el resumen mobile-first. Verificación: los tests de 8.2 pasan.
+- [x] 8.4 Escribir tests de `MarcarEstadoDialog`: confirmación de `ausente`, aviso de bloqueo de 30 días cuando corresponde, idempotencia visible y 409 `estado_no_actualizable` que refresca el turno. Verificación: fallan antes del diálogo.
+- [x] 8.5 Implementar `MarcarEstadoDialog` y conectar `frontend/src/pages/PanelPage.tsx` a la API real. Verificación: los tests de 8.4 pasan.
+- [x] 8.6 Escribir el test de la vista odontólogo: solo su día, sin alta, sin cancelar/reprogramar, con acciones de llegada/ausencia sobre sus turnos. Verificación: falla contra la página actual.
+- [x] 8.7 Ajustar `AgendaPage`/`PanelPage` y `OdontoShell` para el modo odontólogo sin ABM. Verificación: el test de 8.6 pasa y no aparece ningún botón de alta/cancelar/reprogramar con rol `odonto`.
 
 ## 9. Documentación y roadmap
 
@@ -76,12 +76,12 @@
 
 ## 10. Integración y calidad
 
-- [ ] 10.1 `ruff check backend/app backend/tests` y `ruff format --check` limpios. Verificación: ambos comandos terminan con código 0.
-- [ ] 10.2 `mypy backend/app` limpio. Verificación: sin errores nuevos respecto de la línea base.
-- [ ] 10.3 `pytest` completo con cobertura > 80 % (incluye `test_agenda`, `test_panel_dia`, `test_excepciones_bloqueo`, `test_migration_007`). Verificación: suite completa en verde y reporte de cobertura por encima del umbral.
-- [ ] 10.4 `npx tsc --noEmit`, `npm run build` y `vitest` completos en `frontend/`. Verificación: build sin errores de tipos y todos los tests de frontend en verde.
-- [ ] 10.5 Verificar OpenAPI completa de los endpoints nuevos (`response_model`, query params documentados, códigos de error). Verificación: `/openapi.json` contiene `agenda`, `panel/dia`, `panel/turnos/{id}` y `odontologos`.
-- [ ] 10.6 Verificación visual contra los mockups aprobados en 6.3 (agenda, panel, odonto) en 390×844 y 1440×900, con consola y red sin errores. Verificación: capturas en `mockups/verify/` y diferencias reportadas por prioridad.
+- [x] 10.1 `ruff check backend/app backend/tests` y `ruff format --check` limpios. Verificación: ambos comandos terminan con código 0.
+- [x] 10.2 `mypy backend/app` limpio. Verificación: sin errores nuevos respecto de la línea base.
+- [x] 10.3 `pytest` completo con cobertura > 80 % (incluye `test_agenda`, `test_panel_dia`, `test_excepciones_bloqueo`, `test_migration_007`). Verificación: suite completa en verde y reporte de cobertura por encima del umbral.
+- [x] 10.4 `npx tsc --noEmit`, `npm run build` y `vitest` completos en `frontend/`. Verificación: build sin errores de tipos y todos los tests de frontend en verde.
+- [x] 10.5 Verificar OpenAPI completa de los endpoints nuevos (`response_model`, query params documentados, códigos de error). Verificación: `/openapi.json` contiene `agenda`, `panel/dia`, `panel/turnos/{id}` y `odontologos`.
+- [x] 10.6 Verificación visual contra los mockups aprobados en 6.3 (agenda día, agenda semana, panel, odonto y diálogos de alta/excepción/ausencia) en 390×844 y 1440×900, claro y oscuro, con consola y red sin errores. Verificación: 14 capturas en `mockups/verify/`, 0 px de overflow, contraste AA y diferencias reportadas por prioridad en `mockups/verify/resumen.md`.
 
 ## Workflow follow-up
 

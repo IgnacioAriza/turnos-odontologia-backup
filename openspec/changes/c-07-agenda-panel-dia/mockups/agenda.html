@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="es-AR" data-brand-title="Agenda · Mockup C-07">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Mockup de la agenda multi-sillón de C-07: día, semana, filtros, alta de turno, solape y bloqueo por ausentismo."
+    />
+    <title>Agenda — mockup</title>
+    <link rel="icon" type="image/svg+xml" href="../../../../design-system/assets/logo.svg" />
+    <link rel="stylesheet" href="../../../../design-system/tokens.css" />
+    <link rel="stylesheet" href="mockups.css" />
+  </head>
+  <body>
+    <div class="mk-shell">
+      <header class="mk-topbar">
+        <div class="mk-topbar__inner">
+          <div class="mk-brand">
+            <img
+              class="mk-logo"
+              src="../../../../design-system/assets/logo.svg"
+              alt="Logo provisorio de la clínica"
+              width="260"
+              height="72"
+            />
+            <span class="mk-role">Recepción</span>
+          </div>
+          <nav class="mk-nav" aria-label="Navegación principal">
+            <a href="agenda.html" aria-current="page">Agenda</a>
+            <a href="panel-dia.html">Panel del día</a>
+          </nav>
+          <div class="mk-user">
+            <span>recepcion@clinica.com</span>
+            <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button">Cerrar sesión</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="mk-main">
+        <div class="mk-page-head">
+          <div>
+            <h1>Agenda</h1>
+            <p class="mk-subtitle">Jueves 12/11/2026 · 3 sillones activos</p>
+          </div>
+          <div class="mk-actions">
+            <div class="mk-segmented" role="group" aria-label="Vista de la agenda">
+              <button type="button" aria-pressed="true">Día</button>
+              <button type="button" aria-pressed="false">Semana</button>
+            </div>
+            <button class="mk-btn mk-btn--primary" type="button">+ Nuevo turno</button>
+          </div>
+        </div>
+
+        <div class="mk-filters" aria-label="Filtros de la agenda">
+          <div class="mk-field">
+            <label for="ag-fecha">Fecha</label>
+            <input class="mk-input" id="ag-fecha" type="date" value="2026-11-12" />
+          </div>
+          <div class="mk-field">
+            <label for="ag-sillon">Sillón</label>
+            <select class="mk-select" id="ag-sillon">
+              <option>Todos los sillones</option>
+              <option>Sillón 1</option>
+              <option>Sillón 2</option>
+              <option>Sillón 3</option>
+            </select>
+          </div>
+          <div class="mk-field">
+            <label for="ag-odonto">Odontólogo</label>
+            <select class="mk-select" id="ag-odonto">
+              <option>Todos los odontólogos</option>
+              <option>dra.gomez@clinica.com</option>
+              <option>dr.perez@clinica.com</option>
+            </select>
+          </div>
+          <div class="mk-field">
+            <label for="ag-estado">Estado</label>
+            <select class="mk-select" id="ag-estado">
+              <option>Todos (sin cancelados)</option>
+              <option>Pendiente de seña</option>
+              <option>Confirmado</option>
+              <option>Atendido</option>
+              <option>Ausente</option>
+              <option>Cancelado</option>
+            </select>
+          </div>
+        </div>
+
+        <section aria-labelledby="ag-dia-titulo">
+          <div class="mk-section" style="margin-top: 0">
+            <header>
+              <h2 id="ag-dia-titulo">Vista día · multi-sillón</h2>
+              <p>Una columna por sillón; la hora es la misma fila. Orden estable por inicio y sillón.</p>
+            </header>
+          </div>
+
+          <div class="mk-day" role="table" aria-label="Turnos del jueves 12/11/2026">
+            <div class="mk-day__head" role="row">
+              <div role="columnheader">Hora</div>
+              <div role="columnheader">Sillón 1</div>
+              <div role="columnheader">Sillón 2</div>
+              <div role="columnheader">Sillón 3</div>
+            </div>
+
+            <div class="mk-day__row" role="row">
+              <div class="mk-day__time" role="rowheader">08:00</div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--confirmado">
+                  <span class="mk-turno__hora">08:00 · Sillón 1</span>
+                  <strong>Juana Pérez</strong>
+                  <span class="mk-turno__meta">Limpieza dental · 40 min</span>
+                  <span class="mk-turno__meta">dra.gomez@clinica.com</span>
+                  <span class="mk-badge mk-badge--confirmed">Confirmado</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell"></div>
+              <div class="mk-day__cell" role="cell"></div>
+            </div>
+
+            <div class="mk-day__row" role="row">
+              <div class="mk-day__time" role="rowheader">09:00</div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--libre">
+                  <strong>Libre</strong>
+                  <span class="mk-turno__meta">Sin turno</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--confirmado">
+                  <span class="mk-turno__hora">09:00 · Sillón 2</span>
+                  <strong>Beto Sosa</strong>
+                  <span class="mk-turno__meta">Extracción · 45 min</span>
+                  <span class="mk-turno__meta">dr.perez@clinica.com</span>
+                  <span class="mk-badge mk-badge--confirmed">Confirmado</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--confirmado">
+                  <span class="mk-turno__hora">09:00 · Sillón 3</span>
+                  <strong>Dora Ferreyra</strong>
+                  <span class="mk-turno__meta">Ortodoncia control · 30 min</span>
+                  <span class="mk-turno__meta">dra.gomez@clinica.com</span>
+                  <span class="mk-badge mk-badge--confirmed">Confirmado</span>
+                </article>
+              </div>
+            </div>
+
+            <div class="mk-day__row" role="row">
+              <div class="mk-day__time" role="rowheader">10:00</div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--pendiente">
+                  <span class="mk-turno__hora">10:00 · Sillón 1</span>
+                  <strong>Marcos Ruiz</strong>
+                  <span class="mk-turno__meta">Endodoncia · 60 min</span>
+                  <span class="mk-turno__meta">dr.perez@clinica.com</span>
+                  <span class="mk-badge mk-badge--pending">Pendiente de seña</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--ausente">
+                  <span class="mk-turno__hora">10:00 · Sillón 2</span>
+                  <strong>Carla Díaz</strong>
+                  <span class="mk-turno__meta">Limpieza dental · 40 min</span>
+                  <span class="mk-turno__meta">dra.gomez@clinica.com</span>
+                  <span class="mk-badge mk-badge--no-show">Ausente</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--libre">
+                  <strong>Libre</strong>
+                  <span class="mk-turno__meta">Sin turno</span>
+                </article>
+              </div>
+            </div>
+
+            <div class="mk-day__row" role="row">
+              <div class="mk-day__time" role="rowheader">11:00</div>
+              <div class="mk-day__cell" role="cell"></div>
+              <div class="mk-day__cell" role="cell"></div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--confirmado">
+                  <span class="mk-turno__hora">11:00 · Sillón 3</span>
+                  <strong>Ezequiel Ramos</strong>
+                  <span class="mk-turno__meta">Limpieza dental · 40 min</span>
+                  <span class="mk-turno__meta">dr.perez@clinica.com</span>
+                  <span class="mk-badge mk-badge--confirmed">Confirmado</span>
+                </article>
+              </div>
+            </div>
+
+            <div class="mk-day__row" role="row">
+              <div class="mk-day__time" role="rowheader">12:00</div>
+              <div class="mk-day__cell" role="cell">
+                <article class="mk-turno mk-turno--completado">
+                  <span class="mk-turno__hora">12:00 · Sillón 1</span>
+                  <strong>Ana Silva</strong>
+                  <span class="mk-turno__meta">Consulta · 30 min</span>
+                  <span class="mk-turno__meta">dra.gomez@clinica.com</span>
+                  <span class="mk-badge mk-badge--done">Atendido</span>
+                </article>
+              </div>
+              <div class="mk-day__cell" role="cell"></div>
+              <div class="mk-day__cell" role="cell"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-semana-titulo">
+          <header>
+            <h2 id="ag-semana-titulo">Vista semana · lunes a domingo</h2>
+            <p>Misma data, agrupada por día. En mobile cada día se apila en una lista.</p>
+          </header>
+
+          <div class="mk-week">
+            <article class="mk-week__day">
+              <header><strong>Lun 9</strong><span>6 turnos</span></header>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>08:00 · Juana Pérez</strong><span>Limpieza · S1</span></div>
+              <div class="mk-week__item mk-week__item--pendiente"><strong>10:00 · Marcos Ruiz</strong><span>Endodoncia · S1</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>11:00 · Dora Ferreyra</strong><span>Control · S3</span></div>
+            </article>
+            <article class="mk-week__day">
+              <header><strong>Mar 10</strong><span>5 turnos</span></header>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>09:00 · Beto Sosa</strong><span>Extracción · S2</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>12:00 · Ana Silva</strong><span>Consulta · S1</span></div>
+            </article>
+            <article class="mk-week__day">
+              <header><strong>Mié 11</strong><span>7 turnos</span></header>
+              <div class="mk-week__item mk-week__item--pendiente"><strong>10:00 · Carla Díaz</strong><span>Limpieza · S2</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>15:00 · Ezequiel Ramos</strong><span>Limpieza · S3</span></div>
+            </article>
+            <article class="mk-week__day mk-week__day--hoy">
+              <header><strong>Jue 12 · hoy</strong><span>8 turnos</span></header>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>08:00 · Juana Pérez</strong><span>Limpieza · S1</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>09:00 · Beto Sosa</strong><span>Extracción · S2</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>09:00 · Dora Ferreyra</strong><span>Control · S3</span></div>
+            </article>
+            <article class="mk-week__day">
+              <header><strong>Vie 13</strong><span>4 turnos</span></header>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>09:00 · Ana Silva</strong><span>Consulta · S1</span></div>
+              <div class="mk-week__item mk-week__item--pendiente"><strong>11:00 · Marcos Ruiz</strong><span>Endodoncia · S1</span></div>
+            </article>
+            <article class="mk-week__day">
+              <header><strong>Sáb 14</strong><span>3 turnos</span></header>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>09:00 · Juana Pérez</strong><span>Limpieza · S1</span></div>
+              <div class="mk-week__item mk-week__item--confirmado"><strong>10:00 · Dora Ferreyra</strong><span>Control · S3</span></div>
+            </article>
+            <article class="mk-week__day">
+              <header><strong>Dom 15</strong><span>0 turnos</span></header>
+              <p class="mk-help" style="margin-top: var(--spacing-md)">Cerrado.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-filtros-titulo">
+          <header>
+            <h2 id="ag-filtros-titulo">Filtros activos</h2>
+            <p>Odontólogo + sillón combinados. Los filtros se reflejan en la URL para poder compartir la vista.</p>
+          </header>
+
+          <div class="mk-note">
+            <strong>Filtros:</strong> odontólogo = dra.gomez@clinica.com · sillón = Sillón 1 · estado = Todos (sin cancelados)
+            <button class="mk-btn mk-btn--ghost mk-btn--sm" type="button" style="margin-left: var(--spacing-sm)">
+              Limpiar filtros
+            </button>
+          </div>
+
+          <div class="mk-list">
+            <div class="mk-list__head" aria-hidden="true">
+              <span>Hora</span><span>Paciente</span><span>Práctica</span><span>Sillón</span><span>Estado</span><span>Odontólogo</span>
+            </div>
+            <div class="mk-row">
+              <span class="mk-row__time">08:00</span>
+              <span class="mk-row__patient"><strong>Juana Pérez</strong><span>+54 9 11 4000 0001</span></span>
+              <span class="mk-row__meta"><span>Limpieza dental</span><span>40 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 1</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--confirmed">Confirmado</span></span>
+              <span class="mk-row__meta"><span>dra.gomez@clinica.com</span></span>
+            </div>
+            <div class="mk-row">
+              <span class="mk-row__time">12:00</span>
+              <span class="mk-row__patient"><strong>Ana Silva</strong><span>+54 9 11 4000 0005</span></span>
+              <span class="mk-row__meta"><span>Consulta</span><span>30 min</span></span>
+              <span class="mk-row__meta"><span>Sillón 1</span></span>
+              <span class="mk-row__estado"><span class="mk-badge mk-badge--done">Atendido</span></span>
+              <span class="mk-row__meta"><span>dra.gomez@clinica.com</span></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-vacio-titulo">
+          <header>
+            <h2 id="ag-vacio-titulo">Día sin turnos</h2>
+            <p>El rango se muestra igual y el alta sigue disponible.</p>
+          </header>
+          <div class="mk-empty">
+            <div class="mk-empty__icon" aria-hidden="true">▦</div>
+            <h3>No hay turnos para este día</h3>
+            <p>Probá con otra fecha o creá un turno interno.</p>
+            <button class="mk-btn mk-btn--primary" type="button" style="margin-top: var(--spacing-md)">
+              + Nuevo turno
+            </button>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-alta-titulo">
+          <header>
+            <h2 id="ag-alta-titulo">Alta de turno interno</h2>
+            <p>Usa el mismo motor que la reserva pública: si el slot se ocupó, responde <span class="mk-code">solape · 409</span>.</p>
+          </header>
+
+          <div class="mk-dialog-demo">
+            <div class="mk-dialog" role="dialog" aria-modal="true" aria-labelledby="ag-alta-dialog">
+              <h3 id="ag-alta-dialog">Nuevo turno</h3>
+              <p>Paciente existente de la clínica. La seña se calcula con el arancel vigente.</p>
+
+              <div class="mk-alert mk-alert--danger" role="alert" style="margin-top: var(--spacing-md)">
+                <span class="mk-alert__icon" aria-hidden="true">⚠</span>
+                <div>
+                  <strong>Ese horario se acaba de ocupar</strong>
+                  Elegí otro horario disponible para la Dra. Gómez. <span class="mk-code">solape · 409</span>
+                </div>
+              </div>
+
+              <div class="mk-form-grid">
+                <div class="mk-field">
+                  <label for="alta-paciente">Paciente</label>
+                  <select class="mk-select" id="alta-paciente">
+                    <option>Juana Pérez · DNI 30.111.222</option>
+                    <option>Marcos Ruiz · DNI 28.333.444</option>
+                  </select>
+                </div>
+                <div class="mk-field">
+                  <label for="alta-practica">Práctica</label>
+                  <select class="mk-select" id="alta-practica">
+                    <option>Limpieza dental · 40 min</option>
+                    <option>Endodoncia · 60 min</option>
+                  </select>
+                </div>
+                <div class="mk-field">
+                  <label for="alta-sillon">Sillón</label>
+                  <select class="mk-select" id="alta-sillon">
+                    <option>Sillón 1</option>
+                    <option>Sillón 2</option>
+                    <option>Sillón 3</option>
+                  </select>
+                </div>
+                <div class="mk-field">
+                  <label for="alta-odonto">Odontólogo</label>
+                  <select class="mk-select" id="alta-odonto">
+                    <option>dra.gomez@clinica.com</option>
+                    <option>dr.perez@clinica.com</option>
+                  </select>
+                </div>
+                <div class="mk-field">
+                  <label for="alta-fecha">Fecha</label>
+                  <input class="mk-input" id="alta-fecha" type="date" value="2026-11-12" />
+                </div>
+                <div class="mk-field">
+                  <label for="alta-hora">Hora</label>
+                  <input class="mk-input mk-input--error" id="alta-hora" type="time" value="09:30" aria-invalid="true" aria-describedby="alta-hora-error" />
+                  <span class="mk-error" id="alta-hora-error">Ese horario ya está tomado.</span>
+                </div>
+              </div>
+
+              <div class="mk-dialog__actions">
+                <button class="mk-btn mk-btn--secondary" type="button">Cancelar</button>
+                <button class="mk-btn mk-btn--primary" type="button">Elegir otro horario</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-bloqueo-titulo">
+          <header>
+            <h2 id="ag-bloqueo-titulo">Paciente bloqueado por ausentismo</h2>
+            <p>
+              El alta sin motivo responde <span class="mk-code">bloqueado · 403</span> con
+              <span class="mk-code">bloqueado_hasta</span>. Recepción o admin pueden exceptuar con motivo auditado.
+            </p>
+          </header>
+
+          <div class="mk-dialog-demo">
+            <div class="mk-dialog" role="dialog" aria-modal="true" aria-labelledby="ag-bloqueo-dialog">
+              <h3 id="ag-bloqueo-dialog">Paciente bloqueado</h3>
+              <p>Juana Pérez tiene 2 ausencias y no puede reservar hasta el 12/12/2026.</p>
+
+              <div class="mk-alert mk-alert--danger" role="alert" style="margin-top: var(--spacing-md)">
+                <span class="mk-alert__icon" aria-hidden="true">🔒</span>
+                <div>
+                  <strong>Bloqueo por ausentismo vigente</strong>
+                  El turno no se crea salvo que registres una excepción. <span class="mk-code">bloqueado · 403</span>
+                </div>
+              </div>
+
+              <div class="mk-field" style="margin-top: var(--spacing-md)">
+                <label for="bloqueo-motivo">Motivo de la excepción</label>
+                <textarea
+                  class="mk-textarea"
+                  id="bloqueo-motivo"
+                  aria-describedby="bloqueo-motivo-help"
+                >Autorizado por la Dra. Gómez: paciente con dolor agudo, se atiende hoy.</textarea>
+                <span class="mk-help" id="bloqueo-motivo-help">
+                  Obligatorio. Queda auditado con tu usuario y el turno en <code>excepciones_bloqueo</code>.
+                  Si está vacío, la API responde <span class="mk-code">motivo_requerido · 422</span> y no crea nada.
+                </span>
+              </div>
+
+              <div class="mk-dialog__actions">
+                <button class="mk-btn mk-btn--secondary" type="button">Cancelar</button>
+                <button class="mk-btn mk-btn--danger" type="button">Crear con excepción</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mk-section" aria-labelledby="ag-odonto-titulo">
+          <header>
+            <h2 id="ag-odonto-titulo">Vista odontólogo (misma página, menos acciones)</h2>
+            <p>El rol <code>odonto</code> no ve alta, cancelación ni reprogramación. El detalle completo está en <a href="odonto.html">odonto.html</a>.</p>
+          </header>
+
+          <div class="mk-card" style="padding: var(--spacing-md)">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); flex-wrap: wrap">
+              <div class="mk-brand">
+                <span class="mk-role">Odontólogo</span>
+                <span class="mk-help">dra.gomez@clinica.com</span>
+              </div>
+              <nav class="mk-nav" aria-label="Navegación del odontólogo">
+                <a href="odonto.html" aria-current="page">Mi agenda</a>
+              </nav>
+              <div class="mk-actions">
+                <div class="mk-segmented" role="group" aria-label="Vista del odontólogo">
+                  <button type="button" aria-pressed="true">Día</button>
+                  <button type="button" aria-pressed="false">Semana</button>
+                </div>
+              </div>
+            </div>
+            <p class="mk-help" style="margin-top: var(--spacing-md)">
+              Sin <strong>+ Nuevo turno</strong>. El backend confina el listado a sus propios turnos y rechaza el marcado de turnos ajenos con
+              <span class="mk-code">turno_no_encontrado · 404</span>.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../../../design-system/brand.js"></script>
+  </body>
+</html>

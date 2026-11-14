@@ -68,6 +68,11 @@ El panel SHALL incluir el teléfono del paciente para permitir el contacto por W
 - **WHEN** un usuario `odonto` abre el panel del día
 - **THEN** solo recibe teléfonos de los turnos donde `odontologo_id` es el suyo
 
+#### Scenario: Aviso de segunda falta antes de marcar
+
+- **WHEN** recepción abre el panel de un paciente con `faltas_count=1`
+- **THEN** el turno incluye `faltas_count` y `bloqueado_hasta` para que la UI avise que la próxima ausencia bloquea 30 días
+
 ### Requirement: Marcado de completado y ausente
 
 El backend SHALL exponer `PATCH /api/internal/panel/turnos/{id}` aceptando únicamente `completado` o `ausente` como estado destino, para roles `recepcion`, `admin` y `odonto` confinado a sus turnos.
